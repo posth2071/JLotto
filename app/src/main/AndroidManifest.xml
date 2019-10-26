@@ -26,11 +26,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".NaverMap"
-            android:label="NaverMap Open"
-            ></activity>
+        <activity android:name=".MapNaver"></activity>
     </application>
 
 </manifest>
