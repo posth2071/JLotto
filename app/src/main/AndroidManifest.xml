@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.maptest">
 
+    <!-- 인터넷권한 -->
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
     <!-- 위치추적 권한 설정 (GPS이용 상세위치파악 권한 / 기지국,와이파이 이용 개략적위치파악 권한) -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>

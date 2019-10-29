@@ -75,12 +75,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         bt1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                searchMap("로또");
-                //Intent it = new Intent(getApplicationContext(), MapNaver.class);
-                //it.putExtra("lat",lat);
-                //it.putExtra("lng",lng);
-                //it.putExtra("store",storeinfo);
-                //startActivity(it);
+                //searchMap("로또");              //주변 로또판매 매장 검색 (최대 5개)
+                Intent it = new Intent(view.getContext(), MapNaver.class);
+                it.putExtra("TAG",1);
+                view.getContext().startActivity(it);
             }
         });
     }
@@ -152,12 +150,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject lottoinfo = jsonArray.getJSONObject(i);
                         name[i] = lottoinfo.getString("name");
-                        addr_road[i] = lottoinfo.getString("road_address");
-                        addr_jibun[i] = lottoinfo.getString("jibun_address");
-                        phone[i] = lottoinfo.getString("phone_number");
-                        x[i] = lottoinfo.getString("x");
-                        y[i] = lottoinfo.getString("y");
-                        distance[i] = lottoinfo.getString("distance");
+                        addr_road[i] = lottoinfo.getString("road_address");     //
+                        addr_jibun[i] = lottoinfo.getString("jibun_address");   //지번주소
+                        phone[i] = lottoinfo.getString("phone_number");         //전화번호
+                        x[i] = lottoinfo.getString("x");                        //경도
+                        y[i] = lottoinfo.getString("y");                        //위도
+                        distance[i]  = lottoinfo.getString("distance");          //검색 중심 좌표와의 거리
                     }
                     for(int i=0; i<name.length; i++)
                         Log.d("확인", name[i]+", "+addr_road[i]+", "+addr_jibun[i]+", "+phone[i]+", "+x[i]+", "+y[i]+", "+distance[i]);

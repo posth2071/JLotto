@@ -62,6 +62,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             String[] storeinfo = new String[]{tv_storeName.getText().toString(),tv_storeLocation.getText().toString()};
 
                             Intent it = new Intent(view.getContext().getApplicationContext(), MapNaver.class);  //MapNaver액티비티 띄울목적
+                            it.putExtra("TAG", 2);          //TAG값 전달 (int형)
                             it.putExtra("lat",lat);     //위도 전달
                             it.putExtra("lng",lng);     //경도 전달
                             it.putExtra("store",storeinfo); //String배열 매점정보 전달(매장명,주소)
