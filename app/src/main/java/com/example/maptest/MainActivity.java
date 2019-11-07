@@ -41,7 +41,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager mLayoutManager;
 
-    FragOne frag1;
+    public static FragOne frag1;
+    public static FragOneTwo frag11;
     FragTwo frag2;
     FragThree frag3;
 
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setContentView(R.layout.activity_main);
 
         frag1 = new FragOne();
+        frag11 = new FragOneTwo();
         frag2 = new FragTwo();
         frag3 = new FragThree();
         getSupportFragmentManager().beginTransaction().add(R.id.fragment, frag1).commit();      //프래그먼트1 표시

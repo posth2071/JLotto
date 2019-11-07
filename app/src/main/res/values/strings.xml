@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">MapTest</string>
+
+    // 숫자 1~9이름 지정 (zero1~zero9 -> num1~9)
+    <string name="num1">zero1</string><string name="num2">zero2</string><string name="num3">zero3</string><string name="num4">zero4</string><string name="num5">zero5</string><string name="num6">zero6</string><string name="num7">zero7</string><string name="num8">zero8</string><string name="num9">zero9</string>
+
+    // 숫자 10~19이름 지정 (one0~one9 -> num10~num19)
+    <string name="num10">one0</string><string name="num11">one1</string><string name="num12">one2</string><string name="num13">one3</string><string name="num14">one4</string><string name="num15">one5</string><string name="num16">one6</string><string name="num17">one7</string><string name="num18">one8</string><string name="num19">one9</string>
+
+    // 숫자 20~29이름 지정 (two0~two9 -> num20~num29)
+    <string name="num20">two0</string><string name="num21">two1</string><string name="num22">two2</string><string name="num23">two3</string><string name="num24">two4</string><string name="num25">two5</string><string name="num26">two6</string><string name="num27">two7</string><string name="num28">two8</string><string name="num29">two9</string>
+
+    // 숫자 30~39 이름 지정 (three0~three9 -> num30~num39)
+    <string name="num30">three0</string><string name="num31">three1</string><string name="num32">three2</string><string name="num33">three3</string><string name="num34">three4</string><string name="num35">three5</string><string name="num36">three6</string><string name="num37">three7</string><string name="num38">three8</string><string name="num39">three9</string>
+
+    // 숫자 40~45 이름 지정 (four0~four5 -> num40~num45)
+    <string name="num40">four0</string><string name="num41">four1</string><string name="num42">four2</string><string name="num43">four3</string><string name="num44">four4</string><string name="num45">four5</string>
 </resources>

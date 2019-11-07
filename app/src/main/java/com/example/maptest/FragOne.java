@@ -20,16 +20,15 @@ import androidx.fragment.app.Fragment;
  * A simple {@link Fragment} subclass.
  */
 public class FragOne extends Fragment implements View.OnClickListener {
-    Button bt_random;
+    Button bt_random, bt_change;
     TextView tv_result;
     ImageView[] iv_num = new ImageView[7];
 
     private int[] numbers = new int[7];
     private int num = 0;
 
-    public FragOne() {
-        // Required empty public constructor
-    }
+    //생성자
+    public FragOne() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,6 +47,9 @@ public class FragOne extends Fragment implements View.OnClickListener {
         tv_result = view.findViewById(R.id.tv_result);
         bt_random = view.findViewById(R.id.bt_random);
         bt_random.setOnClickListener(this);
+
+        bt_change = view.findViewById(R.id.bt_change);
+        bt_change.setOnClickListener(this);
         return view;
     }
 
@@ -58,6 +60,9 @@ public class FragOne extends Fragment implements View.OnClickListener {
             case R.id.bt_random:
                 start();                        // 랜덤번호 뽑기 메소드 실행
                break;
+            case R.id.bt_change:
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment, MainActivity.frag11).addToBackStack(null).commit();
+                break;
         }
     }
     public void start(){
