@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FragOneTwo"
+    android:orientation="vertical">
+
+
+    <GridView
+        android:id="@+id/gridTop"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:numColumns="7"
+        android:columnWidth="10dp"
+        android:layout_weight="1"
+        ></GridView>
+
+    <GridView
+        android:id="@+id/gridBottom"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:columnWidth="10dp"
+        android:numColumns="6"
+        android:verticalSpacing="2dp"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:stretchMode="columnWidth"
+        android:layout_weight="3"
+        ></GridView>
+    <Button
+        android:id="@+id/bt_DBsotre"
+        android:text="저장"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        ></Button>
+
+</LinearLayout>

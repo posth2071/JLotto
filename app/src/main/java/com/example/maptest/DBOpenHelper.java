@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -118,21 +119,42 @@ public final class DBOpenHelper extends SQLiteOpenHelper {
         String sql = String.format("select * from %s where turn='%s'", TABLE_NAME, String.valueOf(turn));
         Cursor cursor = selectdb.rawQuery(sql, null);
 
-        ArrayList<DBinfo> list = new ArrayList<DBinfo>();
-        //ArrayList<String> list1 = new ArrayList<>();
+        ArrayList<DBinfo> listSelect = new ArrayList<DBinfo>();
         while (cursor.moveToNext()) {
             DBinfo dbinfo = new DBinfo();
             dbinfo.setTurn(cursor.getInt(cursor.getColumnIndex(COLUMN_TURN)));
             dbinfo.setNumberset(cursor.getString(cursor.getColumnIndex(COLUMN_NUMBERSET)));
             dbinfo.setHallfair(cursor.getString(cursor.getColumnIndex(COLUMN_HALLPAIR)));
             dbinfo.setResult(cursor.getString(cursor.getColumnIndex(COLUMN_RESULT)));
-            list.add(dbinfo);
+            listSelect.add(dbinfo);
             //teststr = cursor.getString(cursor.getColumnIndex(COLUMN_NUMBERSET));
         }
-        selectdb.close();         //db닫기
-        return list;
+        selectdb.close();                      //db닫기
+        logTest("Select", listSelect);   // 로그출력
+        return listSelect;
     }
 
+    //DB전체 호출
+    public ArrayList<DBinfo> selectAllDB(){
+        SQLiteDatabase selectdb = getReadableDatabase();
+        String sql = String.format("select * from %s", TABLE_NAME);
+        Cursor cursor = selectdb.rawQuery(sql, null);
+
+        ArrayList<DBinfo> listAll = new ArrayList<DBinfo>();
+        while (cursor.moveToNext()) {
+            DBinfo dbinfo = new DBinfo();
+            dbinfo.setTurn(cursor.getInt(cursor.getColumnIndex(COLUMN_TURN)));
+            dbinfo.setNumberset(cursor.getString(cursor.getColumnIndex(COLUMN_NUMBERSET)));
+            dbinfo.setHallfair(cursor.getString(cursor.getColumnIndex(COLUMN_HALLPAIR)));
+            dbinfo.setResult(cursor.getString(cursor.getColumnIndex(COLUMN_RESULT)));
+            listAll.add(dbinfo);
+        }
+        selectdb.close();                       //db닫기
+        logTest("ALL", listAll);          // 로그출력
+        return listAll;
+    }
+
+    //DB내용 삭제
     public ArrayList<DBinfo> deleteDB(){
         SQLiteDatabase db = getWritableDatabase();
         String sql = String.format("DELETE FROM %s;", TABLE_NAME);
@@ -140,9 +162,18 @@ public final class DBOpenHelper extends SQLiteOpenHelper {
         db.close();
         Log.d("데이터베이스", "DB delete");
 
-        return selectDB(888);
+        return selectAllDB();   //DB전체 반환
     }
 
+    public void logTest(String type, ArrayList<DBinfo> dbList){
+        int listCount = dbList.size(); //검색결과 갯수
+
+        String logText = "\nDBList Count => "+listCount+"개\n";
+        for(int i=0; i<listCount; i++)
+            logText += "\t\t"+type +"["+i+"] => " +dbList.get(i).getInfo()+"\n";
+
+        Log.d("데이터베이스", "\n " + logText);
+    }
 
 }
 

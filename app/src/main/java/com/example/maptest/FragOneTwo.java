@@ -38,7 +38,8 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
     NumAdapter numAdapterTop, numAdapterBottom;
 
     int listindex = 0;
-
+    int lastturn;
+    //생성자 함수
     public FragOneTwo (){}
 
     @Nullable
@@ -48,25 +49,34 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
         res = getResources();
         getIdset();
 
+        //상단,하단 그리드뷰 초기화
         ClearTop();
         ClearBottom();
-        listindex=0;
 
+        listindex=0;
+        lastturn = MainActivity.lastLottoinfo.getTurn();    //최신회차 정보가져오기
+
+        //상단그리드뷰 설정 "top"
         gridTop = view.findViewById(R.id.gridTop);
         numAdapterTop = new NumAdapter("top");
         gridTop.setAdapter(numAdapterTop);
 
+        //하단그리드뷰 설정 "bottom"
         gridBottom = view.findViewById(R.id.gridBottom);
         numAdapterBottom = new NumAdapter("bottom");
         gridBottom.setAdapter(numAdapterBottom);
 
+        //DB저장버튼 설정
+        bt_DBStore = view.findViewById(R.id.bt_DBsotre);
+        bt_DBStore.setOnClickListener(this);
+
         dBinfos = new ArrayList<>();
         dbOpenHelper = new DBOpenHelper(view.getContext().getApplicationContext());
         dBinfos = dbOpenHelper.selectDB(888);
-        Log.d("데이터베이스", dBinfos.toString());
 
-        bt_DBStore = view.findViewById(R.id.bt_DBsotre);
-        bt_DBStore.setOnClickListener(this);
+
+        ArrayList<DBinfo> logTest = dbOpenHelper.selectAllDB();
+
         return view;
     }
     //클릭이벤트 처리리스너
@@ -93,13 +103,13 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
                                     .replace(" ",""));          //앞뒤([]), 숫자사이 공백 제거
                     // 내부SQLite DB 저장
 
-                    if(dbOpenHelper.insertDB(MainActivity.lastturn+1,strset)==1){   //최신회차+1 (다음주회차로 설정)
+                    if(dbOpenHelper.insertDB(lastturn+1,strset)==1){   //최신회차+1 (다음주회차로 설정)
                         Log.d("테스트","DB저장 성공");
                     } else {
                         Log.d("테스트", "저장실패 - 중복");
                     }
 
-                    dBinfos = dbOpenHelper.selectDB(MainActivity.lastturn);
+                    dBinfos = dbOpenHelper.selectDB(lastturn);
                     Iterator<DBinfo> it1 = dBinfos.iterator();
                     while(it1.hasNext()){
                         Log.d("테스트",it1.next().getInfo());  //db저장 목록 보여주기

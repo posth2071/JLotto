@@ -45,20 +45,21 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     FragThree frag3;
 
     Button bt1;
-    public static String[] storeinfo = new String[2];
 
-    public static String[] lastSet = new String[9];     // 회, 당첨결과, 번호1, 번호2, 번호3, 번호4, 번호5, 번호6, 번호7
-    public static String[] searchSet = new String[9];   // 원하는 회차 검색해서 얻은 결과
-    public static String[] store = new String[8];
-    public static int lastturn;
+    public static LottoParsingInfo lastLottoinfo, searchLottoInfo;  //마지막회차 정보, 검색정보 저장
+
+    //네이버맵 지오코딩 보류
     BufferedReader br;
     StringBuilder searchResult;
 
-    public static LottoParsingInfo lastLottoinfo, searchLottoInfo;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //로또 파싱하기
+        TestClass testclass = new TestClass();
+        lastLottoinfo = testclass.parsing("");
 
         frag1 = new FragOne();
         frag11 = new FragOneTwo();
@@ -69,12 +70,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
-        //로또 파싱하기
-        TestClass testclass = new TestClass();
-        //lastSet = testclass.parsing("");
-        lastLottoinfo = testclass.parsing("");
-        //lastturn = Integer.parseInt(lastSet[0].replace("회",""));
-        //Log.d("파싱", Arrays.toString(lastSet));
         bt1 = findViewById(R.id.bt1);
         bt1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,25 +172,3 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }.start();
     }
 }
-/*
-
-
- */
-    /*
-        MapFragment mapFragment = (MapFragment)getSupportFragmentManager().findFragmentById(R.id.map);
-
-        if(mapFragment == null){
-            mapFragment = MapFragment.newInstance();
-            getSupportFragmentManager().beginTransaction().add(R.id.map, mapFragment).commit();
-        }
-
-        mapFragment.getMapAsync(this);
-    }
-
-    @Override
-    public void onMapReady(@NonNull NaverMap naverMap) {
-        naverMap.setMapType(NaverMap.MapType.Basic);
-    }
-}
-
-     */

@@ -67,10 +67,7 @@ public class FragTwo extends Fragment implements View.OnClickListener {
                 dialogshow();                   // 검색 대화상자 띄우기
                 break;
             case R.id.frag2_btlast:
-                //frag2_tv2.setText("");
-                for(int i=0; i<MainActivity.lastSet.length; i++){
-                  //  frag2_tv2.append(MainActivity.lastSet[i]+" ");
-                }
+
                 break;
         }
     }
@@ -80,12 +77,7 @@ public class FragTwo extends Fragment implements View.OnClickListener {
             @Override
             public void onPositiveClicked(String num) {             // 재정의
                 TestClass testclass = new TestClass();
-                //MainActivity.searchSet = testclass.parsing(num);    // 검색결과 메인액티비티의 searchSet에 보관
                 MainActivity.searchLottoInfo = testclass.parsing(num);
-                //frag2_tv2.setText("");      //텍스트뷰 초기화
-                for(int i=0; i<MainActivity.searchSet.length; i++){
-                  //  frag2_tv2.append(MainActivity.searchSet[i]+" ");
-                }
             }
             @Override
             public void onNegativeClicked() {
