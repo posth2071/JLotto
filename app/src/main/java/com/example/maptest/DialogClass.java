@@ -25,13 +25,15 @@ public class DialogClass extends Dialog implements View.OnClickListener{
 
     private TextView search_tv, cancel_tv, comment_tv;
 
-    private String last;
+    private int lastturn;
 
+    //다이얼로그 생성자
     public DialogClass(@NonNull Context context) {
         super(context);
         this.mContext = context;
     }
 
+    //다이얼로그 리스너 설정
     public void setDialogListener(MyDialogListener dialogListener){
         this.dialogListener = dialogListener;
     }
@@ -50,8 +52,8 @@ public class DialogClass extends Dialog implements View.OnClickListener{
         cancel_tv.setOnClickListener(this);
         search_tv.setOnClickListener(this);
 
-        last = MainActivity.lastSet[0];
-        comment_tv.setText("원하는 회차 입력하세요 (last - " +last+")");      //MainActivity클래스 내 array[0]문자열 얻기
+        lastturn = MainActivity.lastLottoinfo.getTurn();
+        comment_tv.setText("원하는 회차 입력하세요 (last - " +lastturn+")");      //제일최근회차 가져오기
     }
 
     @Override
@@ -61,17 +63,18 @@ public class DialogClass extends Dialog implements View.OnClickListener{
                 cancel();
                 break;
             case R.id.Search_tv:
+                //입력한 회차 얻어오기
                 String num = num_et.getText().toString();
-                last = last.replace("회","");
-                last.trim();
-                // 0회차나 마지막회차보다 큰 횟수일경우 파싱 미실행
-                if(Integer.parseInt(num)> Integer.parseInt(last) || Integer.parseInt(num)==0){
+
+                //마지막회차랑 입력한 회차 비교 (존재않는 회차일경우 검색x)
+                if(Integer.parseInt(num) > lastturn || Integer.parseInt(num)==0){
                     Toast.makeText(getContext(),"미추첨 회차", Toast.LENGTH_SHORT).show();
                     num_et.setText("");
                 }
                 else {
+                    //존재회차일경우 onPositiveClicked 메소드 실행
                     dialogListener.onPositiveClicked(num);
-                    dismiss();
+                    dismiss();      //다이얼로그 닫기
                 }
                 break;
         }

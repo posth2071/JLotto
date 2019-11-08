@@ -76,9 +76,9 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
             case R.id.bt_DBsotre:
                 if(listindex ==7){
                     Toast.makeText(view.getContext().getApplicationContext(), "저장", Toast.LENGTH_SHORT).show();
-                    dBinfos.clear();
+                    dBinfos.clear();        // dBinfos리스트 비우기
                     Iterator<testset> it = listTop.iterator();
-                    ArrayList<String> testlist = new ArrayList<>();
+                    ArrayList<String> testlist = new ArrayList<>();     //임시로 번호 담을 리스트
                     while(it.hasNext()){
                         String str = String.valueOf(it.next().getNumber());
                         testlist.add(str);
@@ -93,13 +93,13 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
                                     .replace(" ",""));          //앞뒤([]), 숫자사이 공백 제거
                     // 내부SQLite DB 저장
 
-                    if(dbOpenHelper.insertDB(888,strset)==1){
+                    if(dbOpenHelper.insertDB(MainActivity.lastturn+1,strset)==1){   //최신회차+1 (다음주회차로 설정)
                         Log.d("테스트","DB저장 성공");
                     } else {
                         Log.d("테스트", "저장실패 - 중복");
                     }
 
-                    dBinfos = dbOpenHelper.selectDB(888);
+                    dBinfos = dbOpenHelper.selectDB(MainActivity.lastturn);
                     Iterator<DBinfo> it1 = dBinfos.iterator();
                     while(it1.hasNext()){
                         Log.d("테스트",it1.next().getInfo());  //db저장 목록 보여주기

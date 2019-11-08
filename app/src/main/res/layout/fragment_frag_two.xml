@@ -37,10 +37,9 @@
                 ></Button>
         </LinearLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:text=""
-            android:id="@+id/frag2_tv2"></TextView>
+    <ExpandableListView
+        android:id="@+id/frag2_Expandable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></ExpandableListView>
 
 </LinearLayout>

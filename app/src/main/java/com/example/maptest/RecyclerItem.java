@@ -3,10 +3,11 @@ package com.example.maptest;
 public class RecyclerItem {
     public int drawableId;
     public String storeName,storeLocation;
-    public RecyclerItem(int drawableId, String storeinfo){
+
+    //리사이클러뷰 아이템 생성자함수
+    public RecyclerItem(int drawableId, String[] storeinfo){
         this.drawableId = drawableId;
-        int index = storeinfo.indexOf(",");
-        this.storeName = storeinfo.substring(0,index);
-        this.storeLocation = storeinfo.substring(index+1);
+        this.storeName = storeinfo[0];          //매장명
+        this.storeLocation = storeinfo[1];      //주소
     }
 }

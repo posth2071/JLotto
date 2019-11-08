@@ -62,8 +62,12 @@ public class FragThree extends Fragment  {
 
         ArrayList<RecyclerItem> foodInfoArrayList = new ArrayList<>();
 
-        for(int i=0; i<MainActivity.store.length; i++){
-            foodInfoArrayList.add(new RecyclerItem(R.drawable.imageone,MainActivity.store[i]));
+        // 1등당첨매장 정보 ArrayList<String[]>, String배열 ->[0]매장명, [1]주소
+        ArrayList<String[]> storeList = MainActivity.lastLottoinfo.getStoreList();
+
+        // storeList길이 (1등당첨매장수)만큼 반복
+        for(int i=0; i<storeList.size(); i++){
+            foodInfoArrayList.add(new RecyclerItem(R.drawable.imageone,storeList.get(i)));
         }
         RecyclerAdapter myAdapter = new RecyclerAdapter(foodInfoArrayList);
 

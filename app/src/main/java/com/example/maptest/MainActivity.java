@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -36,10 +37,7 @@ import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
-    RecyclerView mRecyclerView;
-    RecyclerView.LayoutManager mLayoutManager;
 
     public static FragOne frag1;
     public static FragOneTwo frag11;
@@ -47,15 +45,16 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     FragThree frag3;
 
     Button bt1;
-    public static Double lat, lng;
     public static String[] storeinfo = new String[2];
 
-    public static String[] lastSet = new String[9];
-    public static String[] searchSet = new String[9];
+    public static String[] lastSet = new String[9];     // 회, 당첨결과, 번호1, 번호2, 번호3, 번호4, 번호5, 번호6, 번호7
+    public static String[] searchSet = new String[9];   // 원하는 회차 검색해서 얻은 결과
     public static String[] store = new String[8];
-
+    public static int lastturn;
     BufferedReader br;
     StringBuilder searchResult;
+
+    public static LottoParsingInfo lastLottoinfo, searchLottoInfo;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,14 +69,16 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
+        //로또 파싱하기
         TestClass testclass = new TestClass();
-        lastSet = testclass.parsing("");
-
+        //lastSet = testclass.parsing("");
+        lastLottoinfo = testclass.parsing("");
+        //lastturn = Integer.parseInt(lastSet[0].replace("회",""));
+        //Log.d("파싱", Arrays.toString(lastSet));
         bt1 = findViewById(R.id.bt1);
         bt1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //searchMap("로또");              //주변 로또판매 매장 검색 (최대 5개)
                 Intent it = new Intent(view.getContext(), MapNaver.class);
                 it.putExtra("TAG",1);
                 view.getContext().startActivity(it);
@@ -87,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        // 어떤 메뉴 아이템이 터치되었는지 확인합니다.
+        // 어떤 메뉴 아이템이 터치되었는지 확인
         switch (menuItem.getItemId()) {
             case R.id.menuitem_bottombar_up:
                 getSupportFragmentManager().beginTransaction()
