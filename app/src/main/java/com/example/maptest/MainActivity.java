@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
@@ -45,8 +46,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     FragThree frag3;
 
     Button bt1;
+    public static int[] imgId = new int[45];
 
-    public static LottoParsingInfo lastLottoinfo, searchLottoInfo;  //마지막회차 정보, 검색정보 저장
+    // 최신회차, 검색회차 저장
+    public static LottoParsingInfo lastLottoinfo, searchLottoInfo;
 
     //네이버맵 지오코딩 보류
     BufferedReader br;
@@ -57,9 +60,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getIdset();
         //로또 파싱하기
         TestClass testclass = new TestClass();
         lastLottoinfo = testclass.parsing("");
+        searchLottoInfo = lastLottoinfo;
 
         frag1 = new FragOne();
         frag11 = new FragOneTwo();
@@ -101,6 +106,17 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
         return false;
     }
+
+    //이미지 int형 id반환함수
+    private void getIdset() {
+        Resources res = getResources();
+        for (int i = 1; i < 46; i++) {                //45번반복
+            int stringId = res.getIdentifier("num" + i, "string", getPackageName());     // name에 해당하는 값의 위치 가져옴, 2131492892반환
+            String stringId2 = res.getString(stringId);
+            imgId[i - 1] = res.getIdentifier(stringId2, "drawable", getPackageName());
+        }
+    }
+
 
     public void searchMap(final String searchObject){
         final String clientId = "y0189tgx11"; // 클라이언트 아이디값

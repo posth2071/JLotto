@@ -28,13 +28,10 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
     ArrayList<DBinfo> dBinfos;
     DBOpenHelper dbOpenHelper;
 
-    int[] imgId = new int[45];
-
     ArrayList<testset> listTop = new ArrayList<>();
     ArrayList<testset> listBottom = new ArrayList<>();
 
     Resources res;
-
     NumAdapter numAdapterTop, numAdapterBottom;
 
     int listindex = 0;
@@ -46,9 +43,8 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_frag_onetwo, container, false);
-        res = getResources();
-        getIdset();
 
+        res = getResources();
         //상단,하단 그리드뷰 초기화
         ClearTop();
         ClearBottom();
@@ -146,20 +142,11 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
         return str;         //String배열반환(0번째 정렬된 숫자정보 / 1번째 홀짝개수)
     }
 
-    //이미지 int형 id반환함수
-    private void getIdset() {
-        for (int i = 1; i < 46; i++) {                //45번반복
-            int stringId = res.getIdentifier("num" + i, "string", super.getActivity().getPackageName());     // name에 해당하는 값의 위치 가져옴, 2131492892반환
-            String stringId2 = res.getString(stringId);
-            imgId[i - 1] = res.getIdentifier(stringId2, "drawable", super.getActivity().getPackageName());
-        }
-    }
-
     // 상단 Grid뷰 초기화
     private void ClearTop(){
         listTop.clear();
         for(int i=0; i<7; i++){
-            listTop.add(new testset(1, imgId[0],0));
+            listTop.add(new testset(1, MainActivity.imgId[0],0));
         }
         if(numAdapterTop != null)           //numAdapter가 생성되어있는경우
             numAdapterTop.notifyDataSetChanged();
@@ -169,7 +156,7 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
     private void ClearBottom(){
         listBottom.clear();
         for(int i=1; i<46; i++){
-            listBottom.add(new testset(i,imgId[i-1],0));
+            listBottom.add(new testset(i,MainActivity.imgId[i-1],0));
         }
         if(numAdapterBottom != null)        //numAdapter가 생성되어있는 경우
             numAdapterBottom.notifyDataSetChanged();
@@ -243,7 +230,7 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
                                 numAdapterBottom.notifyDataSetChanged();    //Adapter에 연결된 List내용 수정된 것 반영하기
 
                                 testset top = listTop.get(listindex);       //선택된 인덱스에 맞는 ImageView 가져오기
-                                top.setImgid(imgId[position]);              //해당 imageView 이미지 변경 - 고른 숫자로
+                                top.setImgid(MainActivity.imgId[position]);              //해당 imageView 이미지 변경 - 고른 숫자로
                                 top.setNumber(position + 1);
                                 listindex += 1;                             //골라진 숫자갯수 증가 (최대 7개 검사하기위해)
                                 //}
@@ -268,12 +255,12 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
                             int number = (listTop.get(position)).getNumber(); //선택한 View - getNumber로 번호숫자 얻기
                             listTop.remove(position);                         // 해당index List값 제거
                             //remove로 제거되어서 index들이 하나씩 줄어듬 -> 마지막번호 생성(1로 세팅)
-                            listTop.add(6, new testset(1,imgId[0],0));
+                            listTop.add(6, new testset(1,MainActivity.imgId[0],0));
                             numAdapterTop.notifyDataSetChanged();               // list값 수정 반영하기
 
                             testset test = listBottom.get(number-1);          //getNumber로 얻은 번호숫자에 해당하는 View얻기 (배열, -1필요)
                             test.setTag(0);                                   //해당 이미지뷰 Tag=0설정, 체크해제
-                            test.setImgid(imgId[number-1]);                   //해당번호에 해당하는 imgID설정
+                            test.setImgid(MainActivity.imgId[number-1]);                   //해당번호에 해당하는 imgID설정
                             numAdapterBottom.notifyDataSetChanged();          //List반영하기
 
                             listindex -= 1;                                   // listindex 하나 줄이기

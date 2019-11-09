@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -27,13 +28,16 @@ public class FragTwo extends Fragment implements View.OnClickListener {
     TextView frag2_tv1 ,frag2_tv2;              //private 설정시 에러발생
     Button frag2_btsearch, frag2_btlast;
     EditText frag2_et1;
+
     ExpandableListView frag2_expandable;
+    ExpandableAdapter frag2_exAdapter;
 
     ArrayList<String> mGroupList = null;
+    Expand_Child mChildList = null;
 
     public static String str = new String();
     public String[] search = new String[9];
-
+    DBOpenHelper dbOpenHelper;
     public FragTwo() {
         // Required empty public constructor
     }
@@ -105,6 +109,37 @@ public class FragTwo extends Fragment implements View.OnClickListener {
                 .replace("[","")
                 .replace("]","");
         frag2_tv1.setText(str);
+
+        mGroupList = new ArrayList<>();
+        mGroupList.add("당첨정보");
+        mGroupList.add("기록");
+        mGroupList.add("당첨금 지급기한");
+        Log.d("테스트", "mGroupList.size = "+mGroupList.size());
+
+        mChildList = new Expand_Child();
+        mChildList.setTypeOne(MainActivity.lastLottoinfo.getSubInfo());
+        Log.d("테스트", "mChildList.typeOne size = "+mChildList.typeOne.size() +"\n"+mChildList.typeOne.get(0));
+
+        dbOpenHelper = new DBOpenHelper(getView().getContext());
+        Log.d("테스트", "turn" +MainActivity.searchLottoInfo.turn);
+        ArrayList<DBinfo> test = dbOpenHelper.selectDB(888);
+        Log.d("테스트", "test 사이즈 " +test.size());         //10반환
+        mChildList.setTypeTwo(dbOpenHelper.selectDB(888));
+        //10반환, 888/ 13,14,15,19,20,21,31 /5:2 / DB
+        Log.d("테스트", "mChildList.typeTwo size = "+mChildList.typeTwo.size() +"\n"+mChildList.typeTwo.get(0).getInfo());
+
+
+        ArrayList<String> typeThree = new ArrayList<>();
+        typeThree.add("당첨금 지급기한");
+        mChildList.setTypethree(typeThree);
+        Log.d("테스트", "mChildList.typethree size = "+mChildList.typethree.size() +"\n"+mChildList.typethree.get(0));
+
+        frag2_exAdapter = new ExpandableAdapter(getContext(), mGroupList, mChildList);
+        frag2_expandable.setAdapter(frag2_exAdapter);
+
+
+
+
         //for(int i=0; i<MainActivity.lastSet.length; i++){
           //  frag2_tv1.append(MainActivity.lastSet[i]+" ");
         //}

@@ -111,12 +111,12 @@ public class TestClass {
                 infotest += " " + contents1.text();
                 resultParsingInfo.lottoInfo = infotest.split(" ");      //로또번호 (보너스포함) split함수이용 배열로 저장
 
-                // 당첨세부정보 (등수 / 해당등수 총금액 / 해당등수 당첨자수 / 개인당 금액 / 비고)
+                // 당첨세부정보 (등수 / 해당등수 총금액 / 해당등수 당첨자수 / 개인당 금액 / 당첨기준 / 비고 -제외)
                 Elements elements = doc1.select("tbody tr");
                 for (Element mainele : elements){                               //Elements들을 각각 접근하는 반복문
                     Elements ele3 = mainele.select("td");               //td로 다시 Elements로 나누기
                     ArrayList<String> testlist = new ArrayList<>();             //임시ArrayList 생성
-                    for(int i=0; i<4; i++) {                                    //세부정보(비고를 제외한 나머지 추출)
+                    for(int i=0; i<5; i++) {                                    //세부정보(비고를 제외한 나머지 추출)
                         testlist.add(ele3.get(i).text());
                     }
                     //subinfo에 저장
