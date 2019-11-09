@@ -130,7 +130,7 @@ public final class DBOpenHelper extends SQLiteOpenHelper {
             //teststr = cursor.getString(cursor.getColumnIndex(COLUMN_NUMBERSET));
         }
         selectdb.close();                      //db닫기
-        logTest("Select", listSelect);   // 로그출력
+        logTest("Select", listSelect, turn);   // 로그출력
         return listSelect;
     }
 
@@ -150,7 +150,7 @@ public final class DBOpenHelper extends SQLiteOpenHelper {
             listAll.add(dbinfo);
         }
         selectdb.close();                       //db닫기
-        logTest("ALL", listAll);          // 로그출력
+        logTest("ALL", listAll, 0);          // 로그출력
         return listAll;
     }
 
@@ -165,16 +165,21 @@ public final class DBOpenHelper extends SQLiteOpenHelper {
         return selectAllDB();   //DB전체 반환
     }
 
-    public void logTest(String type, ArrayList<DBinfo> dbList){
+    public void logTest(String type, ArrayList<DBinfo> dbList, int turn) {
         int listCount = dbList.size(); //검색결과 갯수
 
-        String logText = "\nDBList Count => "+listCount+"개\n";
-        for(int i=0; i<listCount; i++)
-            logText += "\t\t"+type +"["+i+"] => " +dbList.get(i).getInfo()+"\n";
-
+        String logText = new String();
+        if (type.compareTo("Select") == 0) {
+            logText= "\nDBList ["+turn+"] Count => " + listCount + "개\n";
+        }else {
+            logText= "\nDBList [ALL] Count => " + listCount + "개\n";
+        }
+        
+        for (int i = 0; i < listCount; i++) {
+            logText += "\t\t" + type + "[" + i + "] => " + dbList.get(i).getInfo() + "\n";
+        }
         Log.d("데이터베이스", "\n " + logText);
     }
-
 }
 
     /*

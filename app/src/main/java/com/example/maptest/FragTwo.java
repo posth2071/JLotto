@@ -52,12 +52,9 @@ public class FragTwo extends Fragment implements View.OnClickListener {
 
         frag2_tv1 = view.findViewById(R.id.frag2_tv1);
 
-        frag2_et1 = view.findViewById(R.id.frag2_et1);
 
         frag2_btsearch = view.findViewById(R.id.frag2_btsearch);
         frag2_btsearch.setOnClickListener(this);
-        frag2_btlast = view.findViewById(R.id.frag2_btlast);
-        frag2_btlast.setOnClickListener(this);
 
         frag2_expandable = view.findViewById(R.id.frag2_Expandable);
 
@@ -70,9 +67,6 @@ public class FragTwo extends Fragment implements View.OnClickListener {
             case R.id.frag2_btsearch:           // 검색버튼 누른경우
                 dialogshow();                   // 검색 대화상자 띄우기
                 break;
-            case R.id.frag2_btlast:
-
-                break;
         }
     }
     public void dialogshow(){
@@ -82,6 +76,8 @@ public class FragTwo extends Fragment implements View.OnClickListener {
             public void onPositiveClicked(String num) {             // 재정의
                 TestClass testclass = new TestClass();
                 MainActivity.searchLottoInfo = testclass.parsing(num);
+                mChildList.setTypeTwo(dbOpenHelper.selectDB(MainActivity.searchLottoInfo.turn));
+                frag2_exAdapter.notifyDataSetChanged();
             }
             @Override
             public void onNegativeClicked() {
@@ -122,11 +118,11 @@ public class FragTwo extends Fragment implements View.OnClickListener {
 
         dbOpenHelper = new DBOpenHelper(getView().getContext());
         Log.d("테스트", "turn" +MainActivity.searchLottoInfo.turn);
-        ArrayList<DBinfo> test = dbOpenHelper.selectDB(888);
+        ArrayList<DBinfo> test = dbOpenHelper.selectDB(MainActivity.searchLottoInfo.turn);
         Log.d("테스트", "test 사이즈 " +test.size());         //10반환
-        mChildList.setTypeTwo(dbOpenHelper.selectDB(888));
+        mChildList.setTypeTwo(dbOpenHelper.selectDB(MainActivity.searchLottoInfo.turn));
         //10반환, 888/ 13,14,15,19,20,21,31 /5:2 / DB
-        Log.d("테스트", "mChildList.typeTwo size = "+mChildList.typeTwo.size() +"\n"+mChildList.typeTwo.get(0).getInfo());
+        dbOpenHelper.selectAllDB();
 
 
         ArrayList<String> typeThree = new ArrayList<>();
@@ -136,16 +132,6 @@ public class FragTwo extends Fragment implements View.OnClickListener {
 
         frag2_exAdapter = new ExpandableAdapter(getContext(), mGroupList, mChildList);
         frag2_expandable.setAdapter(frag2_exAdapter);
-
-
-
-
-        //for(int i=0; i<MainActivity.lastSet.length; i++){
-          //  frag2_tv1.append(MainActivity.lastSet[i]+" ");
-        //}
-        //for(int i=0; i<MainActivity.store.length; i++){
-          //  //frag2_tv2.append(MainActivity.store[i]+"\n");
-        //}
     }
 
     @Override

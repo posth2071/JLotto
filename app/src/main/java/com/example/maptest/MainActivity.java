@@ -60,7 +60,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //숫자이미지 1~45 아이디얻기
         getIdset();
+
         //로또 파싱하기
         TestClass testclass = new TestClass();
         lastLottoinfo = testclass.parsing("");
