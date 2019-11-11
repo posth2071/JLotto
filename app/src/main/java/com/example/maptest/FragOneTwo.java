@@ -22,20 +22,20 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 public class FragOneTwo  extends Fragment implements View.OnClickListener  {
-    GridView gridTop, gridBottom;
-    Button bt_DBStore;              //DB 저장버튼
+    private GridView gridTop, gridBottom;
+    private Button bt_DBStore;              //DB 저장버튼
 
-    ArrayList<DBinfo> dBinfos;
-    DBOpenHelper dbOpenHelper;
+    private ArrayList<DBinfo> dBinfos;
+    private DBOpenHelper dbOpenHelper;
 
-    ArrayList<testset> listTop = new ArrayList<>();
-    ArrayList<testset> listBottom = new ArrayList<>();
+    private ArrayList<testset> listTop = new ArrayList<>();
+    private ArrayList<testset> listBottom = new ArrayList<>();
 
-    Resources res;
-    NumAdapter numAdapterTop, numAdapterBottom;
+    private Resources res;
+    private NumAdapter numAdapterTop, numAdapterBottom;
 
-    int listindex = 0;
-    int lastturn;
+    private int listindex = 0;
+    private int lastturn;
     //생성자 함수
     public FragOneTwo (){}
 
@@ -68,9 +68,6 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
 
         dBinfos = new ArrayList<>();
         dbOpenHelper = new DBOpenHelper(view.getContext().getApplicationContext());
-        dBinfos = dbOpenHelper.selectDB(888);
-
-
         ArrayList<DBinfo> logTest = dbOpenHelper.selectAllDB();
 
         return view;
@@ -92,24 +89,27 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
                     }
 
                     // numsetSort 오름차순으로 번호 정렬-홀짝비율 계산
-                    String[] strset = numsetSort(
+                    String[] strset = MainActivity.numsetSort(
                             testlist.toString()
                                     .replace("[","")
                                     .replace("]","")
                                     .replace(" ",""));          //앞뒤([]), 숫자사이 공백 제거
-                    // 내부SQLite DB 저장
 
+                    // 내부SQLite DB 저장
                     if(dbOpenHelper.insertDB(lastturn+1,strset)==1){   //최신회차+1 (다음주회차로 설정)
-                        Log.d("테스트","DB저장 성공");
+                        Log.d("데이터베이스","DB저장 성공");
                     } else {
-                        Log.d("테스트", "저장실패 - 중복");
+                        Log.d("데이터베이스", "저장실패 - 중복");
                     }
 
-                    dBinfos = dbOpenHelper.selectDB(lastturn);
+                    /*
+                    dBinfos = dbOpenHelper.selectDB(lastturn+1);
                     Iterator<DBinfo> it1 = dBinfos.iterator();
                     while(it1.hasNext()){
-                        Log.d("테스트",it1.next().getInfo());  //db저장 목록 보여주기
+                        Log.d("데이터베이스",it1.next().getInfo());  //db저장 목록 보여주기
                     }
+                     */
+
                     // 상단,하단 Grid뷰, listindex 초기화
                     ClearBottom();
                     ClearTop();
@@ -120,27 +120,7 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
                 break;
         }
     }
-    //숫자집합 오름차순으로 정렬, 홀짝비율 계산
-    private String[] numsetSort(String numset){
-        String[] numberset =  numset.split(",");
 
-        int[] changeset = new int[numberset.length];           //numberset배열길이만큼 할당
-        int paircount = 0;                                     //짝수개수 보관변수
-        for(int i=0; i<numberset.length; i++){
-            changeset[i] = Integer.parseInt(numberset[i]);
-            if(changeset[i]%2==0)                               //짝수인지 확인 나머지가 0인경우
-                paircount += 1;                                      //짝수 개수파악
-        }
-        int hallcount = numberset.length - paircount;                       //전체숫자개수중 짝수개수 제외 나머지는 홀수
-
-        Arrays.sort(changeset);                                //오름차순으로 정렬
-        String[] str = new String[2];
-        str[0] = Arrays.toString(changeset).
-                replace("[","").replace("]","").replace(" ","");
-        str[1] = String.valueOf(hallcount)+":"+String.valueOf(paircount);
-        Log.d("나눗셈",str[1]);
-        return str;         //String배열반환(0번째 정렬된 숫자정보 / 1번째 홀짝개수)
-    }
 
     // 상단 Grid뷰 초기화
     private void ClearTop(){

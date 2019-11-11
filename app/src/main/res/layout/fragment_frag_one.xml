@@ -12,13 +12,24 @@
         android:layout_height="wrap_content"
         android:text="수동"
         ></Button>
+    <ImageView
+        android:id="@+id/iv_pack"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/pack1"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="50dp"
+        ></ImageView>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/iv_num1"
             android:src="@drawable/zero1"
@@ -26,52 +37,52 @@
             ></ImageView>
 
         <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/iv_num2"
             android:src="@drawable/zero1"
             android:layout_weight="1"
             ></ImageView>
         <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/iv_num3"
             android:src="@drawable/zero1"
             android:layout_weight="1"
             ></ImageView>
         <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/iv_num4"
             android:src="@drawable/zero1"
             android:layout_weight="1"
             ></ImageView>
         <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/iv_num5"
             android:src="@drawable/zero1"
             android:layout_weight="1"
             ></ImageView>
         <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/iv_num6"
             android:src="@drawable/zero1"
             android:layout_weight="1"
             ></ImageView>
         <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/iv_plus"
             android:src="@drawable/plus"
-            android:layout_weight="1"
+            android:layout_weight="0.5"
             android:layout_gravity="center_vertical"
             android:maxHeight="50dp"
             android:maxWidth="50dp"
             ></ImageView>
         <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/iv_num7"
             android:src="@drawable/zero1"
@@ -92,23 +103,16 @@
             android:id="@+id/bt_random"
             android:text="번호뽑기"
             ></Button>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/bt_store"
+            android:text="저장"
+            ></Button>
     </LinearLayout>
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginTop="50dp"
-        >
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/tv_result"
-            android:background="#44888888"
-            ></TextView>
-
-    </LinearLayout>
 
 
 </LinearLayout>

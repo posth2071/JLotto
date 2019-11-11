@@ -15,4 +15,6 @@
 
     // 숫자 40~45 이름 지정 (four0~four5 -> num40~num45)
     <string name="num40">four0</string><string name="num41">four1</string><string name="num42">four2</string><string name="num43">four3</string><string name="num44">four4</string><string name="num45">four5</string>
+
+
 </resources>

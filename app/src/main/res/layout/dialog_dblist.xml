@@ -15,44 +15,28 @@
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
         android:paddingLeft="24dp"
-        android:text="회차별 검색"
+        android:text="기록 설정"
         android:textColor="@color/white"
         android:textSize="20sp"
         />
-    <EditText
-        android:id="@+id/DLOne_et"
+
+    <ExpandableListView
+        android:id="@+id/DLTwo_ExList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:hint="회차입력"
-        android:textColorHint="#55ffffff"
-        android:textColor="@color/white"
-        ></EditText>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="16dp" />
-    <TextView
-        android:id="@+id/DLOne_comment"
-        android:text="검색을 원하는 회차를 입력하세요"
-        android:textSize="16sp"
-        android:textColor="@color/white"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="17dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="350dp"
+        ></ExpandableListView>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="end"
         android:orientation="horizontal"
-        android:paddingTop="8dp"
+        android:paddingTop="16dp"
         android:paddingBottom="8dp"
         android:weightSum="10">
 
         <TextView
-            android:id="@+id/DLOne_Cancel"
+            android:id="@+id/DLTwo_Cancel"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
@@ -64,7 +48,7 @@
             android:textSize="16sp"
             />
         <TextView
-            android:id="@+id/DLOne_Search"
+            android:id="@+id/DLTwo_Check"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:layout_width="0dp"

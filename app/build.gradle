@@ -23,9 +23,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
     implementation 'com.android.support.constraint:constraint-layout:2.0.0-beta3'
     implementation 'com.android.support:recyclerview-v7:28.0.0'         // RecyclerView 사용위한 라이브러리
 
@@ -33,5 +31,9 @@ dependencies {
     implementation 'com.android.support:design:28.0.0'                  // BottomNavigation Bar 라이브러리
 
     implementation 'com.naver.maps:map-sdk:3.6.0'
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
 }

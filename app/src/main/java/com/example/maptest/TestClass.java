@@ -75,11 +75,13 @@ public class TestClass {
                         // 5개 항목 (번호, 상호명, 구분, 소재지, 위치보기)
                         Elements ele3 = ele.select("td");
                         // 상호명, 소재지만 구하기 (인덱스 1,3)
-                        String[] str = new String[]{
-                                ele3.get(1).text(),     //인덱스[0], 상호명
-                                ele3.get(3).text()};    //인덱스[1], 주소
-                        //storeList에 추가
-                        resultParsingInfo.storeList.add(str);
+                        if(ele3.size() > 1) {
+                            String[] str = new String[]{
+                                    ele3.get(1).text(),     //인덱스[0], 상호명
+                                    ele3.get(3).text()};    //인덱스[1], 주소
+                            //storeList에 추가
+                            resultParsingInfo.storeList.add(str);
+                        }
                     }
 
                     //마지막회차 당첨번호 파싱

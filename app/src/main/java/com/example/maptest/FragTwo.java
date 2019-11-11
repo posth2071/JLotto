@@ -1,6 +1,7 @@
 package com.example.maptest;
 
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,9 +26,8 @@ import java.util.Arrays;
  * A simple {@link Fragment} subclass.
  */
 public class FragTwo extends Fragment implements View.OnClickListener {
-    TextView frag2_tv1 ,frag2_tv2;              //private 설정시 에러발생
-    Button frag2_btsearch, frag2_btlast;
-    EditText frag2_et1;
+    TextView frag2_tv1;              //private 설정시 에러발생
+    Button frag2_btsearch, frag2_dbsetting;
 
     ExpandableListView frag2_expandable;
     ExpandableAdapter frag2_exAdapter;
@@ -35,12 +35,11 @@ public class FragTwo extends Fragment implements View.OnClickListener {
     ArrayList<String> mGroupList = null;
     Expand_Child mChildList = null;
 
-    public static String str = new String();
-    public String[] search = new String[9];
     DBOpenHelper dbOpenHelper;
-    public FragTwo() {
-        // Required empty public constructor
-    }
+
+    public static DialogClass dialog;
+    //생성자함수
+    public FragTwo() { }
 
 
     @Override
@@ -56,6 +55,9 @@ public class FragTwo extends Fragment implements View.OnClickListener {
         frag2_btsearch = view.findViewById(R.id.frag2_btsearch);
         frag2_btsearch.setOnClickListener(this);
 
+        frag2_dbsetting = view.findViewById(R.id.frag2_dbsetting);
+        frag2_dbsetting.setOnClickListener(this);
+
         frag2_expandable = view.findViewById(R.id.frag2_Expandable);
 
         return view;
@@ -65,24 +67,31 @@ public class FragTwo extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.frag2_btsearch:           // 검색버튼 누른경우
-                dialogshow();                   // 검색 대화상자 띄우기
+                dialogshow(1);                   // 검색 대화상자 띄우기
+                break;
+            case R.id.frag2_dbsetting:
+                dialogshow(2);
                 break;
         }
     }
-    public void dialogshow(){
-        DialogClass dialog = new DialogClass(getActivity());        // 대화상자 클래스 객체 생성 (getActivity로 프래그먼트가 올라와있는 액티비티 가져오기)
+    public void dialogshow(int type){
+        dialog = new DialogClass(getActivity(), type);        // 대화상자 클래스 객체 생성 (getActivity로 프래그먼트가 올라와있는 액티비티 가져오기)
         dialog.setDialogListener(new MyDialogListener() {           // 리스너 인터페이스 등록
             @Override
             public void onPositiveClicked(String num) {             // 재정의
-                TestClass testclass = new TestClass();
-                MainActivity.searchLottoInfo = testclass.parsing(num);
-                mChildList.setTypeTwo(dbOpenHelper.selectDB(MainActivity.searchLottoInfo.turn));
-                frag2_exAdapter.notifyDataSetChanged();
+                if(num.compareTo("") != 0) {
+                    TestClass testclass = new TestClass();
+                    MainActivity.searchLottoInfo = testclass.parsing(num);
+                    mChildList.setTypeTwo(dbOpenHelper.selectDB(MainActivity.searchLottoInfo.turn));
+                    frag2_exAdapter.notifyDataSetChanged();
+                } else {
+                }
             }
             @Override
             public void onNegativeClicked() {
             }
         });
+
         dialog.show();
     }
     @Override

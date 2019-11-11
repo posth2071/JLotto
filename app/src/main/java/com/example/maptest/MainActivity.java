@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     Button bt1;
     public static int[] imgId = new int[45];
+    public static int[] packid = new int[6];
+
 
     // 최신회차, 검색회차 저장
     public static LottoParsingInfo lastLottoinfo, searchLottoInfo;
@@ -117,8 +119,31 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             String stringId2 = res.getString(stringId);
             imgId[i - 1] = res.getIdentifier(stringId2, "drawable", getPackageName());
         }
+        for(int i=1; i<7; i++)
+            packid[i-1] = res.getIdentifier("pack"+i, "drawable", getPackageName());
     }
 
+    //숫자집합 오름차순으로 정렬, 홀짝비율 계산
+    public static String[] numsetSort(String numset){
+        String[] numberset =  numset.split(",");
+
+        int[] changeset = new int[numberset.length];           //numberset배열길이만큼 할당
+        int paircount = 0;                                     //짝수개수 보관변수
+        for(int i=0; i<numberset.length; i++){
+            changeset[i] = Integer.parseInt(numberset[i]);
+            if(changeset[i]%2==0)                               //짝수인지 확인 나머지가 0인경우
+                paircount += 1;                                      //짝수 개수파악
+        }
+        int hallcount = numberset.length - paircount;                       //전체숫자개수중 짝수개수 제외 나머지는 홀수
+
+        Arrays.sort(changeset);                                //오름차순으로 정렬
+        String[] str = new String[2];
+        str[0] = Arrays.toString(changeset).
+                replace("[","").replace("]","").replace(" ","");
+        str[1] = String.valueOf(hallcount)+":"+String.valueOf(paircount);
+        Log.d("나눗셈",str[1]);
+        return str;         //String배열반환(0번째 정렬된 숫자정보 / 1번째 홀짝개수)
+    }
 
     public void searchMap(final String searchObject){
         final String clientId = "y0189tgx11"; // 클라이언트 아이디값

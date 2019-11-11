@@ -22,6 +22,7 @@
             ></meta-data>
         <activity android:name=".MainActivity"
             android:screenOrientation="portrait">
+            <!-- 스크린방향 세로고정 (portrait), 가로(landscape) -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

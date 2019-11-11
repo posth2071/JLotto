@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:weightSum="7">
+
+        <!-- 회차번호표시 -->
+        <TextView
+            android:id="@+id/dialog_Turn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="880"
+            android:textSize="10dp"
+            android:gravity="center"
+            ></TextView>
+
+        <!-- 상단(번호표시), 하단(홀짝비율표시) -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:orientation="vertical">
+
+            <!-- 로또번호 표시 이미지뷰 (보너스 포함 7개) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.5"
+                android:orientation="horizontal"
+                android:weightSum="7">
+
+                <ImageView
+                    android:id="@+id/dialog_Num1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/zero1"
+                    android:paddingTop="20dp"
+                    ></ImageView>
+                <ImageView
+                    android:id="@+id/dialog_Num2"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/zero1"
+                    android:paddingTop="20dp"
+                    ></ImageView>
+                <ImageView
+                    android:id="@+id/dialog_Num3"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/zero1"
+                    android:paddingTop="20dp"
+                    ></ImageView>
+                <ImageView
+                    android:id="@+id/dialog_Num4"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/zero1"
+                    android:paddingTop="20dp"
+                    ></ImageView>
+                <ImageView
+                    android:id="@+id/dialog_Num5"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/zero1"
+                    android:paddingTop="20dp"
+                    ></ImageView>
+                <ImageView
+                    android:id="@+id/dialog_Num6"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/zero1"
+                    android:paddingTop="20dp"
+                    ></ImageView>
+                <ImageView
+                    android:id="@+id/dialog_Num7"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:src="@drawable/zero1"
+                    android:paddingTop="20dp"
+                    ></ImageView>
+            </LinearLayout>
+
+            <!-- 홀짝비율 텍스트뷰 -->
+            <TextView
+                android:id="@+id/dialog_HallPair"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.7"
+                android:text="홀짝비율"
+                android:textStyle="bold"
+                android:gravity="right|center_vertical"
+                android:paddingRight="20dp"
+                ></TextView>
+        </LinearLayout>
+
+        <!-- 당첨결과 표시 텍스트뷰 -->
+        <Button
+            android:id="@+id/dialog_delete"
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="@drawable/plus"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            ></Button>
+
+    </LinearLayout>
+
+</LinearLayout>
