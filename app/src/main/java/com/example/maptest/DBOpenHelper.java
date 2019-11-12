@@ -182,39 +182,38 @@ public final class DBOpenHelper extends SQLiteOpenHelper {
 
     //DB내용 삭제
     public ArrayList<ArrayList<DBinfo>> deleteDB(String numberset){
+        Log.d("데이터베이스", "DB delete - "+ numberset);
+
         SQLiteDatabase db = getWritableDatabase();
         String sql = String.format("DELETE FROM %s WHERE %s = '%s'", TABLE_NAME, COLUMN_NUMBERSET, numberset);
         db.execSQL(sql);
         db.close();
-        Log.d("데이터베이스", "DB delete - "+ numberset);
-        Log.d("데이터베이스", "dltwo_listitem.size - "+ FragTwo.dialog.dltwo_listitem.size());
-            for (int i=0; i<FragTwo.dialog.dltwo_listitem.size(); i++){
-            Iterator<DBinfo> it = FragTwo.dialog.dltwo_listitem.get(i).iterator();
-            while (it.hasNext()){
-                Log.d("데이터베이스", "dialog.dltwo_listitem - "+it.next().getInfo());
-                }
-            }
-
-            Log.d("다이얼로그", "dltwo_adapter - "+FragTwo.dialog.dltwo_adapter);
-            FragTwo.dialog.dltwo_listitem.clear();
-            FragTwo.dialog.dltwo_listitem.addAll(selectListAllDB());
-            if(FragTwo.dialog.dltwo_listitem.get(0).size()>1){
-                FragTwo.dialog.dltwo_adapter.notifyDataSetChanged();
-            }
-
+        FragTwo.dialog.dltwo_listitem.clear();
+        FragTwo.dialog.dltwo_listitem.addAll(selectListAllDB());
         for (int i=0; i<FragTwo.dialog.dltwo_listitem.size(); i++){
             Iterator<DBinfo> it = FragTwo.dialog.dltwo_listitem.get(i).iterator();
             while (it.hasNext()){
                 Log.d("데이터베이스", "dialog.dltwo_listitem - "+it.next().getInfo());
-            }
+                }
         }
-        Log.d("다이얼로그", "dltwo_adapter - "+FragTwo.dialog.dltwo_adapter);
 
+        if(FragTwo.dialog.dltwo_listitem.size()>0){
+            FragTwo.dialog.dltwo_adapter.notifyDataSetChanged();
+        } else {
+            FragTwo.dialog.dltwo_adapter.notifyDataSetChanged();
+            Toast.makeText(context, "DB목록 없음",Toast.LENGTH_SHORT).show();
+            //FragTwo.dialog.dismiss();
+        }
+
+        Log.d("다이얼로그", "dltwo_adapter - "+FragTwo.dialog.dltwo_adapter);
         return selectListAllDB();   //DB전체 반환
 }
 
     public void deletAllDB(){
-
+        SQLiteDatabase db = getWritableDatabase();
+        String sql = String.format("DELETE FROM %s", TABLE_NAME);
+        db.execSQL(sql);
+        db.close();
     }
 
     public void logTest(String type, ArrayList<DBinfo> dbList, int turn) {

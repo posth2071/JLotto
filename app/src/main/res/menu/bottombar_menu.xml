@@ -5,19 +5,16 @@
     <item
         android:id="@+id/menuitem_bottombar_up"
         android:title="Up"
-        app:showAsAction="ifRoom"
-        />
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/menuitem_bottombar_down"
         android:title="Down"
-        app:showAsAction="ifRoom"
-        />
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/menuitem_bottombar_search"
         android:title="Search"
-        app:showAsAction="ifRoom"
-        />
+        app:showAsAction="ifRoom"/>
 
 </menu>
