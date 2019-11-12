@@ -2,6 +2,7 @@ package com.example.maptest;
 
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,7 +33,7 @@ import java.util.TimerTask;
  */
 public class FragOne extends Fragment implements View.OnClickListener {
     private Button bt_random, bt_change, bt_store;
-    private ImageView[] iv_num = new ImageView[7];
+    private ImageView[] frag1_Numiv = new ImageView[7];
     private ImageView iv_pack;
 
     private int[] numbers = new int[7]; //개별 숫자이미지뷰 id
@@ -56,13 +57,11 @@ public class FragOne extends Fragment implements View.OnClickListener {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_frag_one, container, false);
 
-        iv_num[0] = (ImageView)view.findViewById(R.id.iv_num1);
-        iv_num[1] = (ImageView)view.findViewById(R.id.iv_num2);
-        iv_num[2] = (ImageView)view.findViewById(R.id.iv_num3);
-        iv_num[3] = (ImageView)view.findViewById(R.id.iv_num4);
-        iv_num[4] = (ImageView)view.findViewById(R.id.iv_num5);
-        iv_num[5] = (ImageView)view.findViewById(R.id.iv_num6);
-        iv_num[6] = (ImageView)view.findViewById(R.id.iv_num7);
+        Resources res = getResources();
+        for(int i=0; i<7; i++){
+            int viewId = res.getIdentifier("frag1_num"+(i+1),"id",getActivity().getPackageName());
+            frag1_Numiv[i] = view.findViewById(viewId);
+        }
 
         iv_pack = view.findViewById(R.id.iv_pack);
 
@@ -84,12 +83,11 @@ public class FragOne extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.bt_random:
-                random();
-
+                random();                      //랜덤 번호뽑기
                 btState(false);                //시작,저장 버튼 눌리지않게
                 startTimer = new Timer();
                 for(int i=0; i<7; i++){
-                    startTasks[i] = new StartTask(iv_num[i],1);
+                    startTasks[i] = new StartTask(frag1_Numiv[i],1);
                     startTimer.schedule(startTasks[i],0,50);
                 }
                 packTask = new StartTask(iv_pack, 2);
@@ -97,16 +95,17 @@ public class FragOne extends Fragment implements View.OnClickListener {
                 stopTask = new StopTask();
                 startTimer.schedule(stopTask,1000,800);
                break;
-            case R.id.bt_store:         // 내부SQLite DB 저장
-                //numberlist사이즈가 7인경우
-                if(numberlist.size()==7){
+            // 저장 누른경우 (내부SQLite DB)
+            case R.id.bt_store:
+                if(numberlist.size()==7){          //numberlist가 채워져있는지
                     //Arrays.sort(numbers);
-                    int paircount = 0;
+                    int paircount = 0;             //짝수 조사
                     for(int i=0; i<numberlist.size(); i++){
                         if((numberlist.get(i)%2)==0)
                             paircount +=1;
                     }
-                    int hallcount = 7-paircount;
+                    int hallcount = 7-paircount;   //홀수 계산
+
                     String[] storeSet = new String[2];
                     storeSet[0] = numberlist.toString()
                             .replace("[","").replace("]","").replace(" ","");
@@ -120,17 +119,18 @@ public class FragOne extends Fragment implements View.OnClickListener {
                     } else {
                         Log.d("데이터베이스", "저장실패 - 중복");
                     }
-                } else {
+                    numberlist.clear();     //리스트 초기화
+                    imgReset();             //이미지뷰 초기화
+                } else {        // list가 비어있는경우
                     Toast.makeText(getContext(), "번호 없음",Toast.LENGTH_SHORT).show();
                 }
-
                 break;
+                //수동버튼 누른경우
             case R.id.bt_change:
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment, MainActivity.frag11).addToBackStack(null).commit();
                 break;
         }
     }
-
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -143,10 +143,40 @@ public class FragOne extends Fragment implements View.OnClickListener {
         lastturn = MainActivity.lastLottoinfo.getTurn();
     }
 
+    //이미지뷰7개 초기화 함수
+    private void imgReset(){
+        for(int i=0; i<7; i++){
+            frag1_Numiv[i].setImageResource(imgid[0]);
+        }
+    }
 
-    //StartTask
+    //랜덤번호 추출 함수
+    public void random() {
+        numberlist.clear();             //저장할 리스트비우기
+
+        HashSet<Integer> lottonums = new HashSet<>();
+        while(lottonums.size()<7) {
+            lottonums.add((int) (Math.random() * 45) + 1);
+        }
+        numberlist.addAll(lottonums);   //numberlist에 옮기기
+
+        //로그출력 테스트용
+        Iterator<Integer> it = lottonums.iterator();
+        while(it.hasNext()){
+            Log.d("랜덤", "랜덤번호 - "+it.next());
+        }
+    }
+
+    //버튼(번호뽑기, 저장) 상태 조작 함수
+    public void btState(boolean state){
+        bt_random.setClickable(state);
+        bt_store.setClickable(state);
+    }
+
+
+    //StartTask클래스
     public class StartTask extends TimerTask {
-        // type = 1(개별 공), 2(Pack)
+        //type = 1(개별 공), 2(Pack)
         private int type;
         private int index;
         private ImageView imageView;
@@ -185,7 +215,7 @@ public class FragOne extends Fragment implements View.OnClickListener {
             if(num<7){
                 startTasks[num].cancel();
                 //iv_num[num].setImageResource(imgid[numbers[num]-1]);
-                iv_num[num].setImageResource(imgid[numberlist.get(num)-1]);
+                frag1_Numiv[num].setImageResource(imgid[numberlist.get(num)-1]);
                 num++;
             } else {
                 //버튼 누를수 있게
@@ -198,44 +228,6 @@ public class FragOne extends Fragment implements View.OnClickListener {
             }
         }
     }
-
-    public void random() {
-        //저장할 리스트비우기
-        Log.d("랜덤","numberlist clear 전 사이즈 - "+numberlist.size());
-        numberlist.clear();
-        Log.d("랜덤","numberlist clear 후 사이즈 - "+numberlist.size());
-
-        HashSet<Integer> lottonums = new HashSet<>();
-        while(lottonums.size()<7) {
-            lottonums.add((int) (Math.random() * 45) + 1);
-        }
-
-        //로그출력 테스트용
-        Iterator<Integer> it = lottonums.iterator();
-        while(it.hasNext()){
-            Log.d("랜덤", "랜덤번호 - "+it.next());
-        }
-
-        numberlist.addAll(lottonums);   //numberlist에 옮기기
-        /*
-        for (int i = 0; i < 7; i++) {
-            numbers[i] = (int) (Math.random() * 45) + 1;
-            for (int j = 0; j < i; j++) {
-                if (numbers[i] == numbers[j])
-                    random();
-            }
-        }
-         */
-        Log.d("랜덤","random종료 후 사이즈 - "+numberlist.size());
-        Log.d("테스트", numberlist.toString());
-    }
-
-    public void btState(boolean state){
-        bt_random.setClickable(state);
-        bt_store.setClickable(state);
-    }
-
-
 
     @Override
     public void onAttach(@NonNull Context context) {

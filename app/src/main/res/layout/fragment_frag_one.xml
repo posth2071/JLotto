@@ -31,7 +31,7 @@
         <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/iv_num1"
+            android:id="@+id/frag1_num1"
             android:src="@drawable/zero1"
             android:layout_weight="1"
             ></ImageView>
@@ -39,42 +39,42 @@
         <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/iv_num2"
+            android:id="@+id/frag1_num2"
             android:src="@drawable/zero1"
             android:layout_weight="1"
             ></ImageView>
         <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/iv_num3"
+            android:id="@+id/frag1_num3"
             android:src="@drawable/zero1"
             android:layout_weight="1"
             ></ImageView>
         <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/iv_num4"
+            android:id="@+id/frag1_num4"
             android:src="@drawable/zero1"
             android:layout_weight="1"
             ></ImageView>
         <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/iv_num5"
+            android:id="@+id/frag1_num5"
             android:src="@drawable/zero1"
             android:layout_weight="1"
             ></ImageView>
         <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/iv_num6"
+            android:id="@+id/frag1_num6"
             android:src="@drawable/zero1"
             android:layout_weight="1"
             ></ImageView>
         <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/iv_plus"
+            android:id="@+id/frag1_plus"
             android:src="@drawable/plus"
             android:layout_weight="0.5"
             android:layout_gravity="center_vertical"
@@ -84,7 +84,7 @@
         <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/iv_num7"
+            android:id="@+id/frag1_num7"
             android:src="@drawable/zero1"
             android:layout_weight="1"
             ></ImageView>

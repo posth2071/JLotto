@@ -47,26 +47,31 @@ import java.net.URLEncoder;
 import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, NavigationView.OnNavigationItemSelectedListener {
 
-    public static final String CLIENT_ID = "y0189tgx11"; // 클라이언트 아이디값
-    public static final String CLIENT_SECRET = "NK87OTfxcF1JlVUt6acqMimoSKV5toNq5Y8v75IR"; // 시크릿값
+    public static final String CLIENT_ID = "y0189tgx11";        // 네이버맵 지오코딩 클라이언트 아이디값
+    public static final String CLIENT_SECRET = "NK87OTfxcF1JlVUt6acqMimoSKV5toNq5Y8v75IR"; // 네이버맵 지오코딩 시크릿값
+    public static final String INFO_TURN = "      %d회차";      // 메뉴 info - turn 상수
+    public static final String INFO_DATE = "      %s";          // 메뉴 info - date 상수
+
+    public static int[] imgId = new int[45];    //1~45숫자 이미지리소스 ID 저장배열
+    public static int[] packid = new int[6];    //Pack1~6 이미지리소스 ID 저장배열
+
+    public static List<Integer> fixedNums = new ArrayList<>();  //최대 7개
+    public static List<Integer> exceptNums = new ArrayList<>(); //최대 38개 (45 - 38 = 7)
 
     public static FragOne frag1;
     public static FragOneTwo frag11;
     FragTwo frag2;
     FragThree frag3;
-    private Fragment fragment;
-    public static int[] imgId = new int[45];
-    public static int[] packid = new int[6];
 
     private DrawerLayout mDrawerLayout;         //최상단 DrawerLayout
     private NavigationView mNavigationView;     //네비게이션 뷰 (메뉴)
     private Context context = this;
 
-    // 최신회차, 검색회차 저장
-    public static LottoParsingInfo lastLottoinfo, searchLottoInfo;
+    public static LottoParsingInfo lastLottoinfo, searchLottoInfo;  // 최신회차, 검색회차 저장
 
     //네이버맵 지오코딩 보류
     BufferedReader br;
@@ -225,6 +230,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     //Frag_Two
                     case 3:
                         mNavigationView.inflateMenu(R.menu.navi_menu2);
+                        SubMenu subMenu = mNavigationView.getMenu().getItem(0).getSubMenu();
+                        subMenu.getItem(0).setTitle(String.format(INFO_TURN,searchLottoInfo.getTurn()));
+                        subMenu.getItem(1).setTitle(String.format(INFO_DATE,searchLottoInfo.getDate()));
                         break;
                     //Frag_Three
                     case 4:

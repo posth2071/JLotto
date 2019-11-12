@@ -4,20 +4,21 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class LottoParsingInfo {
-    public int turn = 0;
-    public String[] lottoInfo= new String[9];
-    public ArrayList<ArrayList<String>> subInfo = new ArrayList<ArrayList<String>>();
-    public String date = new String();
-    public ArrayList<String[]> storeList = new ArrayList<>();
+    public int turn = 0;                                                //회차정보
+    public String date = new String();                                  //추첨날짜
+    public String[] lottoInfo= new String[9];                           //로또번호
+    public ArrayList<ArrayList<String>> subInfo = new ArrayList<>();    //보조정보(1~5등 당첨정보)
+    public ArrayList<String[]> storeList = new ArrayList<>();           //1등 당첨매장정보
 
+    //생성자 함수
     public LottoParsingInfo(){ }
-
+    //생성자 함수
     public LottoParsingInfo(String[] lottoInfo, String date){
         this.lottoInfo = lottoInfo;
         this.date = date;
     }
 
-    //Turn(회차정보)설정,얻기
+    //Turn(회차정보) 설정,얻기
     public void setTurn(int turn){
         this.turn = turn;
     }
@@ -40,6 +41,7 @@ public class LottoParsingInfo {
     public String getDate(){
         return date;
     }
+
 
     //SubInfo(1~5등 당첨정보) 설정 / 얻기
     public void setSubInfo(ArrayList<ArrayList<String>> subInfo){
