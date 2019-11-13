@@ -29,6 +29,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- 로딩화면 액티비티 -->
+        <activity android:name=".Loading" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+
         <activity android:name=".MapNaver"></activity>
     </application>
 

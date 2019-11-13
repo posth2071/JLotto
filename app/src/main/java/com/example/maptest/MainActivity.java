@@ -103,6 +103,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Intent loading_it = new Intent(this, Loading.class);
+        startActivity(loading_it);
         //숫자이미지(1~45) Pack(1~6) 이미지 아이디얻기
         getIdset();
 
@@ -162,24 +164,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         for (int i = 0; i < numberset.length; i++) {
             changeset[i] = Integer.parseInt(numberset[i]);
         }
-        /*
-        int[] changeset = new int[numberset.length];           //numberset배열길이만큼 할당
-        int paircount = 0;                                     //짝수개수 보관변수
-        for (int i = 0; i < numberset.length; i++) {
-            changeset[i] = Integer.parseInt(numberset[i]);
-            if (changeset[i] % 2 == 0)                               //짝수인지 확인 나머지가 0인경우
-                paircount += 1;                                      //짝수 개수파악
-        }
-        int hallcount = numberset.length - paircount;                       //전체숫자개수중 짝수개수 제외 나머지는 홀수
-         */
         Arrays.sort(changeset);                                //오름차순으로 정렬
-        /*
-        String[] str = new String[2];
-        str[0] = Arrays.toString(changeset).
-                replace("[", "").replace("]", "").replace(" ", "");
-        str[1] = String.valueOf(hallcount) + ":" + String.valueOf(paircount);
-        Log.d("나눗셈", str[1]);
-         */
+        
         String str = Arrays.toString(changeset)
                 .replace("[", "")       //괄호제거
                 .replace("]", "")       //괄호제거
@@ -344,11 +330,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 break;
             //고정수 설정
             case R.id.menu1_fixednums:
-                Toast.makeText(context, menuItem.getTitle().toString() + ": 계정 정보를 확인합니다.", Toast.LENGTH_SHORT).show();
-                //setting visible조작하기
-                //mNavigationView.getMenu().getItem(0).getSubMenu().setGroupVisible(R.id.group2,false);
-                //setting 고정,제외 아이템 사이 추가하기
-                //mNavigationView.getMenu().getItem(0).getSubMenu().add(R.id.group2,Menu.NONE,3,"테스트추가하기");
                 mDrawerLayout.closeDrawer(mNavigationView);
                 setNum("고정수", fixedNums);
                 break;
@@ -364,7 +345,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 exceptNums.clear();
                 fixedNums.clear();
                 Log.d("메뉴", "reset 적용 \n\t exceptNums size - " + exceptNums.size() + "\n\t fixedNums size - " + fixedNums.size());
-                Toast.makeText(getApplicationContext(), "설정 초기화", Toast.LENGTH_SHORT);
                 break;
             //회차검색
             case R.id.menu2_Search:
@@ -489,13 +469,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         set_tv = new TextView(this);
         set_tv.setTextSize(14);
-        set_tv.setText("테스트");
+        set_tv.setText("");
         set_linear.addView(set_ev);         //에디트텍스트 추가
         set_linear.addView(set_tv);         //텍스트뷰 추가
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(type + " 설정");
-        builder.setMessage("테스트");
+        builder.setMessage("");
         builder.setView(set_linear);      //뷰그룹 추가
         //추가버튼 이벤트리스너 등록
         builder.setPositiveButton("추가", new DialogInterface.OnClickListener() {
