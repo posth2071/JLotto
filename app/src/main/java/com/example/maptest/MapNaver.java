@@ -10,6 +10,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -141,8 +142,11 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
             //searchLotto("로또", naverMap);
+
             MapTask mtask = new MapTask(naverMap);
+            Log.d("지도", "mtask.excute 실행");
             mtask.execute();
+
             mLocationListener = new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
@@ -166,8 +170,9 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
                 public void onProviderDisabled(String s) {
                 }
             };
-
-            startLocationService(naverMap);
+            Log.d("지도","startLocationService() 실행");
+            /*
+             startLocationService(naverMap);
             naverMap.setLocationTrackingMode(LocationTrackingMode.Face);            //위치추적 설정
             naverMap.addOnLocationChangeListener(new NaverMap.OnLocationChangeListener() {      //위치 추적 리스너
                 @Override
@@ -180,6 +185,8 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
             locationOverlay.setPosition(new LatLng(lat, lng));
             locationOverlay.setBearing(90);
             locationOverlay.setVisible(true);
+             */
+
 
 
         } else if (tag == 2) {                  //1등 매장위치 보기인 경우
@@ -202,9 +209,10 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
 
             marker1.setMap(naverMap);
             Log.d("지도", "마커 생성");
+            naverMap.moveCamera(CameraUpdate.scrollTo(new LatLng(lat, lng)));
         }
 
-        naverMap.moveCamera(CameraUpdate.scrollTo(new LatLng(lat, lng)));
+
     }
 
     public void testmarker(NaverMap naverMap){
@@ -218,7 +226,7 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
         marker.setMap(naverMap);
     }
     public void startLocationService(final NaverMap naverMap) {
-
+        Log.d("지도","startLocationService() 진입");
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -230,7 +238,10 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
             // for Activity#requestPermissions for more details.
             return;
         }
+        Log.d("지도","getLastKnowLocation 실행");
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);     //마지막 위치(제일최근)얻어와 저장
+        if(location == null)
+            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         lat = location.getLatitude();
         lng = location.getLongitude();
         Log.d("지도", "LastLocation - " + location.getLatitude() + ", " + location.getLongitude());
@@ -326,7 +337,7 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
         }.start();
     }
      */
-    class MapTask extends AsyncTask<Void, Void, Void> {
+    class MapTask extends AsyncTask<Void, Void, Boolean> {
         final String clientId = "y0189tgx11"; // 클라이언트 아이디값
         final String clientSecret = "NK87OTfxcF1JlVUt6acqMimoSKV5toNq5Y8v75IR"; // 시크릿값
         NaverMap taskMap;
@@ -334,11 +345,12 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
             this.taskMap = naverMap;
         }
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected Boolean doInBackground(Void... voids) {
+            Log.d("지도","MapTask doinBackground 실행");
             String text = null; // searchObject = 로또
             try {
                 text = URLEncoder.encode("로또", "UTF-8");
-                Log.d("확인", text);
+                Log.d("지도", text);
                 if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
                     //    Activity#requestPermissions
@@ -348,7 +360,10 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
                     // to handle the case where the user grants the permission. See the documentation
                     // for Activity#requestPermissions for more details.
                 }
+
                 Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                if(location == null)
+                    location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                 String locationstr = String.valueOf(location.getLongitude()) + "," + String.valueOf(location.getLatitude());
                 Log.d("지도", "locationstr -" + locationstr);
                 String apiURL = "https://naveropenapi.apigw.ntruss.com/map-place/v1/search?query=" + text + "&coordinate=" + locationstr; // 좌표 lng, lat 순서
@@ -374,6 +389,7 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
                 br.close();
                 con.disconnect();
 
+                Log.d("지도","\n"+"\tsearchResult - "+searchResult.toString());
                 String data = searchResult.toString();
                 JSONObject jsonObject = new JSONObject(data);
                 JSONArray jsonArray = jsonObject.getJSONArray("places");
@@ -396,11 +412,11 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
             } catch (JSONException ex) {
                 ex.printStackTrace();
             }
-            return null;
+            return true;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
+        protected void onPostExecute(Boolean aVoid) {
             super.onPostExecute(aVoid);
             Log.d("지도","AsyncTask - onPostExecute진입");
             for(int i=0; i<name.length; i++) {
@@ -417,7 +433,22 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
             for(int i=0; i<5; i++) {
                 Log.d("지도", "Markers "+i+ " - " +markers[i].getCaptionText() + ", " + markers[i].getPosition());
             }
+            startLocationService(mMap);
+            mMap.setLocationTrackingMode(LocationTrackingMode.Face);            //위치추적 설정
+            mMap.addOnLocationChangeListener(new NaverMap.OnLocationChangeListener() {      //위치 추적 리스너
+                @Override
+                public void onLocationChange(@NonNull Location location) {
+                    mMap.moveCamera(CameraUpdate.scrollTo(new LatLng(location.getLatitude(), location.getLongitude())));
+                    Log.d("지도", "위치추적변경이벤트 x - " + location.getLatitude() + ", y - " + location.getLongitude());
+                }
+            });
+            locationOverlay = mMap.getLocationOverlay();
+            locationOverlay.setPosition(new LatLng(lat, lng));
+            locationOverlay.setBearing(90);
+            locationOverlay.setVisible(true);
             //testmarker(mMap);
+
+            mMap.moveCamera(CameraUpdate.scrollTo(new LatLng(lat, lng)));
         }
     }
     /**

@@ -27,7 +27,7 @@ import java.util.ArrayList;
  * Created by charlie on 2017. 8. 18..
  */
 
-public class DialogClass extends Dialog implements View.OnClickListener{
+public class DialogClass extends Dialog implements View.OnClickListener {
     private MyDialogListener dialogListener;
 
     private Context mContext = null;
@@ -59,15 +59,15 @@ public class DialogClass extends Dialog implements View.OnClickListener{
     }
 
     //다이얼로그 리스너 설정
-    public void setDialogListener(MyDialogListener dialogListener){
+    public void setDialogListener(MyDialogListener dialogListener) {
         this.dialogListener = dialogListener;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("다이얼로그","onCreate 진입 type - "+type);
-        switch (type){
+        Log.d("다이얼로그", "onCreate 진입 type - " + type);
+        switch (type) {
             case 1:
                 dialog_set(1);          // 타입1 - 회차검색 대화상자 세팅
                 break;
@@ -88,11 +88,10 @@ public class DialogClass extends Dialog implements View.OnClickListener{
                 String num = dlone_et.getText().toString();
 
                 //마지막회차랑 입력한 회차 비교 (존재않는 회차일경우 검색x)
-                if(Integer.parseInt(num) > lastturn || Integer.parseInt(num)==0){
-                    Toast.makeText(getContext(),"미추첨 회차", Toast.LENGTH_SHORT).show();
+                if (Integer.parseInt(num) > lastturn || Integer.parseInt(num) == 0) {
+                    Toast.makeText(getContext(), "미추첨 회차", Toast.LENGTH_SHORT).show();
                     dlone_et.setText("");
-                }
-                else {
+                } else {
                     //존재회차일경우 onPositiveClicked 메소드 실행
                     dialogListener.onPositiveClicked(num);
                     dismiss();      //다이얼로그 닫기
@@ -106,12 +105,13 @@ public class DialogClass extends Dialog implements View.OnClickListener{
                 break;
         }
     }
-    private void dialog_set(int type){
-        Log.d("다이얼로그","dialog_set실행, type -"+type);
-        switch (type){
+
+    private void dialog_set(int type) {
+        Log.d("다이얼로그", "dialog_set실행, type -" + type);
+        switch (type) {
             // 타입1 설정
             case 1:
-                Log.d("다이얼로그","case 1 진입, type -"+type);
+                Log.d("다이얼로그", "case 1 진입, type -" + type);
                 setContentView(LAYOUT_SEARCH);
 
                 dlone_et = (EditText) findViewById(R.id.DLOne_et);
@@ -124,11 +124,11 @@ public class DialogClass extends Dialog implements View.OnClickListener{
                 dlone_search.setOnClickListener(this);
 
                 lastturn = MainActivity.lastLottoinfo.getTurn();
-                dlone_comment.setText("원하는 회차 입력하세요 (last - " +lastturn+")");      //제일최근회차 가져오기
+                dlone_comment.setText("원하는 회차 입력하세요 (last - " + lastturn + ")");      //제일최근회차 가져오기
                 break;
             // 타입2 설정
             case 2:
-                Log.d("다이얼로그","case 2 진입, type - "+type);
+                Log.d("다이얼로그", "case 2 진입, type - " + type);
                 setContentView(LAYOUT_DBLIST);
 
                 dltwo_exlist = findViewById(R.id.DLTwo_ExList);
@@ -140,23 +140,18 @@ public class DialogClass extends Dialog implements View.OnClickListener{
 
                 dbOpenHelper = new DBOpenHelper(getContext());
 
-                Log.d("다이얼로그","dltwo_Listitem 생성 id/size - "+dltwo_listitem+", "+dltwo_listitem.size());
+                Log.d("다이얼로그", "dltwo_Listitem 생성 id/size - " + dltwo_listitem + ", " + dltwo_listitem.size());
                 dltwo_listitem = dbOpenHelper.selectListAllDB();
-                Log.d("다이얼로그","dltwo_Listitem 데이터삽입 id/size - "+dltwo_listitem+", "+dltwo_listitem.size());
-                if(dltwo_listitem.size()>0){
-                    Log.d("다이얼로그","dltwo_adapter 생성 - "+dltwo_adapter);
-                    dltwo_adapter = new ExpandableAdapter(getContext(),dltwo_listitem, this);
-                    Log.d("다이얼로그","dltwo_adapter 생성 - "+dltwo_adapter);
+                Log.d("다이얼로그", "dltwo_Listitem 데이터삽입 id/size - " + dltwo_listitem + ", " + dltwo_listitem.size());
+                if (dltwo_listitem.size() > 0) {
+                    Log.d("다이얼로그", "dltwo_adapter 생성 - " + dltwo_adapter);
+                    dltwo_adapter = new ExpandableAdapter(getContext(), dltwo_listitem, this);
+                    Log.d("다이얼로그", "dltwo_adapter 생성 - " + dltwo_adapter);
                     dltwo_exlist.setAdapter(dltwo_adapter);
                 } else {
-                    Toast.makeText(mContext,"DB저장 기록 없음", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "DB저장 기록 없음", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
     }
-
-    public void changeAdapter (){
-        dltwo_adapter.notifyDataSetChanged();
-    }
-
 }

@@ -153,13 +153,30 @@ public class FragOne extends Fragment implements View.OnClickListener {
     //랜덤번호 추출 함수
     public void random() {
         numberlist.clear();             //저장할 리스트비우기
-
+        HashSet<Integer> exceptCheck = new HashSet<>();
         HashSet<Integer> lottonums = new HashSet<>();
-        while(lottonums.size()<7) {
-            lottonums.add((int) (Math.random() * 45) + 1);
-        }
-        numberlist.addAll(lottonums);   //numberlist에 옮기기
 
+        //고정수 설정된게 있다면 해쉬에 추가
+        if(MainActivity.fixedNums.size()!=0){
+            lottonums.addAll(MainActivity.fixedNums);
+            Log.d("확인", "fixedNums - \n"+MainActivity.fixedNums.toString());
+        }
+        //제외수 설정된게 있다면 해쉬에 추가
+        if(MainActivity.exceptNums.size()!=0){
+            exceptCheck.addAll(MainActivity.exceptNums);
+            Log.d("확인", "exceptCheck - \n"+exceptCheck.toString());
+        }
+
+        while(lottonums.size()<7) {
+            int random = (int)(Math.random()*45)+1;
+            if(exceptCheck.add(random)){ //랜덤값이 추가된다면 중복없음
+                Log.d("확인", "exceptCheck.add 성공, random - "+random);
+                lottonums.add(random);
+                }
+        }
+        Log.d("확인", "\n"+ "numberlist \n\t" + numberlist.toString()+"\n\t lottonums - "+ lottonums.toString());
+        numberlist.addAll(lottonums);   //numberlist에 옮기기
+        Log.d("확인", "\n"+ "numberlist \n\t" + numberlist.toString()+"\n\t lottonums - "+ lottonums.toString());
         //로그출력 테스트용
         Iterator<Integer> it = lottonums.iterator();
         while(it.hasNext()){

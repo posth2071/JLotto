@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/menu3_menu3" android:title="Map" android:orderInCategory="1">
+        <menu>
+            <group android:id="@+id/menu3_group1" android:checkableBehavior="none">
+                <item
+                    android:id="@+id/menu3_map"
+                    android:icon="@drawable/ic_launcher_foreground"
+                    android:title="주변 판매점"/>
+            </group>
+        </menu>
+    </item>
+
+</menu>

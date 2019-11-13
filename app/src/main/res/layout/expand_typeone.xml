@@ -3,30 +3,48 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:paddingTop="15dp"
+    android:paddingLeft="15dp"
     android:weightSum="5">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-        <TextView
+    <TextView
             android:id="@+id/expand_One_Rank"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="test"
-            android:textSize="25dp"
+            android:text="1등"
+            android:textSize="18dp"
+            android:textStyle="bold"
             android:gravity="center"
-            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:layout_weight="0.2"
             ></TextView>
-        <TextView
-            android:id="@+id/expand_One_TotalMoney"
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="test"
-            android:textSize="25dp"
-            android:gravity="center"
-            android:layout_weight="1"
-            ></TextView>
+            android:layout_height="50dp"
+            android:layout_weight="0.7"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:text="총 당첨금액"
+                android:textSize="13dp"
+                android:layout_weight="0.4"/>
+
+            <TextView
+                android:id="@+id/expand_One_TotalMoney"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:text="1,000,000원"
+                android:textSize="15dp"
+                android:paddingLeft="30dp"
+                android:gravity="center_vertical"
+                android:layout_weight="0.6"/>
+
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -37,29 +55,42 @@
             android:id="@+id/expand_One_People"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="test"
-            android:textSize="25dp"
-            android:gravity="center"
-            android:layout_weight="1"
+            android:text="당첨자수 "
+            android:textSize="15dp"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="5dp"
+            android:layout_weight="0.3"
             ></TextView>
-        <TextView
-            android:id="@+id/expand_One_PersonalMoney"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="test"
-            android:textSize="25dp"
-            android:gravity="center"
-            android:layout_weight="1"
-            ></TextView>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="0.7"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:text="개별 당첨금액"
+                    android:textSize="13dp"
+                    android:layout_weight="0.4"/>
+                <TextView
+                    android:id="@+id/expand_One_PersonalMoney"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:text="100,000원"
+                    android:textSize="15dp"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="30dp"
+                    android:layout_weight="0.6"/>
+            </LinearLayout>
     </LinearLayout>
 
     <TextView
         android:id="@+id/expand_One_Norm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="45dp"
         android:text="test"
-        android:textSize="25dp"
-        android:gravity="center"
+        android:textSize="15dp"
         ></TextView>
 
 </LinearLayout>

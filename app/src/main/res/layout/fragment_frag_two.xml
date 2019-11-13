@@ -145,6 +145,9 @@
         android:id="@+id/frag2_Expandable"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:paddingLeft="15dp"
+        android:divider="@android:color/black"
+        android:dividerHeight="0.5dp"
         android:layout_weight="3"></ExpandableListView>
 
 </LinearLayout>

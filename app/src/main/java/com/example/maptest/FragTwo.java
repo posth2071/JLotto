@@ -18,6 +18,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -56,13 +57,12 @@ public class FragTwo extends Fragment {
         frag2_turn = view.findViewById(R.id.frag2_turn);
         frag2_date = view.findViewById(R.id.frag2_date);
         frag2_expandable = view.findViewById(R.id.frag2_Expandable);
-
+        frag2_expandable.setGroupIndicator(null);
         Resources res = getResources();
         for(int i=0; i<7; i++){
             int viewId = res.getIdentifier("frag2_num"+(i+1),"id",getContext().getPackageName());
             frag2_numiv[i] = view.findViewById(viewId);         //이미지뷰 7개 연결
         }
-
         return view;
     }
 
@@ -120,7 +120,6 @@ public class FragTwo extends Fragment {
         //Adapter 생성 -> GroupList, ChildList
         frag2_exAdapter = new ExpandableAdapter(getContext(), mGroupList, mChildList);
         frag2_expandable.setAdapter(frag2_exAdapter);       //확장리스트뷰에 Adapter 연결
-
         //테스트용 DB전체 호출 - 로그확인용
         dbOpenHelper.selectAllDB();
     }
@@ -145,7 +144,6 @@ public class FragTwo extends Fragment {
             public void onNegativeClicked() {
             }
         });
-
         dialog.show();
     }
 
