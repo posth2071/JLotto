@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -20,51 +21,32 @@ import java.util.List;
 public final class DBOpenHelper extends SQLiteOpenHelper {
     private Context context;
 
-    public static final String DATABASE_NAME = "NumTest.db";   //DB이름 상수 설정
+    public static final String DATABASE_NAME = "Lotto.db";   //DB이름 상수 설정
     public static final String TABLE_NAME = "lotto_no";   //Table이름 설정
     public static final int DB_VERSION = 1;              //Version 설정
 
     //public static final String _ID = "_id";        //로또번호 기록 1
     public static final String COLUMN_TURN = "turn";            //회차번호 기록
-    public static final String COLUMN_NUMBERSET = "numberset";
-    public static final String COLUMN_HALLPAIR = "hallpair";
-    public static final String COLUMN_RESULT = "result";
-    //public static final String NUM_1 = "num1";        //로또번호 기록 1
-    //public static final String NUM_2 = "num2";        //로또번호 기록 2
-    //public static final String NUM_3 = "num3";        //로또번호 기록 3
-    //public static final String NUM_4 = "num4";        //로또번호 기록 4
-    //public static final String NUM_5 = "num5";        //로또번호 기록 5
-    //public static final String NUM_6 = "num6";        //로또번호 기록 6
-    //public static final String NUM_7 = "num7";        //로또번호 기록 Bonus
-    //public static final String ODDEVEN = "oddeven";
-    //public static final String _CREATE0 = "create table if not exists "+ TABLE_NAME + "(" +"_id integer primary key autoincrement," +TURNNUM+" text not null," +NUMBER+" text not null);")
+    public static final String COLUMN_NUMSET = "numset";
+
+    //public static final String COLUMN_HALLPAIR = "hallpair";
+    //public static final String COLUMN_RESULT = "result";
 
     public DBOpenHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DB_VERSION);
         this.context = context;
-        Log.d("데이터베이스", "DB생성");
+        Log.d("데이터베이스", "DB생성 - "+ DATABASE_NAME);
     }
 
+    //처음 DB생성
     @Override
     public void onCreate(SQLiteDatabase db) {
-        /*
-        String query = String.format("CREATE TABLE %s ("      // 테이블명 -
-                + "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "%s INTEGER NOT NULL, "       // 컬럼 - turn
-                + "%s TEXT NOT NULL, "          // 컬럼 - numberset
-                + "%s TEXT, "          // 컬럼 - hallpair
-                + "%s TEXT "                    // 컬럼 - result
-                + ");", TABLE_NAME, COLUMN_TURN, COLUMN_NUMBERSET, COLUMN_HALLPAIR, COLUMN_RESULT);
-         */
         String query = "create table " + TABLE_NAME + " (" +
                 "idx INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "turn INTEGER not null," +
-                "numberset TEXT not null," +
-                "hallpair TEXT not null," +
-                "result TEXT);";
-
+                "numset TEXT not null);";
         db.execSQL(query);
-        Log.d("데이터베이스", "DB테이블 Created");
+        Log.d("데이터베이스", "DB테이블 Created" + TABLE_NAME);
     }
 
     @Override
@@ -74,28 +56,41 @@ public final class DBOpenHelper extends SQLiteOpenHelper {
         Log.d("데이터베이스", "DB Updated");
     }
 
-    public int insertDB(int turn, String[] str) {
+    public int insertDB(int turn, String numset) {
         Log.d("데이터베이스", "DB InsertDB 진입");
-        String test1 = "DB";
+
         //String query = String.format("INSERT INTO %s VALUES ('%s', %d, '%s', '%s', '%s');", null, TABLE_NAME, turn, str, test, test1);
         //db.execSQL(query);
 
+        //입력 회차와 동일 db전부 검색
         ArrayList<DBinfo> dbCheck = selectDB(turn);
         Iterator<DBinfo> it = dbCheck.iterator();
         while(it.hasNext()){
-            String strset = it.next().getNumberset();
+            String strset = MainActivity.numsetSort(it.next().getNumset());       //번호세트 가져와서 오름차순 정렬
+            String checkset = MainActivity.numsetSort(numset);
+            if(checkset.compareTo(strset)==0) {
+                Toast.makeText(context.getApplicationContext(), "DB 중복", Toast.LENGTH_SHORT).show();
+                Log.d("데이터베이스", "DB중복 - " + numset + " - " + strset);
+                return 0;
+            }
+            /*
+            String strset = it.next().getNumset();
             if(str[0].compareTo(strset)==0) {
                 Toast.makeText(context.getApplicationContext(), "DB 중복", Toast.LENGTH_SHORT).show();
                 Log.d("데이터베이스", "DB중복 - "+str[0] +" - " +strset);
                 return 0;
-            }
+
+             */
         }
-        ContentValues cv = new ContentValues();
+        ContentValues cv = new ContentValues();         //DB저장위해
         cv.put(COLUMN_TURN, turn);
+        cv.put(COLUMN_NUMSET, numset);
+        /*
         cv.put(COLUMN_NUMBERSET, str[0]);
         cv.put(COLUMN_HALLPAIR, str[1]);
         cv.put(COLUMN_RESULT, test1);
-        SQLiteDatabase insertdb = getWritableDatabase();
+         */
+        SQLiteDatabase insertdb = getWritableDatabase();        //읽기전용
         try {
             Log.d("데이터베이스","DB Insert실행");
             long rowId = insertdb.insert(TABLE_NAME, null, cv);
@@ -104,7 +99,7 @@ public final class DBOpenHelper extends SQLiteOpenHelper {
                 Log.d("데이터베이스","DB Insert실패");
                 throw new SQLException("Fail To Insert");
             } else {
-                Log.d("데이터베이스", "DB insert 성공\n\t\t turn - " + turn+", numset - "+str[0]+", hall paire - "+str[1]);
+                Log.d("데이터베이스", "DB insert 성공\n\t\t turn - " + turn+", numset - "+numset);
                 Toast.makeText(context,"저장성공",Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
@@ -116,7 +111,7 @@ public final class DBOpenHelper extends SQLiteOpenHelper {
     }
 
     public ArrayList<DBinfo> selectDB(int turn) {
-        Log.d("데이터베이스", "DB selectDB 진입");
+        Log.d("데이터베이스", "DB selectDB 진입, turn - "+turn);
         SQLiteDatabase selectdb = getReadableDatabase();
         String sql = String.format("select * from %s where turn='%s'", TABLE_NAME, String.valueOf(turn));
         Cursor cursor = selectdb.rawQuery(sql, null);
@@ -125,13 +120,16 @@ public final class DBOpenHelper extends SQLiteOpenHelper {
         while (cursor.moveToNext()) {
             DBinfo dbinfo = new DBinfo();
             dbinfo.setTurn(cursor.getInt(cursor.getColumnIndex(COLUMN_TURN)));
+            dbinfo.setNumset(cursor.getString(cursor.getColumnIndex(COLUMN_NUMSET)));
+            /*
             dbinfo.setNumberset(cursor.getString(cursor.getColumnIndex(COLUMN_NUMBERSET)));
             dbinfo.setHallfair(cursor.getString(cursor.getColumnIndex(COLUMN_HALLPAIR)));
             dbinfo.setResult(cursor.getString(cursor.getColumnIndex(COLUMN_RESULT)));
+             */
             listSelect.add(dbinfo);
-            //teststr = cursor.getString(cursor.getColumnIndex(COLUMN_NUMBERSET));
         }
         selectdb.close();                      //db닫기
+
         logTest("Select", listSelect, turn);   // 로그출력
         return listSelect;
     }
@@ -147,9 +145,12 @@ public final class DBOpenHelper extends SQLiteOpenHelper {
         while (cursor.moveToNext()) {
             DBinfo dbinfo = new DBinfo();
             dbinfo.setTurn(cursor.getInt(cursor.getColumnIndex(COLUMN_TURN)));
+            dbinfo.setNumset(cursor.getString(cursor.getColumnIndex(COLUMN_NUMSET)));
+            /*
             dbinfo.setNumberset(cursor.getString(cursor.getColumnIndex(COLUMN_NUMBERSET)));
             dbinfo.setHallfair(cursor.getString(cursor.getColumnIndex(COLUMN_HALLPAIR)));
             dbinfo.setResult(cursor.getString(cursor.getColumnIndex(COLUMN_RESULT)));
+             */
             listAll.add(dbinfo);
         }
         selectdb.close();                       //db닫기
@@ -185,7 +186,7 @@ public final class DBOpenHelper extends SQLiteOpenHelper {
         Log.d("데이터베이스", "DB delete - "+ numberset);
 
         SQLiteDatabase db = getWritableDatabase();
-        String sql = String.format("DELETE FROM %s WHERE %s = '%s'", TABLE_NAME, COLUMN_NUMBERSET, numberset);
+        String sql = String.format("DELETE FROM %s WHERE %s = '%s'", TABLE_NAME, COLUMN_NUMSET, numberset);
         db.execSQL(sql);
         db.close();
         FragTwo.dialog.dltwo_listitem.clear();
@@ -229,24 +230,6 @@ public final class DBOpenHelper extends SQLiteOpenHelper {
         for (int i = 0; i < listCount; i++) {
             logText += "\t\t" + type + "[" + i + "] => " + dbList.get(i).getInfo() + "\n";
         }
-        Log.d("데이터베이스", "\n " + logText);
+        Log.d("데이터베이스", "\nDBinsert 성공\n"+ logText);
     }
 }
-
-    /*
-    public List<NumberData> selectAll(){
-        List<NumberData> dataResultList = new ArrayList<NumberData>();
-        String sql = "select * from " + TABLE_NAME +" ORDER BY "+ TURNNUM + "DESC;";
-        Cursor cursor = db.rawQuery(sql, null);
-
-        cursor.moveToFirst();
-        while(cursor.moveToNext()){
-            NumberData numData = new NumberData();
-
-        }
-    }
-
-}
-
-
-     */

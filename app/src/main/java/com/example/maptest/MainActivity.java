@@ -99,8 +99,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     private int count = 0;
 
-
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,10 +122,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);     //네비게이션 뷰 연결(안보임)
         mNavigationView.setNavigationItemSelectedListener(this);            //네비게이션 뷰 아이템 클릭 처리리스너등록
 
+
         // 최신 로또정보 파싱
         TestClass testclass = new TestClass();
         lastLottoinfo = testclass.parsing("");
         searchLottoInfo = lastLottoinfo;
+
 
         frag1 = new FragOne();
         frag11 = new FragOneTwo();
@@ -152,10 +152,17 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         for (int i = 1; i < 7; i++)
             packid[i - 1] = res.getIdentifier("pack" + i, "drawable", getPackageName());
     }
-    //숫자집합 오름차순으로 정렬, 홀짝비율 계산
-    public static String[] numsetSort(String numset) {
-        String[] numberset = numset.split(",");
 
+
+    //숫자집합 오름차순으로 정렬, 홀짝비율 계산
+    public static String numsetSort(String numset) {
+        String[] numberset = numset.split(",");
+        int[] changeset = new int[numberset.length];           //numberset배열길이만큼 할당
+
+        for (int i = 0; i < numberset.length; i++) {
+            changeset[i] = Integer.parseInt(numberset[i]);
+        }
+        /*
         int[] changeset = new int[numberset.length];           //numberset배열길이만큼 할당
         int paircount = 0;                                     //짝수개수 보관변수
         for (int i = 0; i < numberset.length; i++) {
@@ -164,14 +171,88 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 paircount += 1;                                      //짝수 개수파악
         }
         int hallcount = numberset.length - paircount;                       //전체숫자개수중 짝수개수 제외 나머지는 홀수
-
+         */
         Arrays.sort(changeset);                                //오름차순으로 정렬
+        /*
         String[] str = new String[2];
         str[0] = Arrays.toString(changeset).
                 replace("[", "").replace("]", "").replace(" ", "");
         str[1] = String.valueOf(hallcount) + ":" + String.valueOf(paircount);
         Log.d("나눗셈", str[1]);
+         */
+        String str = Arrays.toString(changeset)
+                .replace("[", "")       //괄호제거
+                .replace("]", "")       //괄호제거
+                .replace(" ", "");      //공백 제거
         return str;         //String배열반환(0번째 정렬된 숫자정보 / 1번째 홀짝개수)
+    }
+
+    //홀짝계산 함수
+    public static String checkHallPair (String numset){
+        String[] nums = numset.split(",");
+        int paircount = 0;
+        for(int i=0; i<nums.length; i++){
+            if(Integer.parseInt(nums[i])%2==0){
+                paircount +=1;
+            }
+        }
+        int hallcount = nums.length - paircount;
+        return String.format("%d:%d",hallcount,paircount);
+    }
+
+    //당첨결과 확인 함수
+    public static String[] checkResult(String numset){
+        String[] nums = numset.split(",");
+        String[] searchnumset = searchLottoInfo.getLottoInfo();
+        HashSet<Integer> checkHash = new HashSet<>();
+        //보너스번호 제외 6개만 넣기
+        for(int i=0; i<6; i++){
+            checkHash.add(Integer.parseInt(searchnumset[i]));
+        }
+        int resultcount = 0;
+        int bonuscount = 0;
+        int bonusnum = Integer.parseInt(searchnumset[6]);
+        for(int i=0;i<6; i++){
+            int addnum = Integer.parseInt(nums[i]);
+            if(!checkHash.add(addnum)){  //해쉬add가 실패한경우(이미있는경우) 동일숫자 존재
+                resultcount +=1;        //resultcount 1증가
+            }
+            if(addnum==bonusnum){
+                bonuscount +=1;
+            }
+        }
+        Log.d("확인", "\n" +
+                "\t" + numset +" : "+searchnumset.toString() +
+                "result count - "+resultcount+", bonusCount - "+bonuscount);
+
+        String[] resultstr = new String[2];
+        switch (resultcount){
+            case 6:
+                resultstr[0] = "1등";
+                resultstr[1] = "#800000";
+                return resultstr;
+
+            case 5:
+                if(bonuscount!=0){
+                    resultstr[0] = "2등";
+                    resultstr[1] = "#87CEFA";
+                    return resultstr;
+                } else{
+                    resultstr[0] = "3등";
+                    resultstr[1] = "#B0C4DE";
+                    return resultstr;
+                }
+
+            case 4:
+                resultstr[0] = "4등";
+                resultstr[1] = "#F0E68C";
+                return resultstr;
+
+            default:
+                resultstr[0] = "미당첨";
+                resultstr[1] = "#000000";
+                return resultstr;
+        }
     }
 
     //메뉴버튼 눌렀을때 콜백메서드 (여기서 메뉴편집)
@@ -182,11 +263,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         mNavigationView.getMenu().clear();      //메뉴 비우기(안하면 inflate시 추가로 쌓임)
         switch (item.getItemId()) {
             case android.R.id.home: {            // 왼쪽 상단(메뉴버튼)일때
-                switch (fragindex) {             // 현재 프래그먼트 위치별로 메뉴세팅
+                // 현재 프래그먼트 위치별로 메뉴세팅
+                switch (fragindex) {
                     //Frag_One
                     case 1:
                         mNavigationView.inflateMenu(R.menu.navi_menu1);
-                        SubMenu subMenu = mNavigationView.getMenu().getItem(1).getSubMenu();
+                        set_mode("수동모드", true);
+
+                        SubMenu subMenu = mNavigationView.getMenu().getItem(2).getSubMenu();
                         if (fixedNums.size() != 0) {
                             String str = String.format(INFO_NUMSET, fixedNums.toString()
                                     .replace("[", "")
@@ -205,13 +289,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     //Frag_OneTwo
                     case 2:
                         mNavigationView.inflateMenu(R.menu.navi_menu1);
+                        set_mode("자동모드", false);    //모드, 그룹활성화 세팅
                         break;
                     //Frag_Two
                     case 3:
                         mNavigationView.inflateMenu(R.menu.navi_menu2);
-                        SubMenu subMenu1 = mNavigationView.getMenu().getItem(0).getSubMenu();
-                        subMenu1.getItem(0).setTitle(String.format(INFO_TURN, searchLottoInfo.getTurn()));
-                        subMenu1.getItem(1).setTitle(String.format(INFO_DATE, searchLottoInfo.getDate()));
+                        SubMenu subMenu2 = mNavigationView.getMenu().getItem(0).getSubMenu();
+                        subMenu2.getItem(0).setTitle(String.format(INFO_TURN, searchLottoInfo.getTurn()));
+                        subMenu2.getItem(1).setTitle(String.format(INFO_DATE, searchLottoInfo.getDate()));
                         break;
                     //Frag_Three
                     case 4:
@@ -244,7 +329,19 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             case R.id.bottombar_three:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment, frag3).addToBackStack(null).commit();
                 return true;
+
+
             //슬라이드 메뉴바 아이디
+            //모드버튼 눌린경우
+            case R.id.menu1_mode:
+                mDrawerLayout.closeDrawer(mNavigationView);
+                int fragindex = checkFragment();
+                if(fragindex==1){
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment, MainActivity.frag11).addToBackStack(null).commit();
+                } else if(fragindex==2){
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment, MainActivity.frag1).addToBackStack(null).commit();
+                }
+                break;
             //고정수 설정
             case R.id.menu1_fixednums:
                 Toast.makeText(context, menuItem.getTitle().toString() + ": 계정 정보를 확인합니다.", Toast.LENGTH_SHORT).show();
@@ -281,6 +378,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 break;
             case R.id.menu3_map:
                 //searchMap("로또");
+                mDrawerLayout.closeDrawer(GravityCompat.START);
                 Intent it = new Intent(this, MapNaver.class);  //MapNaver액티비티 띄울목적
                 it.putExtra("TAG", 1);          //TAG값 전달 (int형)
                 startActivity(it);
@@ -312,21 +410,35 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         return fragindex;
     }
 
+    public void set_mode(String title, boolean state){
+        //Mode타이틀 설정
+        mNavigationView.getMenu().getItem(0).getSubMenu().getItem(0).setTitle(title);
+        //설정그룹 버튼들 비활성화/활성화
+        mNavigationView.getMenu().getItem(1).getSubMenu().getItem(0).setEnabled(state); //고정수 설정
+        mNavigationView.getMenu().getItem(1).getSubMenu().getItem(1).setEnabled(state); //제외수 설정
+        mNavigationView.getMenu().getItem(1).getSubMenu().getItem(2).setEnabled(state); //reset 설정
+        //setting그룹 제외수,고정수 리스트 숨기기/보이기
+        mNavigationView.getMenu().getItem(2).getSubMenu().getItem(0).setVisible(state);
+        mNavigationView.getMenu().getItem(2).getSubMenu().getItem(1).setVisible(state);
+        mNavigationView.getMenu().getItem(2).getSubMenu().getItem(2).setVisible(state);
+        mNavigationView.getMenu().getItem(2).getSubMenu().getItem(3).setVisible(state);
+    }
+
     // 고정수/제외수 설정 대화상자 띄우는 함수
     public void setNum(final String type, List<Integer> setlist) {
         final List<Integer> list = setlist;
         if (type.compareTo("고정수") == 0) {
-            count = 7;
+            count = 6;
         } else if (type.compareTo("제외수") == 0) {
-            count = 38;
+            count = 39;
         }
         set_linear = new LinearLayout(this);
         set_linear.setOrientation(LinearLayout.VERTICAL);
         set_linear.setGravity(View.TEXT_ALIGNMENT_CENTER);
 
         set_ev = new EditText(this);
-        set_ev.setKeyListener(DigitsKeyListener.getInstance("0123456789."));
-        set_ev.addTextChangedListener(new TextWatcher() {
+        set_ev.setKeyListener(DigitsKeyListener.getInstance("0123456789."));        //숫자와 Dot만 입력할수있도록 (Dot가 구분자)
+        set_ev.addTextChangedListener(new TextWatcher() {       // 키입력마다 검사하기위해 TextWatcher 등록)
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
             @Override
@@ -336,36 +448,41 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 //마지막글자가 Dot인경우 숫자 저장
                 if (editable.toString().endsWith(".")) {
                     set_hash.clear();
-
+                    HashSet<Integer> testHash = new HashSet<>();
                     String[] str = editable.toString().split("\\.");                    //Dot를 기준으로 배열로 나누기
 
                     for (int i = 0; i < str.length; i++) {                                            //배열 개수만큼 반복
                         if ((str[i].compareTo("") != 0) && (Integer.valueOf(str[i]) < 46)) {     //입력한 숫자가 0이 아니고, 46보다 작으면 저장
-
-                            if (!set_hash.add(Integer.parseInt(str[i]))) {                                      //해쉬set 저장실패하면 (중복일경우)
+                            testHash.addAll(list);
+                            // if (testHash.add(Integer.parseInt(str[i]))) {
+                            if (!(set_hash.add(Integer.parseInt(str[i])) && (testHash.add(Integer.parseInt(str[i]))))) {                       //해쉬set 저장실패하면 (중복일경우)
                                 int end = (editable.toString().length()) - (str[i].length() + 1);
                                 set_ev.setText(editable.toString().substring(0, end));      //중복삭제
                                 set_ev.setSelection(set_ev.length());                       //포커스 마지막으로 이동
                                 Log.d("확인", "해쉬 add실패 - " + str[i]);
                             } else {
-                                if (list.size() != 0)                  //이미 설정된 갯수 모두 더해서
-                                    set_hash.addAll(list);
-
-                                if (set_hash.size() <= count) {
+                                if (list.size() != 0) {                  //이미 설정된 값이있다면 모두더하기
+                                    testHash.addAll(set_hash);
+                                    testHash.addAll(list);
+                                }
+                                if (testHash.size() <= count) {
                                     Log.d("확인", "해쉬 add성공 - " + str[i]);
                                 } else {
                                     set_ev.setText(editable.toString().replace(str[i] + ".", ""));
                                     set_ev.setSelection(set_ev.length());
+                                    Log.d("확인", "해쉬 add실패 이미 중복값- " + str[i]);
                                 }
                             }
-                        } else {       //입력숫자가 0이거나 46이상인경우 자동삭제, 포커스 위치 맨끝설정
+                        } else {        //입력숫자가 0이거나 46이상인경우 자동삭제, 포커스 위치 맨끝설정
                             set_ev.setText(editable.toString().replace(str[i] + ".", ""));
                             set_ev.setSelection(set_ev.length());
                         }
                     }
                     Log.d("확인", "afterTextChanged \n\t editable - " + editable.toString()
                             + "\n\t length - " + set_hash.size() + ", set_hash - " + set_hash);
-                    set_tv.setText(String.format("입력한 갯수 - %d\n", set_hash.size()));
+                    set_tv.setText(String.format("입력한 갯수 : %d", set_hash.size()));
+                } else {
+                    set_tv.setText(String.format("입력한 갯수 : %d", (editable.toString().split("\\.").length)));
                 }
             }
         });

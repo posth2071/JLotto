@@ -421,10 +421,6 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
             Log.d("지도","AsyncTask - onPostExecute진입");
             for(int i=0; i<name.length; i++) {
                 Log.d("지도", name[i] + ", " + addr_road[i] + ", " + addr_jibun[i] + ", " + phone[i] + ", " + latitude[i] + ", " + longtitude[i] + ", " + distance[i]);
-                //markers[i] = new Marker();
-                //markers[i].setPosition(new LatLng(x[i], y[i]));
-                //markers[i].setCaptionText(name[i]);
-                //markers[i].setMap(mMap);
                 markers[i] = new Marker();
                 markers[i].setPosition(new LatLng(latitude[i],longtitude[i]));
                 markers[i].setCaptionText(name[i]);

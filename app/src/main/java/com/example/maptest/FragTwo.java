@@ -3,8 +3,12 @@ package com.example.maptest;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +24,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,8 +64,10 @@ public class FragTwo extends Fragment {
         View view = inflater.inflate(R.layout.fragment_frag_two, container, false);
 
         frag2_group_iv = view.findViewById(R.id.frag2_expand_group_iv);
+
         frag2_turn = view.findViewById(R.id.frag2_turn);
         frag2_date = view.findViewById(R.id.frag2_date);
+
         frag2_expandable = view.findViewById(R.id.frag2_Expandable);
         frag2_expandable.setGroupIndicator(null);
         Resources res = getResources();
@@ -115,7 +125,7 @@ public class FragTwo extends Fragment {
 
         //Child타입3 세팅
         ArrayList<String> typeThree = new ArrayList<>();
-        typeThree.add("당첨금 지급기한");
+        typeThree.add("지급개시일로부터 1년 (휴일인 경우 익영업일)");
         mChildList.setTypethree(typeThree);
         Log.d("테스트", "mChildList.typethree size = "+mChildList.typethree.size() +"\n"+mChildList.typethree.get(0));
 

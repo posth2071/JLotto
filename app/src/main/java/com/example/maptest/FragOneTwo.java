@@ -23,7 +23,7 @@ import java.util.Iterator;
 
 public class FragOneTwo  extends Fragment implements View.OnClickListener  {
     private GridView gridTop, gridBottom;
-    private Button bt_DBStore;              //DB 저장버튼
+    private ImageView bt_DBStore;              //DB 저장버튼
 
     private ArrayList<DBinfo> dBinfos;
     private DBOpenHelper dbOpenHelper;
@@ -77,8 +77,9 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.bt_DBsotre:
-                if(listindex ==7){
-                    Toast.makeText(view.getContext().getApplicationContext(), "저장", Toast.LENGTH_SHORT).show();
+                Log.d("frag2","저장버튼 눌림");
+                if(listindex ==6){
+                    Log.d("frag2","숫자개수 통과");
                     dBinfos.clear();        // dBinfos리스트 비우기
                     Iterator<testset> it = listTop.iterator();
                     ArrayList<String> testlist = new ArrayList<>();     //임시로 번호 담을 리스트
@@ -88,15 +89,21 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
                         Log.d("테스트",str);
                     }
 
+                    /*
                     // numsetSort 오름차순으로 번호 정렬-홀짝비율 계산
                     String[] strset = MainActivity.numsetSort(
                             testlist.toString()
                                     .replace("[","")
                                     .replace("]","")
                                     .replace(" ",""));          //앞뒤([]), 숫자사이 공백 제거
+                     */
+                    String numset = testlist.toString()
+                            .replace("[","")
+                            .replace("]","")
+                            .replace(" ","");
 
                     // 내부SQLite DB 저장
-                    if(dbOpenHelper.insertDB(lastturn+1,strset)==1){   //최신회차+1 (다음주회차로 설정)
+                    if(dbOpenHelper.insertDB(884,numset)==1){   //최신회차+1 (다음주회차로 설정)
                         Log.d("데이터베이스","DB저장 성공");
                     } else {
                         Log.d("데이터베이스", "저장실패 - 중복");
@@ -125,7 +132,7 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
     // 상단 Grid뷰 초기화
     private void ClearTop(){
         listTop.clear();
-        for(int i=0; i<7; i++){
+        for(int i=0; i<6; i++){
             listTop.add(new testset(1, MainActivity.imgId[0],0));
         }
         if(numAdapterTop != null)           //numAdapter가 생성되어있는경우
@@ -204,7 +211,7 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
                         testset bottom = listBottom.get(position);
                         //클릭한 번호의 Tag검사 - 아직안눌린 경우, Tag==0
                         if (bottom.getTag() == 0) {
-                            if (listindex != 7) {       //고를수 있는 번호 최대 7개까지
+                            if (listindex != 6) {       //고를수 있는 번호 최대 6개까지
                                 bottom.setTag(1);       //Tag 1로 수정
                                 bottom.setImgid(res.getIdentifier("plus", "drawable",getActivity().getPackageName())); // plus이미지로 변경
                                 numAdapterBottom.notifyDataSetChanged();    //Adapter에 연결된 List내용 수정된 것 반영하기
@@ -212,7 +219,7 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
                                 testset top = listTop.get(listindex);       //선택된 인덱스에 맞는 ImageView 가져오기
                                 top.setImgid(MainActivity.imgId[position]);              //해당 imageView 이미지 변경 - 고른 숫자로
                                 top.setNumber(position + 1);
-                                listindex += 1;                             //골라진 숫자갯수 증가 (최대 7개 검사하기위해)
+                                listindex += 1;                             //골라진 숫자갯수 증가 (최대 6개 검사하기위해)
                                 //}
                                 numAdapterTop.notifyDataSetChanged();       //Adapter에 연결된 List내용 수정 후 반영
                             } else { //listindex가 7인경우 - 숫자 모두골라진 상태
@@ -235,7 +242,7 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
                             int number = (listTop.get(position)).getNumber(); //선택한 View - getNumber로 번호숫자 얻기
                             listTop.remove(position);                         // 해당index List값 제거
                             //remove로 제거되어서 index들이 하나씩 줄어듬 -> 마지막번호 생성(1로 세팅)
-                            listTop.add(6, new testset(1,MainActivity.imgId[0],0));
+                            listTop.add(5, new testset(1,MainActivity.imgId[0],0));
                             numAdapterTop.notifyDataSetChanged();               // list값 수정 반영하기
 
                             testset test = listBottom.get(number-1);          //getNumber로 얻은 번호숫자에 해당하는 View얻기 (배열, -1필요)

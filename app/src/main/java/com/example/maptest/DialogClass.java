@@ -136,6 +136,7 @@ public class DialogClass extends Dialog implements View.OnClickListener {
                 dltwo_cancel = findViewById(R.id.DLTwo_Cancel);
                 dltwo_cancel.setOnClickListener(this);
                 dltwo_check = findViewById(R.id.DLTwo_Check);
+                dltwo_check.setText("확인");
                 dltwo_check.setOnClickListener(this);
 
                 dbOpenHelper = new DBOpenHelper(getContext());

@@ -260,11 +260,11 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
                     viewHolder = (ViewHolder) view.getTag();
                 }
 
-                //뷰그룹 열려있으면 색변화
+                //뷰그룹 열려있으면 색변화#00BFFF
                 if(isExpanded){
-                    viewHolder.expand_GroupImage.setColorFilter(Color.YELLOW);
+                    viewHolder.expand_GroupImage.setColorFilter(Color.parseColor("#ADD8E6"));
                 } else {    // 닫혀있으면 변화
-                    viewHolder.expand_GroupImage.setColorFilter(Color.BLACK);
+                    viewHolder.expand_GroupImage.setColorFilter(Color.parseColor("#00BFFF"));
                 }
                 viewHolder.expand_GroupName.setText(getGroup(groupPosition));
                 break;
@@ -280,9 +280,9 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
                 }
 
                 if(isExpanded){
-                    dialogViewHolder.dialog_GroupImage.setColorFilter(Color.YELLOW);
+                    dialogViewHolder.dialog_GroupImage.setColorFilter(Color.parseColor("#ADD8E6"));
                 } else {    // 닫혀있으면 변화
-                    dialogViewHolder.dialog_GroupImage.setColorFilter(Color.BLACK);
+                    dialogViewHolder.dialog_GroupImage.setColorFilter(Color.parseColor("#00BFFF"));
                 }
                 dialogViewHolder.dialog_GroupName.setText(getGroup(groupPosition));
                 break;
@@ -318,7 +318,7 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
                         ArrayList<String> settingone = (ArrayList<String>) getChild(groupPosition,childPosition);
                         viewHolder.expand_OneRank.setText(settingone.get(0));
                         viewHolder.expand_OneTotalMoney.setText(settingone.get(1));
-                        viewHolder.expand_OnePeople.setText(settingone.get(2));
+                        viewHolder.expand_OnePeople.setText(settingone.get(2)+"명");
                         viewHolder.expand_OnePersonalMoney.setText(settingone.get(3));
                         viewHolder.expand_OneNorm.setText(settingone.get(4));
                         break;
@@ -331,7 +331,7 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
                             viewHolder.expand_TwoHallpair = view.findViewById(R.id.expand_Two_HallPair);
                             viewHolder.expand_TwoResult = view.findViewById(R.id.expand_Two_Result);
                             //findViewByID 반복문으로 실행 - 이미지뷰 7개
-                            for(int i=0; i<7; i++){
+                            for(int i=0; i<6; i++){
                                 int id = res.getIdentifier("expand_Two_Num"+(i+1),"id", context.getPackageName());
                                 viewHolder.expand_TwoNumset[i] = view.findViewById(id);
                             }
@@ -341,13 +341,22 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
                             //View가 이미존재한다면 - viewholder 갖고오기
                             viewHolder = (ViewHolder) view.getTag();
                         }
+
+
                         DBinfo settingtwo = (DBinfo) getChild(groupPosition,childPosition);
+                        String numset = settingtwo.getNumset();
                         viewHolder.expand_TwoTurn.setText(String.valueOf(settingtwo.getTurn()));
-                        viewHolder.expand_TwoHallpair.setText((settingtwo.getHallfair()));
-                        viewHolder.expand_TwoResult.setText(settingtwo.getResult());
-                        //이미지뷰 7개 세팅
-                        String[] numberset = settingtwo.getNumberset().split(",");
-                        for(int i=0; i<7; i++){
+
+                        String[] str = MainActivity.checkHallPair(numset).split(":");
+                        viewHolder.expand_TwoHallpair.setText((String.format("홀수:짝수 (%s:%s)", str[0], str[1])));
+
+                        String[] resultinfo = MainActivity.checkResult(numset);         // 내기록과 당첨번호 당첨 확인하기
+                        viewHolder.expand_TwoResult.setText(resultinfo[0]);             // [0] 당첨결과
+                        viewHolder.expand_TwoResult.setTextColor(Color.parseColor(resultinfo[1]));  // [1] #000000 String타입 컬러값
+
+                        //이미지뷰 6개 세팅
+                        String[] numberset = numset.split(",");
+                        for(int i=0; i<6; i++){
                             int number = Integer.parseInt(numberset[i]);
                             viewHolder.expand_TwoNumset[i].setImageResource(MainActivity.imgId[number-1]);
                         }
@@ -377,7 +386,7 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
                     dialogViewHolder.dialog_Hallpair = view.findViewById(R.id.dialog_HallPair);
                     dialogViewHolder.dialog_Delete = view.findViewById(R.id.dialog_delete);
 
-                    for (int i=0; i<7; i++){
+                    for (int i=0; i<6; i++){
                         int id = res.getIdentifier("dialog_Num"+(i+1), "id", context.getPackageName());
                         dialogViewHolder.dialog_Numset[i] = view.findViewById(id);
                     }
@@ -387,13 +396,15 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
                 }
 
                 final DBinfo setting = (DBinfo) getChild(groupPosition,childPosition);
+                String numset = setting.getNumset();
                 dialogViewHolder.dialog_Turn.setText(String.valueOf(setting.getTurn()));
-                dialogViewHolder.dialog_Hallpair.setText(setting.getHallfair());
-                dialogViewHolder.numberset = setting.getNumberset();
+                dialogViewHolder.dialog_Hallpair.setText(MainActivity.checkHallPair(numset));
+                dialogViewHolder.numberset = numset;
 
-                Log.d("다이얼로그", "numberset - " +setting.getNumberset());
-                        String[] numberset = setting.getNumberset().split(",");
-                for (int i=0; i<7; i++){
+                Log.d("다이얼로그", "numberset - " +numset);
+                String[] numberset = numset.split(",");
+
+                for (int i=0; i<6; i++){
                     int number = Integer.parseInt(numberset[i]);
                     dialogViewHolder.dialog_Numset[i].setImageResource(MainActivity.imgId[number-1]);
                 }
@@ -402,12 +413,12 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
                 dialogViewHolder.dialog_Delete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Log.d("다이얼로그", "클릭 numberset - "+ setting.getNumberset());
+                        Log.d("다이얼로그", "클릭 numberset - "+ setting.getNumset());
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
                         builder.setTitle("Delete");
                         builder.setMessage(String.format("%d회차 - %s",
                                 setting.getTurn(),
-                                setting.getNumberset().replace(",", " ")));
+                                setting.getNumset().replace(",", " ")));
                         //삭제버튼
                         builder.setPositiveButton("삭제",
                                 new DialogInterface.OnClickListener() {
@@ -415,7 +426,7 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         Toast.makeText(context,"삭제클릭",Toast.LENGTH_SHORT).show();
                                         DBOpenHelper dbOpenHelper = new DBOpenHelper(context);
-                                        dbOpenHelper.deleteDB(setting.getNumberset());
+                                        dbOpenHelper.deleteDB(setting.getNumset());
                                     }
                                 });
                         //취소버튼
@@ -443,7 +454,7 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
         public TextView expand_OneRank, expand_OneTotalMoney, expand_OnePeople, expand_OnePersonalMoney, expand_OneNorm;
         //타입2 (기록)
         public TextView expand_TwoTurn, expand_TwoHallpair, expand_TwoResult;
-        public ImageView[] expand_TwoNumset = new ImageView[7];
+        public ImageView[] expand_TwoNumset = new ImageView[6];
         //타입3 (당첨금 지급기한)
         public TextView expand_ThreeAttention;
     }
@@ -457,7 +468,7 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
         //Child
         public TextView dialog_Turn, dialog_Hallpair;
         public Button dialog_Delete;
-        public ImageView[] dialog_Numset = new ImageView[7];
+        public ImageView[] dialog_Numset = new ImageView[6];
         public String numberset;
     }
 }

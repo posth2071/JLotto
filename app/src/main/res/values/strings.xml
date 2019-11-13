@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MapTest</string>
+    <string name="app_name">J\' Lotto</string>
 
     // 숫자 1~9이름 지정 (zero1~zero9 -> num1~9)
     <string name="num1">zero1</string><string name="num2">zero2</string><string name="num3">zero3</string><string name="num4">zero4</string><string name="num5">zero5</string><string name="num6">zero6</string><string name="num7">zero7</string><string name="num8">zero8</string><string name="num9">zero9</string>

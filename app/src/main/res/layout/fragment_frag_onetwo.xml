@@ -10,31 +10,44 @@
     <GridView
         android:id="@+id/gridTop"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:numColumns="7"
+        android:layout_height="50dp"
+        android:numColumns="6"
         android:columnWidth="10dp"
-        android:layout_weight="1"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="2dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
         ></GridView>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@color/cardview_dark_background"
+        ></View>
     <GridView
         android:id="@+id/gridBottom"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="300dp"
         android:columnWidth="10dp"
         android:numColumns="6"
+        android:layout_gravity="top"
         android:verticalSpacing="2dp"
-        android:layout_marginTop="10dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:stretchMode="columnWidth"
-        android:layout_weight="3"
         ></GridView>
-    <Button
+    <ImageView
         android:id="@+id/bt_DBsotre"
-        android:text="저장"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="40dp"
         android:layout_gravity="right"
-        ></Button>
+        android:background="@drawable/ic_add_circle_black_24dp"
+        android:adjustViewBounds="true"
+        ></ImageView>
 
 </LinearLayout>

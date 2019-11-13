@@ -9,5 +9,10 @@
     <TextView
         android:id="@+id/expand_Three_Attention"
         android:layout_width="match_parent"
-        android:layout_height="50dp"></TextView>
+        android:layout_height="50dp"
+        android:text="당첨금 지급기한"
+        android:textSize="16dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="15dp"
+        ></TextView>
 </LinearLayout>
