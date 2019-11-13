@@ -31,6 +31,7 @@ import java.util.Arrays;
 public class FragTwo extends Fragment {
     public static final String TURN_TEXT = "%d회 당첨결과";
     private ImageView[] frag2_numiv = new ImageView[7];
+    private ImageView frag2_group_iv;
     private TextView frag2_turn, frag2_date;
     private LottoParsingInfo parsingInfo;
 
@@ -54,6 +55,7 @@ public class FragTwo extends Fragment {
         Log.v("Fragment3","onCreateView 프래그먼트와 관련되는 뷰계층 만들어서 리턴");
         View view = inflater.inflate(R.layout.fragment_frag_two, container, false);
 
+        frag2_group_iv = view.findViewById(R.id.frag2_expand_group_iv);
         frag2_turn = view.findViewById(R.id.frag2_turn);
         frag2_date = view.findViewById(R.id.frag2_date);
         frag2_expandable = view.findViewById(R.id.frag2_Expandable);

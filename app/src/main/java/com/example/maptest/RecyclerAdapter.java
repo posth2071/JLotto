@@ -97,7 +97,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         MyViewHolder myViewHolder = (MyViewHolder) holder;
 
-        myViewHolder.ivPicture.setImageResource(foodInfoArrayList.get(position).drawableId);
+        //myViewHolder.ivPicture.setImageResource(foodInfoArrayList.get(position).drawableId);
         myViewHolder.tv_storeName.setText(foodInfoArrayList.get(position).storeName);
         myViewHolder.tv_storeLocation.setText(foodInfoArrayList.get(position).storeLocation);
     }

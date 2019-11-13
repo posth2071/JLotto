@@ -2,19 +2,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!-- Bottom메뉴 아이템 세팅 -->
     <item
-        android:id="@+id/menuitem_bottombar_up"
-        android:title="Up"
-        app:showAsAction="ifRoom"/>
+        android:id="@+id/bottombar_one"
+        android:title="Number"
+        android:icon="@drawable/ic_bottom_menu2_24px"
+        app:showAsAction="always"/>
 
     <item
-        android:id="@+id/menuitem_bottombar_down"
-        android:title="Down"
-        app:showAsAction="ifRoom"/>
+        android:id="@+id/bottombar_two"
+        android:title="Info"
+        android:icon="@drawable/ic_search_24px"
+        app:showAsAction="always"/>
 
     <item
-        android:id="@+id/menuitem_bottombar_search"
-        android:title="Search"
-        app:showAsAction="ifRoom"/>
+        android:id="@+id/bottombar_three"
+        android:title="Map"
+        android:icon="@drawable/ic_map_black_24dp"
+        app:showAsAction="always"/>
 
 </menu>

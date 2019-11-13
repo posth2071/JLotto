@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/menu2_info" android:title="Info" android:orderInCategory="1">
+        <menu>
+            <group android:id="@+id/menu2_group1" android:checkableBehavior="none">
+                <item
+                    android:id="@+id/menu2_turn"
+                    android:title="      880회차"
+                    ></item>
+                <item
+                    android:id="@+id/menu2_date"
+                    android:title="      2019.04.22일"></item>
+            </group>
+        </menu>
+    </item>
+
+
+    <item android:title="설정" android:orderInCategory="2">
+        <menu>
+            <group android:id="@+id/menu2_group2" android:checkableBehavior="none">
+                <item
+                    android:id="@+id/menu2_Search"
+                    style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                    android:icon="@drawable/ic_search_24px"
+                    android:title="회차검색"/>
+
+                <item
+                    android:id="@+id/menu2_DBSet"
+                    style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                    android:icon="@drawable/ic_sdcard_24px"
+                    android:title="DB설정"/>
+            </group>
+        </menu>
+    </item>
+
+
+</menu>

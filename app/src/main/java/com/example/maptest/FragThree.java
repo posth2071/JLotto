@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 public class FragThree extends Fragment  {
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager mLayoutManager;
+    TextView frag3_title;
     public FragThree() {
         // Required empty public constructor
     }
@@ -54,6 +56,12 @@ public class FragThree extends Fragment  {
         super.onActivityCreated(savedInstanceState);
         Log.v("Fragment3","onActivityCreated 연결된 액티비티 onCreate() 완료 후 호출");
 
+        frag3_title = getActivity().findViewById(R.id.frag3_title);
+        frag3_title.setText(String.format(
+                "%d회차 1등 당첨매장 - %d개"
+                ,MainActivity.lastLottoinfo.getTurn()
+                ,MainActivity.lastLottoinfo.getStoreList().size()
+                ));
         mRecyclerView = getActivity().findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
 

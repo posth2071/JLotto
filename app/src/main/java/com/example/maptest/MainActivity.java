@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(false);        // 기존 title 지우기 (false - 지우지않음)
         actionBar.setDisplayHomeAsUpEnabled(true);      // 메뉴버튼 만들기
-        actionBar.setHomeAsUpIndicator(R.drawable.plus); //메뉴버튼 이미지 지정
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_24dp); //메뉴버튼 이미지 지정
         //actionBar.setDisplayHomeAsUpEnabled(false);     // 메뉴버튼 없애기
 
 
@@ -231,17 +231,17 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         // 어떤 메뉴 아이템이 터치되었는지 확인
         switch (menuItem.getItemId()) {
             //바텀메뉴바 아이디
-            case R.id.menuitem_bottombar_up:
+            case R.id.bottombar_one:
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment, frag1) // 표시할 레이아웃, 변경할 프래그먼트 설정
                         .addToBackStack(null)          // 백스택에 변겅전 프래그먼트 저장
                         .commit();                     // 트랜잭션 실행
                 return true;
-            case R.id.menuitem_bottombar_down:
+            case R.id.bottombar_two:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment, frag2).addToBackStack(null).commit();
                 return true;
 
-            case R.id.menuitem_bottombar_search:
+            case R.id.bottombar_three:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment, frag3).addToBackStack(null).commit();
                 return true;
             //슬라이드 메뉴바 아이디

@@ -6,33 +6,56 @@
     android:background="@color/maincolor"
     android:orientation="vertical"
     >
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="24dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        >
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_sd_storage_black_24dp"
+            android:adjustViewBounds="true"
+            ></ImageView>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:gravity="start"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:paddingLeft="24dp"
         android:text="기록 설정"
         android:textColor="@color/white"
         android:textSize="20sp"
+        android:layout_marginLeft="10dp"
         />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#55f5f5f5"/>
 
     <ExpandableListView
         android:id="@+id/DLTwo_ExList"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="wrap_content"
+        android:divider="#55f5f5f5"
+        android:dividerHeight="0.5dp"
+        android:groupIndicator="@null"
         ></ExpandableListView>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#55f5f5f5"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="end"
         android:orientation="horizontal"
-        android:paddingTop="16dp"
-        android:paddingBottom="8dp"
         android:weightSum="10">
 
         <TextView
@@ -40,12 +63,12 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
-            android:background="?attr/selectableItemBackground"
+            android:background="@android:color/transparent"
             android:clickable="true"
             android:gravity="center"
             android:text="취소"
-            android:textColor="@color/white"
             android:textSize="16sp"
+            android:textColor="@color/white"
             />
         <TextView
             android:id="@+id/DLTwo_Check"

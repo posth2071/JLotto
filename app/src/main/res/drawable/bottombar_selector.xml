@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- BottomNavigation 뷰 클릭시 색변화 Selector-->
+    <item android:color="#F5F5F5" android:state_checked="true"></item>
+    <item android:color="#BBBBBB" android:state_checked="false"></item>
+
+    <!--
+    <item android:color="#FFFFFF" android:state_checked="true"></item>
+    <item android:color="#BBBBBB" android:state_checked="false"></item>
+    -->
+</selector>

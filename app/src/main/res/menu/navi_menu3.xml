@@ -6,7 +6,7 @@
             <group android:id="@+id/menu3_group1" android:checkableBehavior="none">
                 <item
                     android:id="@+id/menu3_map"
-                    android:icon="@drawable/ic_launcher_foreground"
+                    android:icon="@drawable/ic_place_24dp"
                     android:title="주변 판매점"/>
             </group>
         </menu>

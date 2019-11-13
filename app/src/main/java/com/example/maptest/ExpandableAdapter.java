@@ -252,17 +252,19 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
                     view = inflater.inflate(R.layout.expand_list, parent, false);
 
                     viewHolder.expand_GroupName = view.findViewById(R.id.expand_GroupName);
+                    viewHolder.expand_GroupImage = view.findViewById(R.id.frag2_expand_group_iv);
 
                     view.setTag(viewHolder);
                 } else {
                     Log.d("테스트", "view != null - "+groupPosition);
                     viewHolder = (ViewHolder) view.getTag();
                 }
+
                 //뷰그룹 열려있으면 색변화
                 if(isExpanded){
-                    viewHolder.expand_GroupName.setBackgroundColor(Color.GREEN);
+                    viewHolder.expand_GroupImage.setColorFilter(Color.YELLOW);
                 } else {    // 닫혀있으면 변화
-                    viewHolder.expand_GroupName.setBackgroundColor(Color.WHITE);
+                    viewHolder.expand_GroupImage.setColorFilter(Color.BLACK);
                 }
                 viewHolder.expand_GroupName.setText(getGroup(groupPosition));
                 break;
@@ -271,15 +273,16 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
                     dialogViewHolder = new DialogViewHolder();
                     view = inflater.inflate(R.layout.dialog_groupname, parent, false);
                     dialogViewHolder.dialog_GroupName = view.findViewById(R.id.dialog_GroupName);
+                    dialogViewHolder.dialog_GroupImage = view.findViewById(R.id.dialog_GroupImage);
                     view.setTag(dialogViewHolder);
                 } else {
                     dialogViewHolder = (DialogViewHolder) view.getTag();
                 }
 
                 if(isExpanded){
-                    dialogViewHolder.dialog_GroupName.setBackgroundColor(Color.GREEN);
+                    dialogViewHolder.dialog_GroupImage.setColorFilter(Color.YELLOW);
                 } else {    // 닫혀있으면 변화
-                    dialogViewHolder.dialog_GroupName.setBackgroundColor(Color.WHITE);
+                    dialogViewHolder.dialog_GroupImage.setColorFilter(Color.BLACK);
                 }
                 dialogViewHolder.dialog_GroupName.setText(getGroup(groupPosition));
                 break;
@@ -435,6 +438,7 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
     class ViewHolder {
         //Group
         public TextView expand_GroupName;
+        public ImageView expand_GroupImage;
         //타입1 (당첨정보)
         public TextView expand_OneRank, expand_OneTotalMoney, expand_OnePeople, expand_OnePersonalMoney, expand_OneNorm;
         //타입2 (기록)
@@ -448,6 +452,7 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
     class DialogViewHolder {
         //Group
         public TextView dialog_GroupName;
+        public ImageView dialog_GroupImage;
 
         //Child
         public TextView dialog_Turn, dialog_Hallpair;

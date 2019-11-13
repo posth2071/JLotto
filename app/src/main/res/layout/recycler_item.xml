@@ -5,31 +5,44 @@
     android:layout_width="match_parent"
     android:layout_height="56dp">
     <ImageView
-        android:src="@drawable/imageone"
-        android:layout_marginStart="16dp"
+        android:id="@+id/iv_picture"
+        android:src="@drawable/ic_store_24px"
+        android:layout_marginStart="15dp"
         android:layout_centerVertical="true"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:id="@+id/iv_picture"/>
+        android:layout_width="25dp"
+        android:layout_height="25dp" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_marginStart="72dp">
+        android:layout_marginStart="55dp">
 
         <TextView
             android:id="@+id/tv_storename"
             android:layout_centerVertical="true"
             android:layout_marginStart="10dp"
+            android:text="매장명"
             android:textSize="16sp"
+            android:textStyle="bold"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:paddingBottom="4dp"/>
         <TextView
             android:id="@+id/tv_storelocation"
             android:layout_centerVertical="true"
             android:layout_marginStart="10dp"
+            android:text="매장주소"
             android:textSize="13sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+
     </LinearLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/cardview_dark_background"
+        ></View>
 </RelativeLayout>
