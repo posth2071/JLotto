@@ -89,14 +89,6 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
                         Log.d("테스트",str);
                     }
 
-                    /*
-                    // numsetSort 오름차순으로 번호 정렬-홀짝비율 계산
-                    String[] strset = MainActivity.numsetSort(
-                            testlist.toString()
-                                    .replace("[","")
-                                    .replace("]","")
-                                    .replace(" ",""));          //앞뒤([]), 숫자사이 공백 제거
-                     */
                     String numset = testlist.toString()
                             .replace("[","")
                             .replace("]","")
@@ -108,14 +100,6 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
                     } else {
                         Log.d("데이터베이스", "저장실패 - 중복");
                     }
-
-                    /*
-                    dBinfos = dbOpenHelper.selectDB(lastturn+1);
-                    Iterator<DBinfo> it1 = dBinfos.iterator();
-                    while(it1.hasNext()){
-                        Log.d("데이터베이스",it1.next().getInfo());  //db저장 목록 보여주기
-                    }
-                     */
 
                     // 상단,하단 Grid뷰, listindex 초기화
                     ClearBottom();
@@ -213,7 +197,7 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
                         if (bottom.getTag() == 0) {
                             if (listindex != 6) {       //고를수 있는 번호 최대 6개까지
                                 bottom.setTag(1);       //Tag 1로 수정
-                                bottom.setImgid(res.getIdentifier("plus", "drawable",getActivity().getPackageName())); // plus이미지로 변경
+                                bottom.setImgid(res.getIdentifier("ic_checked", "drawable",getActivity().getPackageName())); // plus이미지로 변경
                                 numAdapterBottom.notifyDataSetChanged();    //Adapter에 연결된 List내용 수정된 것 반영하기
 
                                 testset top = listTop.get(listindex);       //선택된 인덱스에 맞는 ImageView 가져오기

@@ -155,7 +155,6 @@ public class FragOne extends Fragment implements View.OnClickListener {
         numberlist.clear();             //저장할 리스트비우기
         HashSet<Integer> exceptCheck = new HashSet<>();
         HashSet<Integer> lottonums = new HashSet<>();
-
         //고정수 설정된게 있다면 해쉬에 추가
         if(MainActivity.fixedNums.size()!=0){
             lottonums.addAll(MainActivity.fixedNums);
@@ -166,7 +165,6 @@ public class FragOne extends Fragment implements View.OnClickListener {
             exceptCheck.addAll(MainActivity.exceptNums);
             Log.d("frag1", "\n" + "\t제외수 exceptCheck - \n"+exceptCheck.toString());
         }
-
         while(lottonums.size()<6) {
             int random = (int)(Math.random()*45)+1;
             if(exceptCheck.add(random)){ //랜덤값이 추가된다면 중복없음

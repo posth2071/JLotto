@@ -143,22 +143,6 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
             default:
                 return null;
         }
-        /*
-        switch (groupPosition){
-            case 0:
-                ArrayList<ArrayList<String>> childOne = childList.getTypeOne();
-                return childOne.get(childPosition);
-            case 1:
-                ArrayList<DBinfo> childTwo = childList.getTypeTwo();
-                return childTwo.get(childPosition);
-            case 2:
-                ArrayList<String> childThree = childList.getTypethree();
-                return childThree.get(childPosition);
-            default:
-                return null;
-        }
-
-         */
     }
 
     //차일드뷰 사이즈 반환
@@ -185,23 +169,6 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
             default:
                 return 0;
         }
-        /*
-        switch (groupPosition) {
-            case 0:
-                Log.d("테스트", "childrenCount 반환 - "+childList.typeOne.size());
-                return childList.typeOne.size();
-            case 1:
-                Log.d("테스트", "childrenCount 반환 - "+childList.typeTwo.size());
-                return childList.typeTwo.size();
-            case 2:
-                Log.d("테스트", "childrenCount 반환 - "+childList.typethree.size());
-                return childList.typethree.size();
-            default:
-                Log.d("테스트", "childrenCount 반환 - default");
-                return 0;
-        }
-
-         */
     }
 
     // 차일드뷰 ID반환

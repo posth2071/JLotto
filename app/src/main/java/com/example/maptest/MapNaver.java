@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,6 +27,7 @@ import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.overlay.LocationOverlay;
 import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.Overlay;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -424,7 +426,25 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
                 markers[i] = new Marker();
                 markers[i].setPosition(new LatLng(latitude[i],longtitude[i]));
                 markers[i].setCaptionText(name[i]);
+                markers[i].setTag(i);
+                Log.d("지도","CaptionText - "+ name[i] + ", Tag - "+ i );
+                markers[i].setOnClickListener(new Overlay.OnClickListener() {
+                    @Override
+                    public boolean onClick(@NonNull Overlay overlay) {
+                        int tag = (int)overlay.getTag();
+                        Log.d("지도", "번호 - "+phone[tag]);
+                        if(phone[tag].length()>2){
+                            String tel = "tel:" + phone[tag];
+                            Intent it = new Intent(Intent.ACTION_DIAL, Uri.parse(tel));
+                            startActivity(it);
+                        } else{
+                            Toast.makeText(MapNaver.this, "번호 미등록 매장", Toast.LENGTH_SHORT).show();
+                        }
+                        return false;
+                    }
+                });
                 markers[i].setMap(mMap);
+
             }
             for(int i=0; i<5; i++) {
                 Log.d("지도", "Markers "+i+ " - " +markers[i].getCaptionText() + ", " + markers[i].getPosition());

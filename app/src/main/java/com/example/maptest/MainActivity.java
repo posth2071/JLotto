@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             changeset[i] = Integer.parseInt(numberset[i]);
         }
         Arrays.sort(changeset);                                //오름차순으로 정렬
-        
+
         String str = Arrays.toString(changeset)
                 .replace("[", "")       //괄호제거
                 .replace("]", "")       //괄호제거
@@ -215,23 +215,23 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         switch (resultcount){
             case 6:
                 resultstr[0] = "1등";
-                resultstr[1] = "#800000";
+                resultstr[1] = "#00FF00";
                 return resultstr;
 
             case 5:
                 if(bonuscount!=0){
                     resultstr[0] = "2등";
-                    resultstr[1] = "#87CEFA";
+                    resultstr[1] = "#0000FF";
                     return resultstr;
                 } else{
                     resultstr[0] = "3등";
-                    resultstr[1] = "#B0C4DE";
+                    resultstr[1] = "#FF5733";
                     return resultstr;
                 }
 
             case 4:
                 resultstr[0] = "4등";
-                resultstr[1] = "#F0E68C";
+                resultstr[1] = "#E9967A";
                 return resultstr;
 
             default:
