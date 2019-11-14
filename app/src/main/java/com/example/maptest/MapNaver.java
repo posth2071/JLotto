@@ -91,50 +91,6 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
         mMap = naverMap;
         it = getIntent();
         setMap(it.getIntExtra("TAG", 0), naverMap);
-        /*
-        if(tag.compareTo("1")==0){
-            latLng1 = new LatLng(36.995143f,127.133372f);
-            Log.d("지도", "if(tag==1 걸림");             //맵 생명주기 (생성시)
-        } else if(tag.compareTo("2") == 0){
-            lat = it.getDoubleExtra("lat",1);
-            lng = it.getDoubleExtra("lng",1);
-            test = it.getStringArrayExtra("store");
-            Toast.makeText(getApplicationContext(),lat+" "+lng,Toast.LENGTH_SHORT).show();
-            latLng1 = new LatLng( lat,lng);
-            Log.d("지도", "if(tag==2 걸림");             //맵 생명주기 (생성시)
-        }
-        else{
-            Log.d("지도", "if 안걸림");             //맵 생명주기 (생성시)
-        }
-
-        CameraUpdate cameraUpdate1 = CameraUpdate.scrollTo(latLng1);
-        naverMap.moveCamera(cameraUpdate1);
-
-
-         */
-        //Marker marker1 = new Marker();
-        //marker1.setPosition(latLng1);
-        //marker1.setMap(naverMap);
-
-        //marker1.setSubCaptionText(test[0]);
-        //marker1.setSubCaptionColor(Color.RED);
-        //marker1.setSubCaptionHaloColor(Color.YELLOW);
-        //marker1.setSubCaptionTextSize(10);
-
-        /*
-        if(tag == "2"){
-            InfoWindow infoWindow = new InfoWindow();
-            infoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(this){
-                @NonNull
-                @Override
-                public CharSequence getText(@NonNull InfoWindow infoWindow) {
-                    return test[0]+"\n"+test[1];
-                }
-            });
-            infoWindow.open(marker1);
-        }
-
-         */
     }
 
     public void setMap(int tag, final NaverMap naverMap) {
@@ -202,31 +158,19 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
 
             Marker marker1 = new Marker();
             marker1.setPosition(new LatLng(lat, lng));
-            marker1.setCaptionText("마커 표시");             //주캡션 - 마커 밑 텍스트
-            marker1.setSubCaptionText(test[0]);             //suboCaption 보조캡션 - 주캡션없으면 표시 안됨
+            marker1.setCaptionText(test[0]);             //주캡션 - 마커 밑 텍스트
+            marker1.setCaptionColor(Color.parseColor("#66cdaa"));
+            marker1.setSubCaptionText(test[1]);             //suboCaption 보조캡션 - 주캡션없으면 표시 안됨
             Log.d("지도", test[0]);
-            marker1.setSubCaptionColor(Color.RED);
-            marker1.setSubCaptionHaloColor(Color.YELLOW);
-            marker1.setSubCaptionTextSize(10);
+            marker1.setSubCaptionColor(Color.GRAY);
+            marker1.setSubCaptionTextSize(8);
 
             marker1.setMap(naverMap);
             Log.d("지도", "마커 생성");
             naverMap.moveCamera(CameraUpdate.scrollTo(new LatLng(lat, lng)));
         }
-
-
     }
 
-    public void testmarker(NaverMap naverMap){
-        Log.d("지도", "testmarker 실행");
-        for(int i=0; i<5; i++){
-            markers[i].setMap(naverMap);
-        }
-        Marker marker= new Marker();
-        marker.setPosition(new LatLng(36.995715, 127.135610));
-        marker.setCaptionText("테스트 마커");
-        marker.setMap(naverMap);
-    }
     public void startLocationService(final NaverMap naverMap) {
         Log.d("지도","startLocationService() 진입");
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -253,92 +197,6 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, mLocationListener);
     }
 
-    /*
-    //현위치 주변 로또판매점 찾기(최대 5개)
-    public void searchLotto(final String searchObject, final NaverMap naverMap) {
-        final String clientId = "y0189tgx11"; // 클라이언트 아이디값
-        final String clientSecret = "NK87OTfxcF1JlVUt6acqMimoSKV5toNq5Y8v75IR"; // 시크릿값
-
-        new Thread() {
-            public void run() {
-                try {
-                    String text = URLEncoder.encode(searchObject, "UTF-8"); // searchObject = 로또
-                    Log.d("확인", text);
-                    if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        //    Activity#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for Activity#requestPermissions for more details.
-                        return;
-                    }
-                    Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                    String locationstr = String.valueOf(location.getLongitude())+","+String.valueOf(location.getLatitude());
-                    Log.d("지도","locationstr -"+locationstr);
-                    String apiURL = "https://naveropenapi.apigw.ntruss.com/map-place/v1/search?query="+text+"&coordinate="+locationstr; // 좌표 lng, lat 순서
-                    URL url = new URL(apiURL);
-                    HttpURLConnection con = (HttpURLConnection)url.openConnection();
-                    con.setRequestMethod("GET");
-                    con.setRequestProperty("X-NCP-APIGW-API-KEY-ID", clientId);
-                    con.setRequestProperty("X-NCP-APIGW-API-KEY", clientSecret);
-                    con.connect();
-
-                    int responseCode = con.getResponseCode();
-
-                    if(responseCode == 200) {
-                        br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                    } else {
-                        br = new BufferedReader((new InputStreamReader(con.getErrorStream())));
-                    }
-                    searchResult = new StringBuilder();
-                    String inputLine;
-                    while ((inputLine = br.readLine())!= null) {
-                        searchResult.append(inputLine+ "\n");
-                    }
-                    br.close();
-                    con.disconnect();
-
-                    String data = searchResult.toString();
-                    JSONObject jsonObject = new JSONObject(data);
-                    JSONArray jsonArray = jsonObject.getJSONArray("places");
-
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject lottoinfo = jsonArray.getJSONObject(i);
-                        name[i] = lottoinfo.getString("name");                  //매장명
-                        addr_road[i] = lottoinfo.getString("road_address");     //도로명주소
-                        addr_jibun[i] = lottoinfo.getString("jibun_address");   //지번주소
-                        phone[i] = lottoinfo.getString("phone_number");         //전화번호
-                        x[i] = lottoinfo.getDouble("x");                        //경도
-                        y[i] = lottoinfo.getDouble("y");                        //위도
-                        distance[i]  = lottoinfo.getString("distance");         //검색 중심 좌표와의 거리
-                    }
-                    for(int i=0; i<name.length; i++) {
-                        Log.d("지도", name[i] + ", " + addr_road[i] + ", " + addr_jibun[i] + ", " + phone[i] + ", " + x[i] + ", " + y[i] + ", " + distance[i]);
-                        markers[i] = new Marker();
-                        markers[i].setPosition(new LatLng(x[i],y[i]));
-                        markers[i].setCaptionText(name[i]);
-                        //markertest.setSubCaptionText();             //suboCaption 보조캡션 - 주캡션없으면 표시 안됨
-                        //markertest.setSubCaptionColor(Color.RED);
-                        //markertest.setSubCaptionHaloColor(Color.YELLOW);
-                        //markertest.setSubCaptionTextSize(6);
-                    }
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                } catch (ProtocolException e) {
-                    e.printStackTrace();
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-    }
-     */
     class MapTask extends AsyncTask<Void, Void, Boolean> {
         final String clientId = "y0189tgx11"; // 클라이언트 아이디값
         final String clientSecret = "NK87OTfxcF1JlVUt6acqMimoSKV5toNq5Y8v75IR"; // 시크릿값
@@ -425,14 +283,20 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
                 Log.d("지도", name[i] + ", " + addr_road[i] + ", " + addr_jibun[i] + ", " + phone[i] + ", " + latitude[i] + ", " + longtitude[i] + ", " + distance[i]);
                 markers[i] = new Marker();
                 markers[i].setPosition(new LatLng(latitude[i],longtitude[i]));
-                markers[i].setCaptionText(name[i]);
-                markers[i].setTag(i);
-                Log.d("지도","CaptionText - "+ name[i] + ", Tag - "+ i );
+
+                markers[i].setCaptionText(name[i]);             //주캡션 - 마커 밑 텍스트
+                markers[i].setCaptionColor(Color.parseColor("#66cdaa"));
+
+                markers[i].setSubCaptionText(addr_road[i]);     //suboCaption 보조캡션 - 주캡션없으면 표시 안됨
+                markers[i].setSubCaptionColor(Color.GRAY);
+                markers[i].setSubCaptionTextSize(8);
+
+                markers[i].setTag(i);           //클릭이벤트 처리때 구분자용 tag
                 markers[i].setOnClickListener(new Overlay.OnClickListener() {
                     @Override
                     public boolean onClick(@NonNull Overlay overlay) {
                         int tag = (int)overlay.getTag();
-                        Log.d("지도", "번호 - "+phone[tag]);
+                        //번호 길이가 2이상이면 다이얼하기
                         if(phone[tag].length()>2){
                             String tel = "tel:" + phone[tag];
                             Intent it = new Intent(Intent.ACTION_DIAL, Uri.parse(tel));
@@ -480,40 +344,3 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
             locationManager.removeUpdates(mLocationListener);
     }
 }
-            /*
-            naverMap.setSymbolScale(1.5f); // 심볼크기
-
-        Intent it = getIntent();
-        lat = it.getDoubleExtra("lat",1);
-        lng = it.getDoubleExtra("lng",1);
-        test = it.getStringArrayExtra("store");
-        Toast.makeText(getApplicationContext(),lat+" "+lng,Toast.LENGTH_SHORT).show();
-
-            LatLng latLng1 = new LatLng( lat,lng);
-            CameraUpdate cameraUpdate1 = CameraUpdate.scrollTo(latLng1);
-            naverMap.moveCamera(cameraUpdate1);
-
-        Marker marker1 = new Marker();
-        marker1.setPosition(latLng1);
-        marker1.setMap(naverMap);
-
-        marker1.setSubCaptionText(test[0]);
-        marker1.setSubCaptionColor(Color.RED);
-        marker1.setSubCaptionHaloColor(Color.YELLOW);
-        marker1.setSubCaptionTextSize(10);
-
-        InfoWindow infoWindow = new InfoWindow();
-        infoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(this){
-            @NonNull
-            @Override
-            public CharSequence getText(@NonNull InfoWindow infoWindow) {
-                return test[0]+"\n"+test[1];
-            }
-        });
-        infoWindow.open(marker1);
-    }
-}
-
-
-             */
-// 36.995143 127.133372 평택대학교 좌표

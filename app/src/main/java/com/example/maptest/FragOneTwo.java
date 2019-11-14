@@ -95,7 +95,7 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
                             .replace(" ","");
 
                     // 내부SQLite DB 저장
-                    if(dbOpenHelper.insertDB(884,numset)==1){   //최신회차+1 (다음주회차로 설정)
+                    if(dbOpenHelper.insertDB((884),numset)==1){   //최신회차+1 (다음주회차로 설정)
                         Log.d("데이터베이스","DB저장 성공");
                     } else {
                         Log.d("데이터베이스", "저장실패 - 중복");
