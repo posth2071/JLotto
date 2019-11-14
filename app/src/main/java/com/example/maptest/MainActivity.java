@@ -432,7 +432,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     String[] str = editable.toString().split("\\.");                    //Dot를 기준으로 배열로 나누기
 
                     for (int i = 0; i < str.length; i++) {                                            //배열 개수만큼 반복
-                        if ((str[i].compareTo("") != 0) && (Integer.valueOf(str[i]) < 46)) {     //입력한 숫자가 0이 아니고, 46보다 작으면 저장
+                        if ((Integer.parseInt(str[i])!= 0) && (Integer.valueOf(str[i]) < 46)) {     //입력한 숫자가 0이 아니고, 46보다 작으면 저장
                             testHash.addAll(list);
                             // if (testHash.add(Integer.parseInt(str[i]))) {
                             if (!(set_hash.add(Integer.parseInt(str[i])) && (testHash.add(Integer.parseInt(str[i]))))) {                       //해쉬set 저장실패하면 (중복일경우)
