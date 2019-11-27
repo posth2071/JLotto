@@ -1,26 +1,34 @@
 package com.example.maptest;
 
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.PixelCopy;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 
@@ -29,8 +37,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 
 /**
@@ -42,6 +52,8 @@ public class FragTwo extends Fragment {
     private ImageView frag2_group_iv;
     private TextView frag2_turn, frag2_date;
     private LottoParsingInfo parsingInfo;
+    private Button frag2_share;
+    private View view;
 
     ExpandableListView frag2_expandable;
     ExpandableAdapter frag2_exAdapter;
@@ -61,8 +73,15 @@ public class FragTwo extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         Log.v("Fragment3","onCreateView 프래그먼트와 관련되는 뷰계층 만들어서 리턴");
-        View view = inflater.inflate(R.layout.fragment_frag_two, container, false);
+        view = inflater.inflate(R.layout.fragment_frag_two, container, false);
 
+        frag2_share = view.findViewById(R.id.frag2_sharebt);
+        frag2_share.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                ScreenShare();
+            }
+        });
         frag2_group_iv = view.findViewById(R.id.frag2_expand_group_iv);
 
         frag2_turn = view.findViewById(R.id.frag2_turn);
@@ -83,26 +102,11 @@ public class FragTwo extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.v("Fragment2","onActivityCreated 연결된 액티비티 onCreate() 완료 후 호출");
-        //String str = Arrays.toString(MainActivity.lastLottoinfo.getLottoInfo())
-          //      .replace("[","")
-            //    .replace("]","");
 
         //1~45숫자 이미지ID 갖고오기
         parsingInfo = MainActivity.lastLottoinfo;   //제일마지막회차 정보 클래스 얻어오기
         Log.d("확인", String.format(TURN_TEXT, parsingInfo.getTurn()));
 
-
-        /*
-        //초기 제일최신회차 번호 이미지뷰 세팅
-        String[] str = parsingInfo.getLottoInfo();
-        for(int i=0; i<str.length; i++){
-            int num = Integer.parseInt(str[i]);
-            Log.d("확인", "Lottoinfo index ["+i+"] - "+str[i] + ", num - "+num);
-            frag2_numiv[i].setImageResource(MainActivity.imgId[num-1]);
-        }
-        frag2_turn.setText(String.format(TURN_TEXT, String.valueOf(parsingInfo.getTurn())));  //회차 세팅
-        frag2_date.setText(parsingInfo.getDate());  //추첨날짜 세팅
-         */
         setting();
 
         //그룹뷰 리스트 세팅
@@ -172,6 +176,45 @@ public class FragTwo extends Fragment {
             int num = Integer.parseInt(numset[i]);
             Log.d("확인", "Lottoinfo index ["+i+"] - "+numset[i] + ", num - "+num);
             frag2_numiv[i].setImageResource(MainActivity.imgId[num-1]);
+        }
+    }
+
+    private void ScreenShare() {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            Log.d("에러","권한체크 if문들어옴");
+            // 사용자 권한 요청
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1000);
+        }
+
+        Log.d("캡쳐", "bt_Voice 눌림");
+
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath()+"/AnimationCapture";
+        View rootView = getActivity().getWindow().getDecorView().getRootView(); //캡쳐할영역(프레임레이아웃)
+
+        File file = new File(path);
+        if(!file.exists()){
+            file.mkdirs();
+            Toast.makeText(getContext(), "폴더가 생성되었습니다.", Toast.LENGTH_SHORT).show();
+        }
+
+        SimpleDateFormat day = new SimpleDateFormat("yyyyMMddHHmmss");
+        Date date = new Date();
+        rootView.buildDrawingCache();
+        Bitmap captureview = rootView.getDrawingCache();
+
+        FileOutputStream fos = null;
+        try{
+            fos = new FileOutputStream(path+"/Capture"+day.format(date)+".jpeg");
+            captureview.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + path + "/Capture" + day.format(date) + ".JPEG")));
+            Toast.makeText(getContext(), "저장완료", Toast.LENGTH_SHORT).show();
+            fos.flush();
+            fos.close();
+            rootView.destroyDrawingCache();
+        } catch (FileNotFoundException e) {
+            Log.d("에러","Frag2-Capture \n\tFileNotFoundException Error \n\t"+e.toString());
+        } catch (IOException e) {
+            Log.d("에러","Frag2-Capture \n\tIOException Error \n\t"+e.toString());
         }
     }
 

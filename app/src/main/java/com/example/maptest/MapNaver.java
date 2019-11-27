@@ -204,6 +204,7 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
         public MapTask(NaverMap naverMap){
             this.taskMap = naverMap;
         }
+
         @Override
         protected Boolean doInBackground(Void... voids) {
             Log.d("지도","MapTask doinBackground 실행");

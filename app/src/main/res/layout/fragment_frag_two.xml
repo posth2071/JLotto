@@ -57,7 +57,12 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:gravity="right">
-
+            <Button
+                android:id="@+id/frag2_sharebt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="공유"
+                ></Button>
         </LinearLayout>
     </LinearLayout>
 
