@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -12,11 +13,16 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.text.Editable;
@@ -103,8 +109,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //로딩화면 띄우기
         Intent loading_it = new Intent(this, Loading.class);
         startActivity(loading_it);
+
         //숫자이미지(1~45) Pack(1~6) 이미지 아이디얻기
         getIdset();
 
@@ -476,6 +485,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(type + " 설정");
         builder.setMessage("");
+
         builder.setView(set_linear);      //뷰그룹 추가
         //추가버튼 이벤트리스너 등록
         builder.setPositiveButton("추가", new DialogInterface.OnClickListener() {

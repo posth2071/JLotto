@@ -29,6 +29,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 
@@ -54,6 +55,7 @@ public class FragTwo extends Fragment {
     private LottoParsingInfo parsingInfo;
     private Button frag2_share;
     private View view;
+    private Context context;
 
     ExpandableListView frag2_expandable;
     ExpandableAdapter frag2_exAdapter;
@@ -79,7 +81,8 @@ public class FragTwo extends Fragment {
         frag2_share.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                ScreenShare();
+                //ScreenShare();
+                captureImage();
             }
         });
         frag2_group_iv = view.findViewById(R.id.frag2_expand_group_iv);
@@ -91,7 +94,7 @@ public class FragTwo extends Fragment {
         frag2_expandable.setGroupIndicator(null);
         Resources res = getResources();
         for(int i=0; i<7; i++){
-            int viewId = res.getIdentifier("frag2_num"+(i+1),"id",getContext().getPackageName());
+            int viewId = res.getIdentifier("frag2_num"+(i+1),"id",context.getPackageName());
             frag2_numiv[i] = view.findViewById(viewId);         //이미지뷰 7개 연결
         }
         return view;
@@ -124,7 +127,7 @@ public class FragTwo extends Fragment {
         Log.d("테스트", "mChildList.typeOne size = "+mChildList.typeOne.size() +"\n"+mChildList.typeOne.get(0));
 
         //Child타입2 세팅 (현재 검색된 회차에 해당하는 DB기록 불러오기)
-        dbOpenHelper = new DBOpenHelper(getView().getContext());
+        dbOpenHelper = new DBOpenHelper(context);
         mChildList.setTypeTwo(dbOpenHelper.selectDB(MainActivity.searchLottoInfo.turn));
 
         //Child타입3 세팅
@@ -134,7 +137,7 @@ public class FragTwo extends Fragment {
         Log.d("테스트", "mChildList.typethree size = "+mChildList.typethree.size() +"\n"+mChildList.typethree.get(0));
 
         //Adapter 생성 -> GroupList, ChildList
-        frag2_exAdapter = new ExpandableAdapter(getContext(), mGroupList, mChildList);
+        frag2_exAdapter = new ExpandableAdapter(context, mGroupList, mChildList);
         frag2_expandable.setAdapter(frag2_exAdapter);       //확장리스트뷰에 Adapter 연결
         //테스트용 DB전체 호출 - 로그확인용
         dbOpenHelper.selectAllDB();
@@ -179,38 +182,47 @@ public class FragTwo extends Fragment {
         }
     }
 
-    private void ScreenShare() {
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+    // 화면캡쳐 함수
+    public void captureImage(){
+        Log.d("캡쳐", "captureImage 실행");
+        // 권한 체크
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             Log.d("에러","권한체크 if문들어옴");
             // 사용자 권한 요청
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1000);
         }
 
-        Log.d("캡쳐", "bt_Voice 눌림");
+        String path = Environment.getExternalStorageDirectory().getAbsolutePath()+"/J'Lotto";  // 저장폴더 경로
+        View layout = getActivity().getWindow().getDecorView().getRootView();                             // 캡쳐할영역(프레임레이아웃)
 
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath()+"/AnimationCapture";
-        View rootView = getActivity().getWindow().getDecorView().getRootView(); //캡쳐할영역(프레임레이아웃)
-
-        File file = new File(path);
-        if(!file.exists()){
-            file.mkdirs();
-            Toast.makeText(getContext(), "폴더가 생성되었습니다.", Toast.LENGTH_SHORT).show();
+        File folder = new File(path);
+        if(!folder.exists()){       // 저장소 내에 Dust폴더가 있는지
+            folder.mkdirs();        // 없으면 생성
+            Toast.makeText(context, "폴더가 생성되었습니다.", Toast.LENGTH_SHORT).show();
         }
 
-        SimpleDateFormat day = new SimpleDateFormat("yyyyMMddHHmmss");
-        Date date = new Date();
-        rootView.buildDrawingCache();
-        Bitmap captureview = rootView.getDrawingCache();
+        // 캡쳐파일 이름 ( Dust-연도-월일-시분초.jpeg )
+        String filename = "/J'Lotto-" + new SimpleDateFormat("yyyy-MMdd-HHmmss").format(new Date()) +".jpeg";
+        File file = new File(path + filename);
+
+        layout.buildDrawingCache();
+        Bitmap captureview = layout.getDrawingCache();
 
         FileOutputStream fos = null;
         try{
-            fos = new FileOutputStream(path+"/Capture"+day.format(date)+".jpeg");
+            fos = new FileOutputStream(file);
             captureview.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + path + "/Capture" + day.format(date) + ".JPEG")));
-            Toast.makeText(getContext(), "저장완료", Toast.LENGTH_SHORT).show();
+            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + file)));
+            Toast.makeText(context, "저장완료", Toast.LENGTH_SHORT).show();
+
             fos.flush();
             fos.close();
-            rootView.destroyDrawingCache();
+            layout.destroyDrawingCache();
+
+            // 이미지 SNS전송
+            Uri imageUri = FileProvider.getUriForFile(context, "com.example.maptest.fileprovider", file);
+            sendSNS(imageUri);
+
         } catch (FileNotFoundException e) {
             Log.d("에러","Frag2-Capture \n\tFileNotFoundException Error \n\t"+e.toString());
         } catch (IOException e) {
@@ -218,8 +230,18 @@ public class FragTwo extends Fragment {
         }
     }
 
+    // 화면 SNS공유
+    public void sendSNS(Uri imageUri){
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("image/*");
+        intent.putExtra(Intent.EXTRA_STREAM, imageUri);
+        intent.putExtra(Intent.EXTRA_TEXT, "");     // TEXT 없애면 인스타그램은 전송안됨,
+        getActivity().startActivity(Intent.createChooser(intent, "send"));
+    }
+
     @Override
     public void onAttach(@NonNull Context context) {
+        this.context = context;
         super.onAttach(context);
         Log.v("Fragment2","onAttach 프래그먼트가 액티비티와 연결시 호출");
     }

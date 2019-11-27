@@ -12,6 +12,8 @@ public class Loading extends Activity{
     Animation loading_anim;
     ImageView loading_iv;
     LinearLayout loading_viewGroup;
+
+    Handler handler;
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -26,7 +28,7 @@ public class Loading extends Activity{
             startLoading();
         }
         private void startLoading() {
-            Handler handler = new Handler();
+            handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
