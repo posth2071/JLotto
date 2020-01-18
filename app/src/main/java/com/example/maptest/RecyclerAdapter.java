@@ -1,5 +1,6 @@
 package com.example.maptest;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
@@ -54,8 +55,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         } else {
                             // 해당되는 주소로 인텐트 날리기
                             Address addr = list.get(0);
-                            //lat = addr.getLatitude();           //위도 저장
-                            //lng = addr.getLongitude();          //경도 저장
 
                             lat = addr.getLatitude();           //위도 저장
                             lng = addr.getLongitude();          //경도 저장
@@ -68,7 +67,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             it.putExtra("store",storeinfo); //String배열 매점정보 전달(매장명,주소)
 
                             // 눌린 view의 부모 프래그먼트의 부모 메인액티비티로 네이버맵 띄우기
-                            view.getContext().getApplicationContext().startActivity(it);
+                            view.getContext().getApplicationContext().startActivity(it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                            /*
+                            에러발생
+                            Calling startActivity() from outside of an Activity context requires the FLAG_ACTIVITY_NEW_TASK flag. Is this really what you want?
+                            서비스는 태스크가 없기에 액티비티 시작에 new Task 플래그 설정 필요
+                            it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                             */
                         }
                     }
                 }

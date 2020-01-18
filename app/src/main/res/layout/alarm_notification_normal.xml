@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:orientation="horizontal"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:gravity="center">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="8dp"
+        >
+        <TextView
+            android:id="@+id/noti_normal_turn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="833회차"
+            android:textStyle="bold"
+            android:gravity="left"
+            ></TextView>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="left"
+            android:text="당첨번호"
+            android:textStyle="bold"
+            ></TextView>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="7">
+
+        <ImageView
+            android:id="@+id/noti_normal_1"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:src="@drawable/one0"
+            ></ImageView>
+
+        <ImageView
+            android:id="@+id/noti_normal_2"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:src="@drawable/one0"
+            ></ImageView>
+
+        <ImageView
+            android:id="@+id/noti_normal_3"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:src="@drawable/one0"
+            ></ImageView>
+
+        <ImageView
+            android:id="@+id/noti_normal_4"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:src="@drawable/one0"
+            ></ImageView>
+
+        <ImageView
+            android:id="@+id/noti_normal_5"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:src="@drawable/one0"
+            ></ImageView>
+
+        <ImageView
+            android:id="@+id/noti_normal_6"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:src="@drawable/one0"
+            ></ImageView>
+
+        <ImageView
+            android:id="@+id/noti_normal_7"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:src="@drawable/one0"
+            ></ImageView>
+
+    </LinearLayout>
+</LinearLayout>

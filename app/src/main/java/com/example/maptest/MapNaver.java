@@ -154,7 +154,8 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
             lat = it.getDoubleExtra("lat", 1);      //전달받은 위도 추출
             lng = it.getDoubleExtra("lng", 1);      //전달받은 경도 추출
             test = it.getStringArrayExtra("store");
-            Toast.makeText(getApplicationContext(), lat + " " + lng, Toast.LENGTH_SHORT).show();
+
+            Toast.makeText(getApplicationContext(), test[0]+ "\n" + test[1], Toast.LENGTH_SHORT).show();
 
             Marker marker1 = new Marker();
             marker1.setPosition(new LatLng(lat, lng));

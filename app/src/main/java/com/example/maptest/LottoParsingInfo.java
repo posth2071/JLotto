@@ -7,7 +7,7 @@ public class LottoParsingInfo {
     public int turn = 0;                                                //회차정보
     public String date = new String();                                  //추첨날짜
     public String[] lottoInfo= new String[9];                           //로또번호
-    public ArrayList<ArrayList<String>> subInfo = new ArrayList<>();    //보조정보(1~5등 당첨정보)
+    public ArrayList<ArrayList<String>> subInfo = new ArrayList<>();    //보조정보(1~5등 당첨정보) (등수 / 해당등수 총금액 / 해당등수 당첨자수 / 개인당 금액 / 당첨기준 / 비고 -제외)
     public ArrayList<String[]> storeList = new ArrayList<>();           //1등 당첨매장정보
 
     //생성자 함수

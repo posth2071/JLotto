@@ -2,25 +2,22 @@ package com.example.maptest;
 
 
 import android.Manifest;
-import android.app.Dialog;
+import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Rect;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.PixelCopy;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -31,16 +28,17 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
+
+import com.example.maptest.AlarmPackage.AlarmReceiver;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 
 
@@ -50,10 +48,9 @@ import java.util.Date;
 public class FragTwo extends Fragment {
     public static final String TURN_TEXT = "%d회 당첨결과";
     private ImageView[] frag2_numiv = new ImageView[7];
-    private ImageView frag2_group_iv;
+    private ImageView frag2_group_iv, frag2_share, frag2_QR;
     private TextView frag2_turn, frag2_date;
     private LottoParsingInfo parsingInfo;
-    private Button frag2_share;
     private View view;
     private Context context;
 
@@ -78,11 +75,32 @@ public class FragTwo extends Fragment {
         view = inflater.inflate(R.layout.fragment_frag_two, container, false);
 
         frag2_share = view.findViewById(R.id.frag2_sharebt);
+        frag2_share.setColorFilter(Color.parseColor("#006C93"));
         frag2_share.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 //ScreenShare();
-                captureImage();
+                //captureImage(); 해제필요
+
+               MainActivity.alarm_set(context, 2);      // action = 2, 알람 중지 Cancel
+            }
+        });
+
+        frag2_QR = view.findViewById(R.id.frag2_QRbt);
+        frag2_QR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("바코드", "QR버튼 클릭");
+                MainActivity.alarm_set(context, 1);     // action - 1, 알람 생성 Start
+
+                /*
+                IntentIntegrator integrator = new IntentIntegrator(getActivity());
+                integrator.setCaptureActivity(QRCodeActivity.class);
+                integrator.setBeepEnabled(false); // 바코드 인식시 소리 '삐'
+                integrator.setOrientationLocked(false); //가로모드 설정
+                integrator.initiateScan();
+
+                 */
             }
         });
         frag2_group_iv = view.findViewById(R.id.frag2_expand_group_iv);
@@ -148,6 +166,7 @@ public class FragTwo extends Fragment {
         dialog.setDialogListener(new MyDialogListener() {           // 리스너 인터페이스 등록
             @Override
             public void onPositiveClicked(String num) {             // 재정의
+                // 입력한 회차정보가 공백이 아니거나 추첨된 회차인 경우
                 if(num.compareTo("") != 0) {
                     TestClass testclass = new TestClass();
                     MainActivity.searchLottoInfo = testclass.parsing(num);

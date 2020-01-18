@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +33,7 @@ import java.util.TimerTask;
  * A simple {@link Fragment} subclass.
  */
 public class FragOne extends Fragment implements View.OnClickListener {
+
     private Button bt_random, bt_store;
     private ImageView[] frag1_Numiv = new ImageView[6];
     private ImageView iv_pack;
@@ -47,9 +49,9 @@ public class FragOne extends Fragment implements View.OnClickListener {
     private Timer startTimer;
 
     private DBOpenHelper dbOpenHelper;
-    private int lastturn;
     //생성자
     public FragOne() {}
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -74,7 +76,6 @@ public class FragOne extends Fragment implements View.OnClickListener {
         dbOpenHelper = new DBOpenHelper(view.getContext().getApplicationContext());
         return view;
     }
-
 
     @Override
     public void onClick(View view) {
@@ -117,7 +118,7 @@ public class FragOne extends Fragment implements View.OnClickListener {
                             .replace("]","")
                             .replace(" ","");;
                     //DB저장하기 Storeset[0] 숫자정보7개, Storeset[1] 홀짝비율정보
-                    if(dbOpenHelper.insertDB(884,numset)==1){   //최신회차+1 (다음주회차로 설정)
+                    if(dbOpenHelper.insertDB(MainActivity.lastLottoinfo.getTurn(),numset)==1){   //최신회차+1 (다음주회차로 설정)
                         Log.d("데이터베이스","DB저장 성공");
                     } else {
                         Log.d("데이터베이스", "저장실패 - 중복");
@@ -138,8 +139,6 @@ public class FragOne extends Fragment implements View.OnClickListener {
         //메인액티비티 숫자(1~45)이미지 아이디, pack(1~6)이미지 아이디 갖고오기
         imgid = MainActivity.imgId;
         packid = MainActivity.packid;
-        //마지막회차 얻어오기
-        //lastturn = MainActivity.lastLottoinfo.getTurn();
     }
 
     //이미지뷰7개 초기화 함수

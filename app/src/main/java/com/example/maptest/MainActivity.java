@@ -6,67 +6,53 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.Application;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
-import android.nfc.Tag;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.DigitsKeyListener;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
-import android.widget.BaseExpandableListAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.maptest.AlarmPackage.AlarmReceiver;
+import com.example.maptest.QRCord.CustomDialog;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
-import com.naver.maps.map.MapFragment;
-import com.naver.maps.map.OnMapReadyCallback;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.Buffer;
+import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,
         NavigationView.OnNavigationItemSelectedListener {
@@ -90,12 +76,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     public static FragOne frag1;
     public static FragOneTwo frag11;
-    FragTwo frag2;
-    FragThree frag3;
+    public static FragTwo frag2;
+    public static FragThree frag3;
 
     private DrawerLayout mDrawerLayout;         //최상단 DrawerLayout
     private NavigationView mNavigationView;     //네비게이션 뷰 (메뉴)
-    private Context context = this;
+
+    public static Activity activity;
+    public static Context context;
 
     public static LottoParsingInfo lastLottoinfo, searchLottoInfo;  // 최신회차, 검색회차 저장
 
@@ -104,15 +92,35 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     StringBuilder searchResult;
 
     private int count = 0;
+    private String[] permissions_list = new String[]{
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+    };
+
+    protected void onResume() {
+        // 최신 로또정보 파싱
+        super.onResume();
+        TestClass testclass = new TestClass();
+        lastLottoinfo = testclass.parsing("");
+        searchLottoInfo = lastLottoinfo;
+    }
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        activity = this;
+        context = this;
+
         //로딩화면 띄우기
         Intent loading_it = new Intent(this, Loading.class);
         startActivity(loading_it);
+        Log.d("네트워크", "로딩화면 인텐트 시작 startActivity(loading_it)");
+
+        permissionCheck(permissions_list);
 
         //숫자이미지(1~45) Pack(1~6) 이미지 아이디얻기
         getIdset();
@@ -134,12 +142,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         mNavigationView.setNavigationItemSelectedListener(this);            //네비게이션 뷰 아이템 클릭 처리리스너등록
 
 
+        Log.d("네트워크", "최신 로또정보 파싱 실행");
+
+        /*
         // 최신 로또정보 파싱
         TestClass testclass = new TestClass();
         lastLottoinfo = testclass.parsing("");
         searchLottoInfo = lastLottoinfo;
-
-
+         */
         frag1 = new FragOne();
         frag11 = new FragOneTwo();
         frag2 = new FragTwo();
@@ -196,9 +206,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     //당첨결과 확인 함수
-    public static String[] checkResult(String numset){
+    public static String[] checkResult(String numset, LottoParsingInfo lottoParsingInfo){
         String[] nums = numset.split(",");
-        String[] searchnumset = searchLottoInfo.getLottoInfo();
+        String[] searchnumset = lottoParsingInfo.getLottoInfo();
         HashSet<Integer> checkHash = new HashSet<>();
         //보너스번호 제외 6개만 넣기
         for(int i=0; i<6; i++){
@@ -358,7 +368,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             //회차검색
             case R.id.menu2_Search:
                 mDrawerLayout.closeDrawer(GravityCompat.START);
-                frag2.dialogshow(1);
+                NetworkStatus.Check_NetworkStatus(context, 2);
+
+                //frag2.dialogshow(1);
                 break;
             //DB설정
             case R.id.menu2_DBSet:
@@ -529,5 +541,132 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         Collections.sort(store_List);   //오름차순 정렬
         Log.d("확인", "sort 후 list - " + store_List);
         return store_List;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(resultCode == Activity.RESULT_OK){
+            IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+            String qr_result = scanResult.getContents();
+            Log.d("바코드", qr_result);
+            // 동행복권 QR코드인지 검사
+            if(qr_result.contains("dhlottery.co.kr")){
+                CustomDialog customDialog = new CustomDialog(this, qr_result);
+            } else {
+                // 동행복권 QR코드 아닌경우
+                Toast.makeText(this, "QR코드 오류", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+
+    // 권한설정 함수
+    public void permissionCheck(String[] permissions){
+        // 권한 설정요청할 String형 List 생성 - 개수를 알수없어 List로 선언
+        ArrayList<String> permission_list = new ArrayList<>();
+
+        // 권한 설정상태 체크 (권한 개수만큼 반복)
+        for(int i=0; i<permissions.length; i++) {
+            // 권한 설정상태 체크 결과 반환 (허용 PERMISSION_GRANTED / 비허용 PERMISSION_DENIED)
+            int check_result = ContextCompat.checkSelfPermission(this, permissions[i]);
+            // 권한 상태 비허용일 경우, check_result = PERMISSION_DENIED 일때
+            if (check_result != PackageManager.PERMISSION_GRANTED) {
+                // 권한 요청을 위해 list에 추가
+                permission_list.add(permissions[i]);
+            }
+        }
+
+        // 권한요청할 권한이 하나라도 있는 경우
+        if(permission_list.size()>0){
+            // 권한요청을 위해 ArrayList -> String[] 변환
+            String[] permissions_Strings = permission_list.toArray(new String[permission_list.size()]);
+            // 권한요청 requestPErmissions 실행
+            ActivityCompat.requestPermissions(this, permissions_Strings, 1);
+        }
+    }
+
+
+    // 알람 설정 Alarm
+    public final static void alarm_set(Context context, int action){
+        // int action, 1 = 알람 Start / 2 = 알람 Cancel
+
+        String log_Text = " \n\t알람 %s, \n\t현재시간 %s \n\t설정시간 %s";
+
+        // 현재 시간얻기
+        Calendar cal = Calendar.getInstance();
+        Date dateTest = cal.getTime();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy년 MM월 dd일 EE요일, hh시 mm분 ss초", Locale.getDefault());
+
+        Intent alarm_Intent = new Intent(context, AlarmReceiver.class);
+        PendingIntent pending_Intent = PendingIntent.getBroadcast(context,1,alarm_Intent, PendingIntent.FLAG_IMMUTABLE);
+        AlarmManager alarm_Manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        //cal.set(Calendar.SECOND, 0);
+        //cal.add(Calendar.MINUTE, 1);
+
+        /*
+        // 현재 요일얻기 - 1일 2월 3화 4수 5목 6금 7토
+        int day_week = cal.get(Calendar.DAY_OF_WEEK);
+
+        // 토요일이라면 21시 기준으로 구분 (21시 이전, 오늘 알람 실행 / 21시 이후, 다음주 알람 실행)
+        if(day_week == 7){
+            if(cal.get(Calendar.HOUR_OF_DAY) >= 21){
+                cal.add(Calendar.DAY_OF_MONTH,7); // 일주일 뒤 설정, add()는 마지막 Day가 넘어갈시 월단위 추가 계산
+            }
+            // 현재 요일이 토요일이 아닌경우, 알람 토요일로 설정
+        } else {
+            cal.add(Calendar.DAY_OF_MONTH, 7-day_week);
+        }
+
+        // 시간 설정 - 21시 정각 (9시)
+        cal.set(Calendar.HOUR_OF_DAY, 21);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+         */
+
+        switch (action){
+            case 1:     // action = 1, 알람 생성 Start
+                Calendar test_cal = Calendar.getInstance();
+                test_cal.add(Calendar.SECOND, 5);
+
+                // 디바이스 API레벨 별로 분기 실행 (메소드 차이 set() / setExact() / setExactAllowWhileidle() )
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    //jAlarmManager1.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), jPendingIntent1);
+                    //Log.d("알람", " \n\t알람시작 \t API23 <= VERSION (마쉬멜로우 6.0 이상) \n\t"+ date_Text);
+                    Date test_date = test_cal.getTime();
+                    String test_Text = new SimpleDateFormat("yyyy년 MM월 dd일 EE요일, hh시 mm분 ss초", Locale.getDefault()).format(test_date);
+                    alarm_Manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, test_cal.getTimeInMillis(), pending_Intent);
+                    Log.d("알람", " \n\t알람시작 \t API23 <= VERSION (마쉬멜로우 6.0 이상) \n\t"+ test_Text);
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    alarm_Manager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis()+5000, pending_Intent);
+                    Log.d("알람", " \n\t알람시작 \t API19 <= VERSION < API23 (KitKat 4.4 이상 - 마쉬멜로우 6.0 미만)");
+                } else {
+                    alarm_Manager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis()+5000, pending_Intent);
+                    Log.d("알람", " \n\t알람시작 \t  VERSION < API19 (KitKat 4.4 미만)");
+                }
+
+                log_Text = String.format(
+                        log_Text,
+                        "생성",
+                        dateFormat.format(dateTest),
+                        dateFormat.format(test_cal.getTime())
+                );
+                break;
+
+            case 2:     // action = 2, 알람 중지 Cancel
+                alarm_Manager.cancel(pending_Intent);
+
+                log_Text = String.format(
+                        log_Text,
+                        "해제",
+                        dateFormat.format(dateTest),
+                        dateFormat.format(dateTest)
+                );
+                break;
+        }
+        // 알람설정, 현재시간, 알람 설정시간 보여주기
+        Log.d("알람", log_Text);
     }
 }

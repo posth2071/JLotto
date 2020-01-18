@@ -317,7 +317,7 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
                         String[] str = MainActivity.checkHallPair(numset).split(":");
                         viewHolder.expand_TwoHallpair.setText((String.format("홀수:짝수 (%s:%s)", str[0], str[1])));
 
-                        String[] resultinfo = MainActivity.checkResult(numset);         // 내기록과 당첨번호 당첨 확인하기
+                        String[] resultinfo = MainActivity.checkResult(numset, MainActivity.searchLottoInfo);         // 내기록과 당첨번호 당첨 확인하기
                         viewHolder.expand_TwoResult.setText(resultinfo[0]);             // [0] 당첨결과
                         viewHolder.expand_TwoResult.setTextColor(Color.parseColor(resultinfo[1]));  // [1] #000000 String타입 컬러값
 
@@ -364,6 +364,7 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
 
                 final DBinfo setting = (DBinfo) getChild(groupPosition,childPosition);
                 String numset = setting.getNumset();
+                Log.d("검사", String.valueOf(setting.getTurn()));
                 dialogViewHolder.dialog_Turn.setText(String.valueOf(setting.getTurn()));
                 dialogViewHolder.dialog_Hallpair.setText(MainActivity.checkHallPair(numset));
                 dialogViewHolder.numberset = numset;
@@ -379,7 +380,7 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
                 //Delete 버튼 클릭리스너 설정
                 dialogViewHolder.dialog_Delete.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View view) {
+                    public void onClick(final View view1) {
                         Log.d("다이얼로그", "클릭 numberset - "+ setting.getNumset());
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
                         builder.setTitle("Delete");

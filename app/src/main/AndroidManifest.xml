@@ -3,10 +3,12 @@
     package="com.example.maptest">
 
     <!-- 인터넷권한 -->
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
     <!-- 위치추적 권한 설정 (GPS이용 상세위치파악 권한 / 기지국,와이파이 이용 개략적위치파악 권한) -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <!-- 전화걸기 권한 -->
     <uses-permission android:name="android.permission.CALL_PHONE" />
@@ -15,6 +17,13 @@
     <!-- 스크린캡쳐 권한 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <!-- 알람 권한 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!-- 진동 권한 -->
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
         android:allowBackup="true"
@@ -38,19 +47,36 @@
             android:value="y0189tgx11"
             ></meta-data>
         <activity android:name=".MainActivity"
-            android:screenOrientation="portrait">
-            <!-- 스크린방향 세로고정 (portrait), 가로(landscape) -->
+            android:screenOrientation="portrait"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <!-- 로딩화면 액티비티 -->
-        <activity android:name=".Loading" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+        <activity android:name=".Loading" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
 
+        </activity>
+        <!-- 네이버지도 액티비티 -->
         <activity android:name=".MapNaver"></activity>
+        <!-- QR 바코드 액티비티 -->
+        <activity android:name=".QRCodeActivity"></activity>
+
+        <!-- 알람 처리 Receiver -->
+        <receiver android:name=".AlarmPackage.AlarmReceiver">
+            <intent-filter>
+                <action android:name="com.example.alarmtestat.ALRAM_START" />
+            </intent-filter>
+        </receiver>
+        <!-- 부팅시 알람 재설정 Receiver -->
+        <receiver android:name=".AlarmPackage.BootReceiver"
+            android:enabled="true" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
