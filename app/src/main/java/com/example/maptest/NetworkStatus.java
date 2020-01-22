@@ -3,11 +3,18 @@ package com.example.maptest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
+
+import java.io.IOException;
+import java.util.List;
 
 public class NetworkStatus {
     public static final int TYPE_NOT_CONNECTED = 0;
@@ -16,9 +23,8 @@ public class NetworkStatus {
 
     private static int METHOD_TYPE_LOADING = 1;
     private static int METHOD_TYPE_SEARCH = 2;
-    private static int METHOD_TYPE_MAP = 3;
-
-    public void NetworkStatus(){}
+    private static int METHOD_TYPE_MAP_MENU = 3;
+    private static int METHOD_TYPE_MAP_FIRST_STORE = 4;
 
     // 네트워크 연결상태를 얻기 위한 메소드
     public static int getConnectivity_Status(Context context){
@@ -43,7 +49,7 @@ public class NetworkStatus {
         return TYPE_NOT_CONNECTED;
     }
 
-    public static void Check_NetworkStatus(final Context context, final int type){
+    public static void Check_NetworkStatus(final Context context, final int type, final String[] store){
         if (getConnectivity_Status(context) == 0) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle("인터넷 에러");
@@ -53,7 +59,7 @@ public class NetworkStatus {
             builder.setPositiveButton("재시도", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Check_NetworkStatus(context, type);
+                    Check_NetworkStatus(context, type, store);
                 }
             });
             builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -68,6 +74,9 @@ public class NetworkStatus {
                             break;
 
                         case 3:
+                            break;
+
+                        case 4:
                             break;
                     }
                 }
@@ -85,6 +94,39 @@ public class NetworkStatus {
                     MainActivity.frag2.dialogshow(1);
                     break;
                 case 3:
+                    Intent it = new Intent(context, MapNaver.class);  //MapNaver액티비티 띄울목적
+                    it.putExtra("TAG", 1);          //TAG값 전달 (int형)
+                    context.startActivity(it);
+                    break;
+                case 4:
+                    List<Address> list = null;
+                    try {
+                        Geocoder geocoder = new Geocoder(context);
+                        list = geocoder.getFromLocationName
+                                (store[1], // 지역 이름
+                                        10); // 읽을 개수
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Log.e("test", "입출력 오류 - 서버에서 주소변환시 에러발생");
+                    }
+
+                    if (list != null) {
+                        if (list.size() == 0) {
+                            Toast.makeText(context, "해당 주소없음", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // 해당되는 주소로 인텐트 날리기
+                            Address addr = list.get(0);
+
+                            Intent intent = new Intent(context, MapNaver.class);  //MapNaver액티비티 띄울목적
+                            intent.putExtra("TAG", 2);          //TAG값 전달 (int형)
+                            intent.putExtra("lat",addr.getLatitude());           //위도 저장);     //위도 전달
+                            intent.putExtra("lng",addr.getLongitude());          //경도 저장);     //경도 전달
+                            intent.putExtra("store", store); //String배열 매점정보 전달(매장명,주소)
+
+                            // 눌린 view의 부모 프래그먼트의 부모 메인액티비티로 네이버맵 띄우기
+                            context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                        }
+                    }
                     break;
             }
         }

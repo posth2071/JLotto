@@ -337,7 +337,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
 
             //슬라이드 메뉴바 아이디
-            //모드버튼 눌린경우
+            // 메뉴1 - 모드변경 눌린경우
             case R.id.menu1_mode:
                 mDrawerLayout.closeDrawer(mNavigationView);
                 int fragindex = checkFragment();
@@ -347,42 +347,51 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment, MainActivity.frag1).addToBackStack(null).commit();
                 }
                 break;
-            //고정수 설정
+
+            // 메뉴1 - 고정수 설정
             case R.id.menu1_fixednums:
                 mDrawerLayout.closeDrawer(mNavigationView);
                 setNum("고정수", fixedNums);
                 break;
-            //제외수 설정
+
+            // 메뉴1 - 제외수 설정
             case R.id.menu1_exceptnums:
                 //mNavigationView.getMenu().getItem(0).setVisible(true);
                 mDrawerLayout.closeDrawer(mNavigationView);
                 setNum("제외수", exceptNums);
                 break;
-            //설정 초기화 (고정수,제외수)
+
+            // 메뉴1 -설정 초기화 (고정수,제외수)
             case R.id.menu1_reset:
                 mDrawerLayout.closeDrawer(mNavigationView);
                 exceptNums.clear();
                 fixedNums.clear();
                 Log.d("메뉴", "reset 적용 \n\t exceptNums size - " + exceptNums.size() + "\n\t fixedNums size - " + fixedNums.size());
                 break;
-            //회차검색
+
+            // 메뉴2 - 회차검색
             case R.id.menu2_Search:
                 mDrawerLayout.closeDrawer(GravityCompat.START);
-                NetworkStatus.Check_NetworkStatus(context, 2);
+                // 인터넷 연결상태 확인 후 실행
+                NetworkStatus.Check_NetworkStatus(context, 2, null);
 
                 //frag2.dialogshow(1);
                 break;
-            //DB설정
+
+            // 메뉴2 - DB설정
             case R.id.menu2_DBSet:
                 mDrawerLayout.closeDrawer(GravityCompat.START);
                 frag2.dialogshow(2);
                 break;
+
+            // 메뉴3 - 현재위치 주변매장 찾기
             case R.id.menu3_map:
                 //searchMap("로또");
                 mDrawerLayout.closeDrawer(GravityCompat.START);
-                Intent it = new Intent(this, MapNaver.class);  //MapNaver액티비티 띄울목적
-                it.putExtra("TAG", 1);          //TAG값 전달 (int형)
-                startActivity(it);
+
+                // 인터넷 연결상태 확인 후 실행
+                NetworkStatus.Check_NetworkStatus(context, 3, null);
+
                 break;
         }
         return false;

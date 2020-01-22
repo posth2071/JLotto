@@ -38,6 +38,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 @Override
                 public void onClick(View view) {
                     //Toast.makeText(view.getContext(), tv_storeLocation.getText(),Toast.LENGTH_SHORT).show();
+                    String[] store_info = new String[]{tv_storeName.getText().toString(), tv_storeLocation.getText().toString()};
+                    NetworkStatus.Check_NetworkStatus(view.getContext(), 4, store_info);
+                    /*
                     List<Address> list = null;
                     String str = tv_storeLocation.getText().toString();         //클릭한 매장명 제외, 주소값 얻기
                     try {
@@ -68,14 +71,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                             // 눌린 view의 부모 프래그먼트의 부모 메인액티비티로 네이버맵 띄우기
                             view.getContext().getApplicationContext().startActivity(it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                            /*
-                            에러발생
-                            Calling startActivity() from outside of an Activity context requires the FLAG_ACTIVITY_NEW_TASK flag. Is this really what you want?
-                            서비스는 태스크가 없기에 액티비티 시작에 new Task 플래그 설정 필요
-                            it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                             */
+
+
+                            //에러발생
+                            //Calling startActivity() from outside of an Activity context requires the FLAG_ACTIVITY_NEW_TASK flag. Is this really what you want?
+                            //서비스는 태스크가 없기에 액티비티 시작에 new Task 플래그 설정 필요
+                            //it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
                         }
                     }
+                    */
                 }
             });
         }

@@ -41,7 +41,7 @@ public class Loading extends Activity{
             loading_viewGroup.setAnimation(loading_anim);
 
             if (NetworkStatus.getConnectivity_Status(context) == 0) {
-                NetworkStatus.Check_NetworkStatus(context, 1);
+                NetworkStatus.Check_NetworkStatus(context, 1, null);
             } else {
                 startLoading();
             }
