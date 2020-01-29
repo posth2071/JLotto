@@ -2,7 +2,7 @@ package com.example.maptest.AlarmPackage;
 
 import android.os.AsyncTask;
 
-import com.example.maptest.LottoParsingInfo;
+import com.example.maptest.AsyncTask.LottoParsingInfo;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

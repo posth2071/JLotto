@@ -1,0 +1,15 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginRight="5dp">
+
+    <Switch
+        android:id="@+id/menu_swtich"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:thumb="@drawable/switch_thumb"
+        android:track="@drawable/switch_track_selector"
+        android:layout_centerVertical="true" />
+</RelativeLayout>

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FragOneTwo"
+    tools:context=".Activity.FragMent_One.FragOneTwo"
     android:orientation="vertical">
 
 
@@ -24,8 +24,8 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:background="@color/cardview_dark_background"
+        android:layout_marginBottom="5dp"
+        android:background="@color/Line"
         ></View>
     <GridView
         android:id="@+id/gridBottom"
@@ -39,15 +39,31 @@
         android:layout_marginRight="20dp"
         android:stretchMode="columnWidth"
         ></GridView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/Line"
+        ></View>
+
     <ImageView
         android:id="@+id/bt_DBsotre"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginRight="40dp"
         android:layout_gravity="right"
         android:background="@drawable/ic_add_circle_black_24dp"
         android:adjustViewBounds="true"
         ></ImageView>
 
+    <TextView
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="40dp"
+        android:layout_gravity="right"
+        android:gravity="center_horizontal"
+        android:text="저  장"
+        />
 </LinearLayout>

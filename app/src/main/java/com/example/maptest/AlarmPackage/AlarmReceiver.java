@@ -14,10 +14,11 @@ import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
 
-import com.example.maptest.DBOpenHelper;
-import com.example.maptest.DBinfo;
-import com.example.maptest.LottoParsingInfo;
-import com.example.maptest.MainActivity;
+import com.example.maptest.DataBase.DBOpenHelper;
+import com.example.maptest.DataBase.DBinfo;
+import com.example.maptest.AsyncTask.LottoParsingInfo;
+import com.example.maptest.Activity.MainActivity;
+import com.example.maptest.PreferenceManager;
 import com.example.maptest.R;
 
 import java.util.ArrayList;
@@ -37,7 +38,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         start_Notification();
 
         // 알람 재설정 (반복)
-        MainActivity.alarm_set(context, 1);
+        PreferenceManager.alarm_Setting(context, true);
+        //MainActivity.alarm_set(context, 1);
     }
 
 

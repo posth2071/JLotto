@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
 
     <!-- 모드 (자동,수동)설정 그룹 -->
-    <item android:title="Mode" android:orderInCategory="1">
+    <item android:title="Mode" android:orderInCategory="3">
         <menu>
             <group
                 android:id="@+id/menu1_group0"
@@ -14,17 +15,21 @@
                     android:icon="@drawable/ic_bottom_menu2_24px"
                     android:title="수동모드"/>
             </group>
-
         </menu>
 
     </item>
 
-
-    <item android:title="설정" android:orderInCategory="3">
+    <item android:title="설정" android:orderInCategory="4">
         <menu>
             <group
                 android:id="@+id/menu1_group1"
                 android:checkableBehavior="single">
+                <item
+                    android:id="@+id/menu1_Alarm"
+                    style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                    android:title="알람"
+                    android:icon="@drawable/ic_alarm_black_24dp"
+                    app:actionLayout="@layout/switch_item"/>
 
                 <item
                      android:id="@+id/menu1_fixednums"
@@ -42,7 +47,6 @@
                     android:icon="@drawable/ic_reset_24px"
                     style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
                     android:title="RESET"/>
-
             </group>
         </menu>
     </item>
@@ -79,4 +83,6 @@
         </menu>
 
     </item>
+
+
 </menu>

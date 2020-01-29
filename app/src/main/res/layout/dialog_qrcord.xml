@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@color/maincolor">
+    android:background="@drawable/bg_dialog_redius">
 
     <TextView
         android:id="@+id/QR_Dialog_Title"

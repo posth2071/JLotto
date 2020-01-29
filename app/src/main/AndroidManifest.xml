@@ -46,7 +46,7 @@
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="y0189tgx11"
             ></meta-data>
-        <activity android:name=".MainActivity"
+        <activity android:name=".Activity.MainActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleInstance">
             <intent-filter>
@@ -56,13 +56,13 @@
         </activity>
 
         <!-- 로딩화면 액티비티 -->
-        <activity android:name=".Loading" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+        <activity android:name=".Activity.Loading_Activity" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
 
         </activity>
         <!-- 네이버지도 액티비티 -->
-        <activity android:name=".MapNaver"></activity>
+        <activity android:name=".Activity.FragMent_Three.Map.MapNaver"></activity>
         <!-- QR 바코드 액티비티 -->
-        <activity android:name=".QRCodeActivity"></activity>
+        <activity android:name=".Activity.FragMent_Two.QRCord.QRCodeActivity"></activity>
 
         <!-- 알람 처리 Receiver -->
         <receiver android:name=".AlarmPackage.AlarmReceiver">

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/menu3_menu3" android:title="Map" android:orderInCategory="1">
         <menu>
@@ -12,4 +13,16 @@
         </menu>
     </item>
 
+    <item android:title="설정" android:orderInCategory="2">
+        <menu>
+            <group android:id="@+id/menu3_group2" android:checkableBehavior="none">
+                <item
+                    android:id="@+id/menu3_Alarm"
+                    style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                    android:title="알람"
+                    android:icon="@drawable/ic_alarm_black_24dp"
+                    app:actionLayout="@layout/switch_item"/>
+            </group>
+        </menu>
+    </item>
 </menu>

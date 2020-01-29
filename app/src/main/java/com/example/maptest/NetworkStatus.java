@@ -13,6 +13,11 @@ import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 
+import com.example.maptest.Activity.Dialog.DialogClass;
+import com.example.maptest.Activity.Loading_Activity;
+import com.example.maptest.Activity.MainActivity;
+import com.example.maptest.Activity.FragMent_Three.Map.MapNaver;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -49,46 +54,16 @@ public class NetworkStatus {
         return TYPE_NOT_CONNECTED;
     }
 
-    public static void Check_NetworkStatus(final Context context, final int type, final String[] store){
+    public static void Check_NetworkStatus(final Context context, final int network_type, final String[] store){
         if (getConnectivity_Status(context) == 0) {
-            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("인터넷 에러");
-            builder.setMessage("인터넷 연결 없음");
-            builder.setCancelable(false);
-
-            builder.setPositiveButton("재시도", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Check_NetworkStatus(context, type, store);
-                }
-            });
-            builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    switch (type){
-                        case 1: // Loading 화면에서 취소일 경우 전부 종료
-                            ActivityCompat.finishAffinity(MainActivity.activity);
-                            System.exit(0);
-                            break;
-                        case 2:
-                            break;
-
-                        case 3:
-                            break;
-
-                        case 4:
-                            break;
-                    }
-                }
-            });
-            Log.d("네트워크", "builder 세팅 완료");
-            builder.show();
-            Log.d("네트워크", "builder 띄우기");
+            Log.d("다이얼로그", "DialogClass 생성자 함수 실행");
+            new DialogClass(context, 3, network_type, store).show();
+            Log.d("다이얼로그", "DialogClass.show()");
         } else {
             // 인터넷 상태가 연결되어 있는 경우
-            switch (type){
-                case 1:         // Loading 화면일때
-                    ActivityCompat.finishAffinity(Loading.activity);
+            switch (network_type){
+                case 1:         // Loading_Activity 화면일때
+                    ActivityCompat.finishAffinity(Loading_Activity.activity);
                     break;
                 case 2:         // 회차검색 화면일때
                     MainActivity.frag2.dialogshow(1);
@@ -103,7 +78,7 @@ public class NetworkStatus {
                     try {
                         Geocoder geocoder = new Geocoder(context);
                         list = geocoder.getFromLocationName
-                                (store[1], // 지역 이름
+                                (store[1], // 지역 주소
                                         10); // 읽을 개수
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -127,9 +102,18 @@ public class NetworkStatus {
                             context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                         }
                     }
+
+
+                    Intent intent = new Intent(context, MapNaver.class);  //MapNaver액티비티 띄울목적
+                    intent.putExtra("TAG", 2);          //TAG값 전달 (int형)
+                    //intent.putExtra("lat",addr.getLatitude());           //위도 저장);     //위도 전달
+                    //intent.putExtra("lng",addr.getLongitude());          //경도 저장);     //경도 전달
+                    intent.putExtra("store", store); //String배열 매점정보 전달(매장명,주소)
+
+                    context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                     break;
             }
-        }
 
+        }
     }
 }

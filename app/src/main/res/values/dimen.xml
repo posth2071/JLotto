@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <dimen name="switch_size_width">50dp</dimen>
+    <dimen name="switch_size_heigh">18dp</dimen>
+    <dimen name="switch_thumb">18dp</dimen>
+    <dimen name="switch_radius">15dp</dimen>
+</resources>
