@@ -14,9 +14,12 @@ import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 
 import com.example.maptest.Activity.Dialog.DialogClass;
+import com.example.maptest.Activity.FragMent_Three.FragThree;
+import com.example.maptest.Activity.FragMent_Two.QRCord.CustomDialog;
 import com.example.maptest.Activity.Loading_Activity;
 import com.example.maptest.Activity.MainActivity;
 import com.example.maptest.Activity.FragMent_Three.Map.MapNaver;
+import com.example.maptest.AsyncTask.TestClass;
 
 import java.io.IOException;
 import java.util.List;
@@ -55,7 +58,7 @@ public class NetworkStatus {
     }
 
     public static void Check_NetworkStatus(final Context context, final int network_type, final String[] store){
-        if (getConnectivity_Status(context) == 0) {
+         if (getConnectivity_Status(context) == 0) {
             Log.d("다이얼로그", "DialogClass 생성자 함수 실행");
             new DialogClass(context, 3, network_type, store).show();
             Log.d("다이얼로그", "DialogClass.show()");
@@ -66,7 +69,8 @@ public class NetworkStatus {
                     ActivityCompat.finishAffinity(Loading_Activity.activity);
                     break;
                 case 2:         // 회차검색 화면일때
-                    MainActivity.frag2.dialogshow(1);
+                    //MainActivity.frag2.dialogshow(1);
+                    DialogClass.dialogListener.onPositiveClicked(store[0]);
                     break;
                 case 3:
                     Intent it = new Intent(context, MapNaver.class);  //MapNaver액티비티 띄울목적
@@ -111,6 +115,18 @@ public class NetworkStatus {
                     intent.putExtra("store", store); //String배열 매점정보 전달(매장명,주소)
 
                     context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    break;
+
+                case 5:
+                    String qr_result = store[0];
+                    Log.d("바코드", qr_result);
+                    // 동행복권 QR코드인지 검사
+                    if(qr_result.contains("dhlottery.co.kr")){
+                        CustomDialog customDialog = new CustomDialog(context, qr_result);
+                    } else {
+                        // 동행복권 QR코드 아닌경우
+                        Toast.makeText(context, "QR코드 오류", Toast.LENGTH_SHORT).show();
+                    }
                     break;
             }
 

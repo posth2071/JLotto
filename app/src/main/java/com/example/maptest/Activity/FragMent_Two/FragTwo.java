@@ -115,6 +115,7 @@ public class FragTwo extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         Log.v("Fragment2","onActivityCreated 연결된 액티비티 onCreate() 완료 후 호출");
 
         //1~45숫자 이미지ID 갖고오기
@@ -152,6 +153,7 @@ public class FragTwo extends Fragment {
         frag2_expandable.setAdapter(frag2_exAdapter);       //확장리스트뷰에 Adapter 연결
         //테스트용 DB전체 호출 - 로그확인용
         dbOpenHelper.selectAllDB();
+
     }
 
     public void dialogshow(int type){
@@ -161,6 +163,8 @@ public class FragTwo extends Fragment {
             public void onPositiveClicked(String num) {             // 재정의
                 // 입력한 회차정보가 공백이 아니거나 추첨된 회차인 경우
                 if(num.compareTo("") != 0) {
+                    dialog.dismiss();
+
                     TestClass testclass = new TestClass();
                     MainActivity.searchLottoInfo = testclass.parsing(num);
                     parsingInfo = MainActivity.searchLottoInfo;

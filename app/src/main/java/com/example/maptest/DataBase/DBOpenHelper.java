@@ -58,37 +58,23 @@ public final class DBOpenHelper extends SQLiteOpenHelper {
     public int insertDB(int turn, String numset) {
         Log.d("데이터베이스", "DB InsertDB 진입");
 
-        //String query = String.format("INSERT INTO %s VALUES ('%s', %d, '%s', '%s', '%s');", null, TABLE_NAME, turn, str, test, test1);
-        //db.execSQL(query);
-
         //입력 회차와 동일 db전부 검색
         ArrayList<DBinfo> dbCheck = selectDB(turn);
         Iterator<DBinfo> it = dbCheck.iterator();
+
         while(it.hasNext()){
             String strset = MainActivity.numsetSort(it.next().getNumset());       //번호세트 가져와서 오름차순 정렬
             String checkset = MainActivity.numsetSort(numset);
             if(checkset.compareTo(strset)==0) {
-                Toast.makeText(context.getApplicationContext(), "DB 중복", Toast.LENGTH_SHORT).show();
-                Log.d("데이터베이스", "DB중복 - " + numset + " - " + strset);
+                Toast.makeText(context.getApplicationContext(), String.format("%d회차 중복", turn), Toast.LENGTH_SHORT).show();
+                Log.d("데이터베이스", String.format("DB Insert 실패 (중복)\n\t\t%d회차, %s", turn, numset));
                 return 0;
             }
-            /*
-            String strset = it.next().getNumset();
-            if(str[0].compareTo(strset)==0) {
-                Toast.makeText(context.getApplicationContext(), "DB 중복", Toast.LENGTH_SHORT).show();
-                Log.d("데이터베이스", "DB중복 - "+str[0] +" - " +strset);
-                return 0;
-
-             */
         }
+
         ContentValues cv = new ContentValues();         //DB저장위해
         cv.put(COLUMN_TURN, turn);
         cv.put(COLUMN_NUMSET, numset);
-        /*
-        cv.put(COLUMN_NUMBERSET, str[0]);
-        cv.put(COLUMN_HALLPAIR, str[1]);
-        cv.put(COLUMN_RESULT, test1);
-         */
         SQLiteDatabase insertdb = getWritableDatabase();        //읽기전용
         try {
             Log.d("데이터베이스","DB Insert실행");
@@ -98,8 +84,8 @@ public final class DBOpenHelper extends SQLiteOpenHelper {
                 Log.d("데이터베이스","DB Insert실패");
                 throw new SQLException("Fail To Insert");
             } else {
-                Log.d("데이터베이스", "DB insert 성공\n\t\t turn - " + turn+", numset - "+numset);
-                Toast.makeText(context,"저장성공",Toast.LENGTH_SHORT).show();
+                Log.d("데이터베이스", String.format("DB insert 성공\n\t\t%d회, %s ", turn, numset));
+                //Toast.makeText(context,"저장성공",Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
             Log.d("데이터베이스", e.toString());
@@ -201,9 +187,6 @@ public final class DBOpenHelper extends SQLiteOpenHelper {
             Log.d("데이터베이스", log_text.toString());
         }
 
-        if(!(FragTwo.dialog.dltwo_listitem.size()>0)){
-            Toast.makeText(context, "DB목록 없음",Toast.LENGTH_SHORT).show();
-        }
         FragTwo.dialog.dltwo_adapter.notifyDataSetChanged();
         return FragTwo.dialog.dltwo_listitem;   //DB전체 반환
 }

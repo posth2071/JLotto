@@ -44,7 +44,7 @@ import java.util.List;
  */
 
 public class DialogClass extends Dialog implements View.OnClickListener {
-    private MyDialogListener dialogListener;
+    public static MyDialogListener dialogListener;
 
     private Context mContext = null;
 
@@ -52,7 +52,7 @@ public class DialogClass extends Dialog implements View.OnClickListener {
     private static final int LAYOUT_DBLIST = R.layout.dialog_dblist;        //DB리스트설정 대화상자 LayoutID
     private static final int LAYOUT_NETWORK = R.layout.dialog_network;      //인터넷 연결에러 대화상자 LayoutID
     private static final int LAYOUT_NUM_SETTING = R.layout.dialog_setting_numbers; //고정수 / 제외수 설정 대화상자 LayoutID
-    private static final int LAYOUT_DB_DELETE = R.layout.dialog_dbdelete;
+    private static final int LAYOUT_DB_DELETE = R.layout.dialog_dbdelete;   //DB 기록삭제 대화상자 LayoutID
 
     private static final String[] ERROR_MESSAGE = new String[]{"", "%s 이미 존재", "%s 이미 존재", "입력 값 중복", "%s 최대개수 초과", "숫자범위 초과"};
 
@@ -104,10 +104,10 @@ public class DialogClass extends Dialog implements View.OnClickListener {
 
     public DialogClass(Context context, int type, int network_type, String[] store){
         super(context);
-        this.mContext = context;
+         this.mContext = context;
         this.type = type;
         this.network_type = network_type;
-        if(network_type == 4){
+        if((network_type == 4) || (network_type == 5) || (network_type == 2)){
             this.store = store;
         }
     }
@@ -144,7 +144,7 @@ public class DialogClass extends Dialog implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("다이얼로그", "onCreate 진입 type - " + type);
+        Log.d("다이얼로그", String.format("onCreate 진입 type %d, network_type %d ", type, network_type));
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
@@ -153,8 +153,8 @@ public class DialogClass extends Dialog implements View.OnClickListener {
 
     private void dialog_set(int type) {
         Log.d("다이얼로그", "dialog_set실행, type -" + type);
-        switch (type) {
-            // 타입1 설정
+         switch (type) {
+            // 타입1 설정 (회차검색 다이얼로그)
             case 1:
                 Log.d("다이얼로그", "case 1 진입, type -" + type);
                 setContentView(LAYOUT_SEARCH);
@@ -171,7 +171,7 @@ public class DialogClass extends Dialog implements View.OnClickListener {
                 lastturn = MainActivity.lastLottoinfo.getTurn();
                 dlone_comment.setText(String.format("회차 범위 [ 1 - %d ]", lastturn));      //제일최근회차 가져오기
                 break;
-            // 타입2 설정
+            // 타입2 설정 (기록설정 다이얼로그)
             case 2:
                 Log.d("다이얼로그", "case 2 진입, type - " + type);
                 setContentView(LAYOUT_DBLIST);
@@ -196,7 +196,7 @@ public class DialogClass extends Dialog implements View.OnClickListener {
                     dltwo_exlist.setAdapter(dltwo_adapter);
                     Log.d("다이얼로그", "dltwo_adapter 생성 - " + dltwo_adapter);
                 } else {
-                    Toast.makeText(mContext, "DB저장 기록 없음", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(mContext, "기록 없음", Toast.LENGTH_SHORT).show();
                 }
                 break;
 
@@ -381,6 +381,7 @@ public class DialogClass extends Dialog implements View.OnClickListener {
                 Button dl_delete_ok = findViewById(R.id.dialog_dbdelete_ok);
                 dl_delete_ok.setOnClickListener(this);
                 break;
+
         }
     }
 
@@ -388,6 +389,7 @@ public class DialogClass extends Dialog implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            // 회차검색 다이얼로그 (취소 / 검색 버튼)
             case R.id.DLOne_Cancel:
                 cancel();
                 break;
@@ -402,11 +404,11 @@ public class DialogClass extends Dialog implements View.OnClickListener {
                     dlone_et.setText("");
                 } else {
                     //존재회차일경우 onPositiveClicked 메소드 실행
-                    dialogListener.onPositiveClicked(num);
-                    dismiss();      //다이얼로그 닫기
+                    NetworkStatus.Check_NetworkStatus(mContext, 2, new String[]{num});
                 }
                 break;
 
+                // 기록설정 다이얼로그
             case R.id.DLTwo_Cancel:
                 cancel();
                 break;
@@ -444,11 +446,9 @@ public class DialogClass extends Dialog implements View.OnClickListener {
                 break;
 
             case R.id.dialog_dbdelete_cancel:
-                Toast.makeText(mContext,"취소클릭",Toast.LENGTH_SHORT).show();
                 dismiss();
                 break;
             case R.id.dialog_dbdelete_ok:
-                Toast.makeText(mContext,"삭제클릭",Toast.LENGTH_SHORT).show();
                 DBOpenHelper dbOpenHelper = new DBOpenHelper(mContext);
                 dbOpenHelper.deleteDB(dBinfo.getNumset());
                 dismiss();

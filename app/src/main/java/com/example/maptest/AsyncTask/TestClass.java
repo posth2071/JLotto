@@ -3,6 +3,11 @@ package com.example.maptest.AsyncTask;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import androidx.core.app.ActivityCompat;
+
+import com.example.maptest.Activity.Loading_Activity;
+import com.example.maptest.Activity.MainActivity;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -33,7 +38,7 @@ public class TestClass {
         try {
             //task 끝나면 결과값받기 끝날때까지 대기
             lottoParsingInfo = task.get();
-            //test = task.get();
+
             //task 결과받고 task객체 소멸
             if (task.getStatus() == AsyncTask.Status.RUNNING)
                 task.cancel(true);
@@ -130,13 +135,14 @@ public class TestClass {
 
             } catch (IOException e) {
                 e.printStackTrace();
-            };
+            }
             return resultParsingInfo;
         }
 
         @Override
         protected void onPostExecute(LottoParsingInfo resultParsingInfo) {
             super.onPostExecute(resultParsingInfo);
+
         }
 
 

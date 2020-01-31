@@ -2,6 +2,9 @@ package com.example.maptest.Activity.FragMent_Two.QRCord;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,10 +14,13 @@ import android.view.Window;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.maptest.Activity.MainActivity;
 import com.example.maptest.DataBase.DBOpenHelper;
 import com.example.maptest.R;
 
@@ -31,6 +37,8 @@ public class CustomDialog implements View.OnClickListener {
     public static TextView QR_Dialog_Turn, QR_Dialog_Date, QR_Dialog_ResultNum, QR_Dialog_ResultInfo;
     private ListView QR_Dialog_MyNumList;
     private TextView QR_Dialog_Ok, QR_Dialog_Cancel;
+    private ImageView[] QR_Dialog_numset = new ImageView[7];
+    private LinearLayout QR_Dialog_numLayout;
 
     private Context context;
     private Dialog dlg;
@@ -44,17 +52,26 @@ public class CustomDialog implements View.OnClickListener {
         this.context = context;
         dlg = new Dialog(context);
         dlg.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dlg.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dlg.setContentView(R.layout.dialog_qrcord);
+
+        QR_Dialog_numLayout = dlg.findViewById(R.id.QR_Dialog_numLayout);
 
         QR_Dialog_Turn = dlg.findViewById(R.id.QR_Dialog_Turn);
         QR_Dialog_Date = dlg.findViewById(R.id.QR_Dialog_Date);
-        QR_Dialog_ResultNum = dlg.findViewById(R.id.QR_Dialog_ResultNum);
+        // QR_Dialog_ResultNum = dlg.findViewById(R.id.QR_Dialog_ResultNum);
         QR_Dialog_ResultInfo = dlg.findViewById(R.id.QR_Dialog_ResultInfo);
 
         QR_Dialog_MyNumList = dlg.findViewById(R.id.QR_Dialog_MyNumList);
 
         QR_Dialog_Ok = dlg.findViewById(R.id.QR_Dialog_ok);
         QR_Dialog_Cancel = dlg.findViewById(R.id.QR_Dialog_cancel);
+
+        Resources res = context.getResources();
+        for(int i=0; i < QR_Dialog_numset.length; i++){
+            int id = res.getIdentifier("QR_Dialog_num"+(i+1), "id", context.getPackageName());
+            QR_Dialog_numset[i] = dlg.findViewById(id);
+        }
 
         Parser parser = new Parser();
         parser.execute(url);
@@ -94,23 +111,19 @@ public class CustomDialog implements View.OnClickListener {
                         insertState[i] = dbOpenHelper.insertDB(turn, test[i]);                   // Insert(회차정보, 번호세트)
                         if(insertState[i]==1){
                             builder.append(test[i].replace(",", " ")+"\n");
-                        };
+                        }
                     }
                     // 데이터베이스에 중복없이 저장성공이 된 경우, builder크기가 1보다 큼
                     if(builder.length()>1){
-                        builder.insert(0,"DB저장\n"); // 첫부분에 DB저장 삽입한 다음 줄바꿈 후 저장된 번호들 보여주기
-                        Toast.makeText(context,builder,Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context,"저장",Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(context,"DB저장 실피(중복)",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context,"저장 실패 (중복)",Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Toast.makeText(context,"확인 클릭 \n" + builder,Toast.LENGTH_SHORT).show();
                 }
                 dlg.dismiss();
                 break;
 
             case R.id.QR_Dialog_cancel:
-                Toast.makeText(context,"취소 클릭",Toast.LENGTH_SHORT).show();
                 dlg.dismiss();
                 break;
         }
@@ -152,13 +165,30 @@ public class CustomDialog implements View.OnClickListener {
 
             TextView item_type = (TextView) convertView.findViewById(R.id.item_type);
             TextView item_result = (TextView) convertView.findViewById(R.id.item_result);
-            TextView item_numberSet = (TextView) convertView.findViewById(R.id.item_numberSet);
+
+            Resources res = context.getResources();
+            ImageView[] listView_Num = new ImageView[6];
+            for (int i=0; i<listView_Num.length; i++){
+                int id = res.getIdentifier("QR_List_num"+(i+1), "id", context.getPackageName());
+                listView_Num[i] = convertView.findViewById(id);
+            }
+
+            //TextView item_numberSet = (TextView) convertView.findViewById(R.id.item_numberSet);
+
             CheckBox item_checkbox = convertView.findViewById(R.id.item_checkbox);
 
             ListItem listItem = listViewItemList.get(position);
             item_type.setText(listItem.getType());
             item_result.setText(listItem.getResult());
-            item_numberSet.setText(listItem.getNumberSet());
+
+            String[] number_set = listItem.getNumberSet().split(" ");
+            for (int i=0; i<listView_Num.length; i++){
+                int number = Integer.parseInt(number_set[i]);
+                listView_Num[i].setImageResource(MainActivity.num_ID[number-1]);
+            }
+            //item_numberSet.setText(listItem.getNumberSet());
+
+
             item_checkbox.setChecked(false);
             item_checkbox.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener(){
                 @Override
@@ -237,7 +267,7 @@ public class CustomDialog implements View.OnClickListener {
                 qr_Turn = info_ele.selectFirst("span.key_clr1").text();
                 turn = Integer.parseInt(qr_Turn.replace("제","").replace("회",""));
                 Log.d("바코드","QR 회차" +turn);
-                QR_Dialog_Turn.setText("로또 6/45 "+ qr_Turn);
+                QR_Dialog_Turn.setText(qr_Turn);
 
                 // 추첨 날짜 <span class="date">
                 qr_Date = info_ele.selectFirst("span.date").text();
@@ -247,28 +277,29 @@ public class CustomDialog implements View.OnClickListener {
                 Element result_ele = info_ele.selectFirst("div.bx_winner.winner");
                 //<strong class="tit"> 존재해서 파싱이 되었으면 null이 아님
                 if(result_ele !=null){
+                    QR_Dialog_numLayout.setVisibility(View.VISIBLE);
+
                     // <strong class="tit"> 내용 출력
-                    qr_ResultNum = result_ele.selectFirst("strong.tit").text()
-                                    + "\n"
-                                    + result_ele.selectFirst("div.list").text();
-                    QR_Dialog_ResultNum.setText(qr_ResultNum);
-                    QR_Dialog_ResultNum.setVisibility(View.VISIBLE);
+                    qr_ResultNum = result_ele.selectFirst("div.list").text();
+                    String[] result_Numset = qr_ResultNum.split(" ");
+                    for(int i=0; i<result_Numset.length; i++){
+                        int num = Integer.parseInt(result_Numset[i]);
+                        QR_Dialog_numset[i].setImageResource(MainActivity.num_ID[num-1]);
+                    }
+                    //QR_Dialog_ResultNum.setText(qr_ResultNum);
+                    //QR_Dialog_ResultNum.setVisibility(View.VISIBLE);
 
                     // <div class="list"> 추첨번호 출력
 
-                    /*
-                      이미 추첨된 경우       (당첨,낙첨 결과 출력)
-                      아직 미추첨 경우       (미추첨 복권입니다.(20시 45분 추첨예정)
-                    */
+
+                    // 이미 추첨된 경우       (당첨,낙첨 결과 출력)
                     qr_ResultInfo = info_ele.selectFirst("div.bx_notice.winner span").text()
                             + "\n"
                             + info_ele.selectFirst("div.bx_notice.winner strong").text();
                 } else {
-                    /*
-                      이미 추첨된 경우       (당첨,낙첨 결과 출력)
-                      아직 미추첨 경우       (미추첨 복권입니다.(20시 45분 추첨예정)
-                    */
-                    QR_Dialog_ResultNum.setVisibility(View.GONE);
+                    // 아직 미추첨 경우       (미추첨 복권입니다.(20시 45분 추첨예정)
+                    QR_Dialog_numLayout.setVisibility(View.GONE);
+                    //QR_Dialog_ResultNum.setVisibility(View.GONE);
                     qr_ResultInfo = info_ele.selectFirst("div.bx_notice.winner strong").text()
                             + "\n"
                             + info_ele.selectFirst("div.bx_notice.winner span").text();

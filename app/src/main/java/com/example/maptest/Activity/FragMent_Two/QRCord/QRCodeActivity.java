@@ -2,30 +2,107 @@ package com.example.maptest.Activity.FragMent_Two.QRCord;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.maptest.R;
 import com.journeyapps.barcodescanner.CaptureActivity;
+import com.journeyapps.barcodescanner.CaptureManager;
+import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 
-public class QRCodeActivity extends CaptureActivity {
+public class QRCodeActivity extends AppCompatActivity implements DecoratedBarcodeView.TorchListener, View.OnClickListener {
+
+    protected final String TAG = "QRcodeActivity";
+
+    private CaptureManager captureManager;
+    private DecoratedBarcodeView barcodeScannerView;
+    private ImageButton barcode_flash, barcode_cancel;
+    private Boolean flash_state = false;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_barcode);
 
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        barcode_flash = findViewById(R.id.barcode_flash);
+        barcode_flash.setOnClickListener(this);
 
-        TextView title_view = new TextView(this);
-        title_view.setLayoutParams(new LinearLayout.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT));
-        title_view.setBackgroundColor(Color.parseColor("#00FFFFFF"));
-        title_view.setPadding(100, 100, 0, 0);
-        title_view.setTextColor(Color.parseColor("#006C93"));
-        title_view.setTextSize(25);
-        title_view.setText("동행복권 QR코드 인식");
+        barcode_cancel = findViewById(R.id.barcode_cancel);
+        barcode_cancel.setOnClickListener(this);
 
-        this.addContentView(title_view, layoutParams);
+        barcodeScannerView = findViewById(R.id.barcode_scanner);
+        barcodeScannerView.setTorchListener(this);
+
+        captureManager = new CaptureManager(this, barcodeScannerView);
+        captureManager.initializeFromIntent(getIntent(), savedInstanceState);
+        captureManager.decode();
+
+
+    }
+
+    protected String createTag() {
+        return TAG;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+
+            case R.id.barcode_cancel:
+                finish();
+                break;
+
+            case R.id.barcode_flash:
+                if(flash_state){
+                    barcodeScannerView.setTorchOn();
+                } else {
+                    barcodeScannerView.setTorchOff();
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onTorchOn() {
+        barcode_flash.setImageResource(R.drawable.ic_flash_on);
+        flash_state = false;
+    }
+
+    @Override
+    public void onTorchOff() {
+        barcode_flash.setImageResource(R.drawable.ic_flash_off);
+        flash_state = true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        captureManager.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        captureManager.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        captureManager.onDestroy();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        captureManager.onSaveInstanceState(outState);
     }
 }

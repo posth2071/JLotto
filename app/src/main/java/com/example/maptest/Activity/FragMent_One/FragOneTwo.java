@@ -81,36 +81,33 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.bt_DBsotre:
-                Log.d("frag2","저장버튼 눌림");
                 if(listindex ==6){
-                    Log.d("frag2","숫자개수 통과");
+                    // 체크한 숫자 개수가 6개인지 확인
                     dBinfos.clear();        // dBinfos리스트 비우기
                     Iterator<testset> it = listTop.iterator();
-                    ArrayList<String> testlist = new ArrayList<>();     //임시로 번호 담을 리스트
+                    ArrayList<String> numSet_List = new ArrayList<>();     //임시로 번호 담을 리스트
+
                     while(it.hasNext()){
-                        String str = String.valueOf(it.next().getNumber());
-                        testlist.add(str);
-                        Log.d("테스트",str);
+                        numSet_List.add(String.valueOf(it.next().getNumber()));
                     }
 
-                    String numset = testlist.toString()
+                    String numset = numSet_List.toString()
                             .replace("[","")
                             .replace("]","")
                             .replace(" ","");
 
                     // 내부SQLite DB 저장
-                    if(dbOpenHelper.insertDB(lastturn,numset)==1){   //최신회차+1 (다음주회차로 설정)19 23 28 37 42 2
-                        Log.d("데이터베이스","DB저장 성공");
-                    } else {
-                        Log.d("데이터베이스", "저장실패 - 중복");
-                    }
+                    //dbOpenHelper.insertDB(lastturn,numset);   //최신회차+1 (다음주회차로 설정)
+                    dbOpenHelper.insertDB(lastturn+1,numset);   //최신회차+1 (다음주회차로 설정)
 
                     // 상단,하단 Grid뷰, listindex 초기화
                     ClearBottom();
                     ClearTop();
                     listindex=0;
-                } else {        // listindex가 7이 아닌 경우
-                    Toast.makeText(view.getContext().getApplicationContext(), "번호를 고르세요", Toast.LENGTH_SHORT).show();
+                } else {
+                    // listindex가 7이 아닌 경우 (번호가 모두 채워지지 않은 경우)
+                    Log.d("FragOneTwo", String.format("번호 개수부족, '총 6개 - 현재 %d'", listindex));
+                    //Toast.makeText(view.getContext().getApplicationContext(), "번호를 고르세요", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -123,7 +120,8 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
         for(int i=0; i<6; i++){
             listTop.add(new testset(0, MainActivity.num_null,0));
         }
-        if(numAdapterTop != null)           //numAdapter가 생성되어있는경우
+        if(numAdapterTop != null)
+            //numAdapter가 생성되어있는경우
             numAdapterTop.notifyDataSetChanged();
     }
 
@@ -133,7 +131,8 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
         for(int i=1; i<46; i++){
             listBottom.add(new testset(i,MainActivity.num_ID[i-1],0));
         }
-        if(numAdapterBottom != null)        //numAdapter가 생성되어있는 경우
+        if(numAdapterBottom != null)
+            //numAdapter가 생성되어있는 경우
             numAdapterBottom.notifyDataSetChanged();
     }
 
@@ -141,7 +140,10 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
     // GridView연결, NumAdapter클래스
     public class NumAdapter extends BaseAdapter {
         LayoutInflater inflater;
-        String gridindex;                   // Grid구분 (Top,Bottom)
+        // Grid구분 (Top,Bottom)
+        String gridindex;
+
+        // 생성자 함수
         public NumAdapter(String gridindex) {
             super();
             this.gridindex = gridindex;
@@ -209,14 +211,18 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
                                 top.setImgid(MainActivity.num_ID[position]);              //해당 imageView 이미지 변경 - 고른 숫자로
                                 top.setNumber(position + 1);
                                 listindex += 1;                             //골라진 숫자갯수 증가 (최대 6개 검사하기위해)
-                                //}
+
+                                Log.d("FragOneTwo", String.format("%d번 설정", (position+1)));
                                 numAdapterTop.notifyDataSetChanged();       //Adapter에 연결된 List내용 수정 후 반영
-                            } else { //listindex가 7인경우 - 숫자 모두골라진 상태
-                                Toast.makeText(getContext().getApplicationContext(), "모두입력됨", Toast.LENGTH_SHORT).show();
+                            } else {
+                                //listindex가 7인경우 - 숫자 모두골라진 상태
+                                //Toast.makeText(getContext().getApplicationContext(), "모두입력됨", Toast.LENGTH_SHORT).show();
+                                Log.d("FragOneTwo", "입력개수 초과");
                             }
-                            // 클릭한 숫자가 이미골랐던 번호인경우 (Tag==1)
                         } else if (bottom.getTag() == 1) {
-                            Toast.makeText(getContext().getApplicationContext(), "이미눌림", Toast.LENGTH_SHORT).show();
+                            // 클릭한 숫자가 이미골랐던 번호인경우 (Tag==1)
+                            //Toast.makeText(getContext().getApplicationContext(), "이미눌림", Toast.LENGTH_SHORT).show();
+                            Log.d("FragOneTwo", String.format("이미눌린 번호 %d ", bottom.getNumber()));
                         }
                     }
                 });
@@ -241,7 +247,8 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
                                 numAdapterBottom.notifyDataSetChanged();          //List반영하기
 
                                 listindex -= 1;                                   // listindex 하나 줄이기
-                                Toast.makeText(getContext().getApplicationContext(),number+"번 해제",Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getContext().getApplicationContext(),number+"번 해제",Toast.LENGTH_SHORT).show();
+                                Log.d("FragOneTwo", String.format("%d번 해제", number));
                         }
                     }
                 });

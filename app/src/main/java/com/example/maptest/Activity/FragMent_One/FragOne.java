@@ -80,9 +80,9 @@ public class FragOne extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.bt_random:
-                Log.d("fragone", "bt_random 눌림");
-                random();                      //랜덤 번호뽑기
+                Log.d("FragOne", "추첨버튼 클릭");
                 btState(false);                //시작,저장 버튼 눌리지않게
+                random();                      //랜덤 번호뽑기
                 startTimer = new Timer();
                 for(int i=0; i<6; i++){
                     startTasks[i] = new StartTask(frag1_Numiv[i],1);
@@ -95,37 +95,20 @@ public class FragOne extends Fragment implements View.OnClickListener {
                break;
             // 저장 누른경우 (내부SQLite DB)
             case R.id.bt_store:
+                Log.d("FragOne", "저장버튼 클릭");
                 if(numberlist.size()==6){          //numberlist가 채워져있는지
-                    //Arrays.sort(numbers);
-                    int paircount = 0;             //짝수 조사
-                    for(int i=0; i<numberlist.size(); i++){
-                        if((numberlist.get(i)%2)==0)
-                            paircount +=1;
-                    }
-
-                    /*
-                    String[] storeSet = new String[2];
-                    storeSet[0] = numberlist.toString()
-                            .replace("[","").replace("]","").replace(" ","");
-
-                    storeSet[1] = hallcount + ":" + paircount;
-                    Log.d("랜덤", storeSet[0]);
-                    Log.d("랜덤", storeSet[1]);
-                    */
                     String numset = numberlist.toString()
                             .replace("[","")
                             .replace("]","")
                             .replaceAll(" ","");
                     //DB저장하기 Storeset[0] 숫자정보7개, Storeset[1] 홀짝비율정보
-                    if(dbOpenHelper.insertDB(MainActivity.lastLottoinfo.getTurn(),numset)==1){   //최신회차+1 (다음주회차로 설정)
-                        Log.d("데이터베이스","DB저장 성공");
-                    } else {
-                        Log.d("데이터베이스", "저장실패 - 중복");
-                    }
+                    dbOpenHelper.insertDB(MainActivity.lastLottoinfo.getTurn(),numset);
+
                     numberlist.clear();     //리스트 초기화
                     imgReset();             //이미지뷰 초기화
                 } else {        // list가 비어있는경우
-                    Toast.makeText(getContext(), "번호 없음",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "번호 없음",Toast.LENGTH_SHORT).show();
+                    Log.d("FragOne", "저장 실패, 추첨 번호 미존재");
                 }
                 break;
         }
@@ -134,7 +117,7 @@ public class FragOne extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.v("frag1","onActivityCreated 연결된 액티비티 onCreate() 완료 후 호출");
+        Log.v("FragOne","onActivityCreated 연결된 액티비티 onCreate() 완료 후 호출");
         //메인액티비티 숫자(1~45)이미지 아이디, pack(1~6)이미지 아이디 갖고오기
         rotation_num_img = MainActivity.rotation_num_ID;
         num_img = MainActivity.num_ID;
@@ -150,36 +133,38 @@ public class FragOne extends Fragment implements View.OnClickListener {
 
     //랜덤번호 추출 함수
     public void random() {
-        Log.d("frag1", "\n" + "\trandom() 실행");
+        Log.d("FragOne", "random() 함수실행");
         numberlist.clear();             //저장할 리스트비우기
         HashSet<Integer> exceptCheck = new HashSet<>();
         HashSet<Integer> lottonums = new HashSet<>();
         //고정수 설정된게 있다면 해쉬에 추가
         if(MainActivity.fixedNums.size()!=0){
             lottonums.addAll(MainActivity.fixedNums);
-            Log.d("frag1", "\n" + "\t고정수 fixedNums - \n"+MainActivity.fixedNums.toString());
+            Log.d("FragOne", String.format("고정수 존재 '%s'",MainActivity.fixedNums.toString()));
         }
         //제외수 설정된게 있다면 해쉬에 추가
         if(MainActivity.exceptNums.size()!=0){
             exceptCheck.addAll(MainActivity.exceptNums);
-            Log.d("frag1", "\n" + "\t제외수 exceptCheck - \n"+exceptCheck.toString());
+            Log.d("FragOne", String.format("제외수 존재 '%s'",MainActivity.exceptNums.toString()));
         }
+        // 추첨번호 개수가 6개될때까지 반복해서 랜덤숫자 뽑기
         while(lottonums.size()<6) {
             int random = (int)(Math.random()*45)+1;
             if(exceptCheck.add(random)){ //랜덤값이 추가된다면 중복없음
-                Log.d("frag1", "\n" + "\t랜덤값 제외수 통과, random - "+random);
+                Log.d("FragOne", String.format("제외수 통과, 번호 %d", random));
+                // Hash 사용으로 중복일 경우 추가x
                 lottonums.add(random);
                 }
         }
         numberlist.addAll(lottonums);   //numberlist에 옮기기
-        Log.d("frag1", "\n" + "\t랜덤 추출번호 최종 - "+numberlist.toString());
+        Log.d("FragOne", String.format("추첨 번호 '%s',", numberlist.toString()));
     }
 
     //버튼(번호뽑기, 저장) 상태 조작 함수
     public void btState(boolean state){
         bt_random.setClickable(state);
         bt_store.setClickable(state);
-        Log.d("frag1", "\n" + "\t번호추출, 저장 버튼 세팅 - "+state);
+        Log.d("FragOne", String.format("번호 추첨 중, 버튼세팅 '%b'",state));
     }
 
 

@@ -27,7 +27,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.maptest.Activity.Dialog.DialogClass;
 import com.example.maptest.AsyncTask.LottoParsingInfo;
@@ -37,7 +36,6 @@ import com.example.maptest.Activity.FragMent_One.FragOneTwo;
 import com.example.maptest.Activity.FragMent_Three.FragThree;
 import com.example.maptest.Activity.FragMent_Two.FragTwo;
 import com.example.maptest.NetworkStatus;
-import com.example.maptest.Activity.FragMent_Two.QRCord.CustomDialog;
 import com.example.maptest.PreferenceManager;
 import com.example.maptest.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -75,10 +73,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private EditText set_ev;            // set_linear에 포함될 자식뷰
     private HashSet<Integer> set_hash = new HashSet<>(); // 제외수,고정수 임시 보관 해시set
 
-    public static FragOne frag1;
-    public static FragOneTwo frag11;
-    public static FragTwo frag2;
-    public static FragThree frag3;
+    public static FragOne fragOne;
+    public static FragOneTwo fragOneTwo;
+    public static FragTwo fragTwo;
+    public static FragThree fragThree;
 
     private DrawerLayout mDrawerLayout;         //최상단 DrawerLayout
     private NavigationView mNavigationView;     //네비게이션 뷰 (메뉴)
@@ -102,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     protected void onResume() {
         // 최신 로또정보 파싱
+
         super.onResume();
         TestClass testclass = new TestClass();
         lastLottoinfo = testclass.parsing("");
@@ -176,11 +175,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         lastLottoinfo = testclass.parsing("");
         searchLottoInfo = lastLottoinfo;
          */
-        frag1 = new FragOne();
-        frag11 = new FragOneTwo();
-        frag2 = new FragTwo();
-        frag3 = new FragThree();
-        getSupportFragmentManager().beginTransaction().add(R.id.fragment, frag1).commit();      //프래그먼트1 표시
+        fragOne = new FragOne();
+        fragOneTwo = new FragOneTwo();
+        fragTwo = new FragTwo();
+        fragThree = new FragThree();
+        // 첫 프래그먼트 - FragTwo 표시
+        getSupportFragmentManager().beginTransaction().add(R.id.fragment, fragOne).commit();
 
         //바텀 네비게이션뷰 연결
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
@@ -295,7 +295,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     //메뉴버튼 눌렀을때 콜백메서드 (여기서 메뉴편집)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d("테스트", "onOptionsItemSelected 호출");
+        Log.d("메뉴", "onOptionsItemSelected 호출");
         int fragindex = checkFragment();        //현재 프래그먼트 확인용 int
         mNavigationView.getMenu().clear();      //메뉴 비우기(안하면 inflate시 추가로 쌓임)
         switch (item.getItemId()) {
@@ -323,18 +323,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                             subMenu.getItem(3).setTitle(String.format(INFO_NUMSET, str));
                         }
                         alarm_Setting(mNavigationView.getMenu().getItem(1).getSubMenu().getItem(0).getActionView());
-                        /*
-                        aSwitch =  mNavigationView.getMenu().getItem(1).getSubMenu().getItem(0).getActionView().findViewById(R.id.menu_swtich);
-                        aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                            @Override
-                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                alarm_state(isChecked);
-                            }
-                        });
-
-                         */
-
                         break;
+
                     //Frag_OneTwo
                     case 2:
                         mNavigationView.inflateMenu(R.menu.navi_menu1);
@@ -371,16 +361,16 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             //바텀메뉴바 아이디
             case R.id.bottombar_one:
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment, frag1) // 표시할 레이아웃, 변경할 프래그먼트 설정
+                        .replace(R.id.fragment, fragOne) // 표시할 레이아웃, 변경할 프래그먼트 설정
                         .addToBackStack(null)          // 백스택에 변겅전 프래그먼트 저장
                         .commit();                     // 트랜잭션 실행
                 return true;
             case R.id.bottombar_two:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment, frag2).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment, fragTwo).addToBackStack(null).commit();
                 return true;
 
             case R.id.bottombar_three:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment, frag3).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment, fragThree).addToBackStack(null).commit();
                 return true;
 
 
@@ -390,9 +380,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 mDrawerLayout.closeDrawer(mNavigationView);
                 int fragindex = checkFragment();
                 if(fragindex==1){
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment, MainActivity.frag11).addToBackStack(null).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment, MainActivity.fragOneTwo).addToBackStack(null).commit();
                 } else if(fragindex==2){
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment, MainActivity.frag1).addToBackStack(null).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment, MainActivity.fragOne).addToBackStack(null).commit();
                 }
                 break;
 
@@ -419,8 +409,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             // 메뉴2 - 회차검색
             case R.id.menu2_Search:
                 mDrawerLayout.closeDrawer(GravityCompat.START);
-                // 인터넷 연결상태 확인 후 실행
-                NetworkStatus.Check_NetworkStatus(context, 2, null);
+                fragTwo.dialogshow(1);
+
+                //// 인터넷 연결상태 확인 후 실행
+                //NetworkStatus.Check_NetworkStatus(context, 2, null);
 
                 //frag2.dialogshow(1);
                 break;
@@ -428,7 +420,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             // 메뉴2 - DB설정
             case R.id.menu2_DBSet:
                 mDrawerLayout.closeDrawer(GravityCompat.START);
-                frag2.dialogshow(2);
+                fragTwo.dialogshow(2);
                 break;
 
             // 메뉴3 - 현재위치 주변매장 찾기
@@ -438,7 +430,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
                 // 인터넷 연결상태 확인 후 실행
                 NetworkStatus.Check_NetworkStatus(context, 3, null);
-
                 break;
         }
         return false;
@@ -449,11 +440,17 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         int fragindex = 0;
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
 
-        Log.d("테스트", "현재 Fragment "         //테스트용 로그출력
-                + "\n\t FragOne instanceof - " + (fragment instanceof FragOne)
-                + "\n\tFragOnTwo instanceOf - " + (fragment instanceof FragOneTwo)
-                + "\n\tFragTwo instanceOf - " + (fragment instanceof FragTwo)
-                + "\n\tFragThree instanceOf - " + (fragment instanceof FragThree));
+        Log.d("테스트", String.format(
+                new StringBuffer("현재 프래그먼트")
+                        .append("\n\tFragOne instanceOf '%b'")
+                        .append("\n\tFragOneTwo instanceOf '%b'")
+                        .append("\n\tFragTwo instanceOf '%b'")
+                        .append("\n\tFragThree instanceOf '%b'")
+                        .toString(),
+                fragment instanceof FragOne,
+                fragment instanceof FragOneTwo,
+                fragment instanceof FragTwo,
+                fragment instanceof FragThree));
 
         if (fragment instanceof FragOne) {
             fragindex = 1;
@@ -487,6 +484,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         if(resultCode == Activity.RESULT_OK){
             IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
             String qr_result = scanResult.getContents();
+
+            NetworkStatus.Check_NetworkStatus(context, 5, new String[]{qr_result});
+            /*
             Log.d("바코드", qr_result);
             // 동행복권 QR코드인지 검사
             if(qr_result.contains("dhlottery.co.kr")){
@@ -495,6 +495,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 // 동행복권 QR코드 아닌경우
                 Toast.makeText(this, "QR코드 오류", Toast.LENGTH_SHORT).show();
             }
+
+             */
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }

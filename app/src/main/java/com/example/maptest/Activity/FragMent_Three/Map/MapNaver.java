@@ -201,7 +201,8 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
             MapTask mtask = new MapTask(naverMap, 2);
             //String[] mtast_Store = new String[]{store_name[0], String.valueOf(lng), String.valueOf(lat)};
             mtask.execute(new String[]{store_name[0], String.valueOf(lng), String.valueOf(lat)});
-            Toast.makeText(getApplicationContext(), store_name[0] + ", " + store_name[1], Toast.LENGTH_SHORT).show();
+            // 매장명, 매장주소 출력
+            //Toast.makeText(getApplicationContext(), store_name[0] + ", " + store_name[1], Toast.LENGTH_SHORT).show();
 
             /*
                 전화번호 얻기위해 네이버 Serach 검색 사용
@@ -383,7 +384,7 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
                                 Intent it = new Intent(Intent.ACTION_DIAL, Uri.parse(tel));
                                 startActivity(it);
                             } else{
-                                Toast.makeText(MapNaver.this, "번호 미등록 매장", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MapNaver.this, "번호 미등록", Toast.LENGTH_SHORT).show();
                             }
                             return false;
                         }
@@ -448,7 +449,7 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
                             Intent it = new Intent(Intent.ACTION_DIAL, Uri.parse(tel));
                             startActivity(it);
                         } else{
-                            Toast.makeText(MapNaver.this, "번호 미등록 매장", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MapNaver.this, "번호 미등록", Toast.LENGTH_SHORT).show();
                         }
                         return false;
                     }

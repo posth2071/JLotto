@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="320dp"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/bg_dialog_redius">
@@ -20,7 +20,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingLeft="15dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -36,36 +37,96 @@
             android:layout_height="match_parent"
             android:text="800회차"
             android:textSize="16dp"
-            android:textStyle="bold"
             android:textColor="@color/white"
             android:gravity="start"/>
     </LinearLayout>
 
     <TextView
         android:id="@+id/QR_Dialog_Date"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:text="date"
-        android:textSize="14dp"
+        android:textSize="15dp"
         android:textColor="#88F5F5F5"
         android:gravity="start"
-        android:layout_marginLeft="45dp"/>
+        android:layout_marginLeft="70dp"/>
 
-    <TextView
-        android:id="@+id/QR_Dialog_ResultNum"
+    <LinearLayout
+        android:id="@+id/QR_Dialog_numLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="추첨번호"
-        android:textSize="18dp"
-        android:textColor="#000000"
-        android:gravity="center"/>
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:gravity="center"
+        >
+
+        <ImageView
+            android:id="@+id/QR_Dialog_num1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="fitXY"
+            android:src="@drawable/num_null" />
+        <ImageView
+            android:id="@+id/QR_Dialog_num2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="fitXY"
+            android:src="@drawable/num_null" />
+        <ImageView
+            android:id="@+id/QR_Dialog_num3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="fitXY"
+            android:src="@drawable/num_null" />
+        <ImageView
+            android:id="@+id/QR_Dialog_num4"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="fitXY"
+            android:src="@drawable/num_null" />
+        <ImageView
+            android:id="@+id/QR_Dialog_num5"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="fitXY"
+            android:src="@drawable/num_null" />
+        <ImageView
+            android:id="@+id/QR_Dialog_num6"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="fitXY"
+            android:src="@drawable/num_null" />
+        <ImageView
+            android:id="@+id/QR_Dialog_plus"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.4"
+            android:scaleType="fitCenter"
+            android:src="@drawable/plus" />
+        <ImageView
+            android:id="@+id/QR_Dialog_num7"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="fitXY"
+            android:src="@drawable/num_null" />
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/QR_Dialog_ResultInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingRight="30dp"
         android:paddingBottom="5dp"
         android:text="추첨안내"
         android:textSize="16dp"
@@ -78,7 +139,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:orientation="horizontal">
         <TextView
             android:id="@+id/item_type"
@@ -107,7 +168,6 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
-            android:paddingLeft="20dp"
             android:text="번호"
             android:textSize="14dp"
             android:textColor="@color/white"
@@ -116,12 +176,12 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
             android:layout_weight="1"
             android:text="저장"
+            android:paddingRight="12dp"
             android:textStyle="bold"
             android:textColor="@color/white"
-            android:gravity="start|center_vertical"
+            android:gravity="center_horizontal"
             />
 
     </LinearLayout>
@@ -145,7 +205,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
         android:gravity="end"
         android:orientation="horizontal"
         android:weightSum="10">
