@@ -110,12 +110,12 @@
             android:id="@+id/expand_Two_Result"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
             android:layout_weight="1"
             android:gravity="center"
             android:text="당첨결과"
-            android:textSize="16dp"
-            android:layout_marginRight="10dp"
-            ></TextView>
+            android:textColor="@color/Line"
+            android:textSize="16dp"></TextView>
     </LinearLayout>
 
 </LinearLayout>

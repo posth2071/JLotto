@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.maptest">
+    package="com.JLotto.JLotto">
 
     <!-- 인터넷권한 -->
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -34,7 +34,7 @@
         android:theme="@style/AppTheme">
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.example.maptest.fileprovider"
+            android:authorities="com.JLotto.JLotto.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -46,7 +46,7 @@
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="y0189tgx11"
             ></meta-data>
-        <activity android:name=".Activity.MainActivity"
+        <activity android:name="com.JLotto.JLotto.Activity.MainActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleInstance">
             <intent-filter>
@@ -56,22 +56,22 @@
         </activity>
 
         <!-- 로딩화면 액티비티 -->
-        <activity android:name=".Activity.Loading_Activity" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+        <activity android:name="com.JLotto.JLotto.Activity.Loading_Activity" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
 
         </activity>
         <!-- 네이버지도 액티비티 -->
-        <activity android:name=".Activity.FragMent_Three.Map.MapNaver"></activity>
+        <activity android:name="com.JLotto.JLotto.Activity.FragMent_Three.Map.MapNaver"></activity>
         <!-- QR 바코드 액티비티 -->
-        <activity android:name=".Activity.FragMent_Two.QRCord.QRCodeActivity"></activity>
+        <activity android:name="com.JLotto.JLotto.Activity.FragMent_Two.QRCord.QRCodeActivity"></activity>
 
         <!-- 알람 처리 Receiver -->
-        <receiver android:name=".AlarmPackage.AlarmReceiver">
+        <receiver android:name="com.JLotto.JLotto.AlarmPackage.AlarmReceiver">
             <intent-filter>
-                <action android:name="com.example.alarmtestat.ALRAM_START" />
+                <action android:name="com.JLotto.alarmtestat.ALRAM_START" />
             </intent-filter>
         </receiver>
         <!-- 부팅시 알람 재설정 Receiver -->
-        <receiver android:name=".AlarmPackage.BootReceiver"
+        <receiver android:name="com.JLotto.JLotto.AlarmPackage.BootReceiver"
             android:enabled="true" android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
