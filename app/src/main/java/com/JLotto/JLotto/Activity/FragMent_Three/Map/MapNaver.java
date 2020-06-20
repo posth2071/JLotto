@@ -192,39 +192,9 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
                     lng = addr.getLongitude();
                 }
             }
-            //lat = it.getDoubleExtra("lat", 1);      //전달받은 위도 추출
-            //lng = it.getDoubleExtra("lng", 1);      //전달받은 경도 추출
-            //store_name = it.getStringArrayExtra("store");       // store_name [0] 매장명 [1] 매장주소
-            /*
-                전화번호 얻기위해 네이버 Serach 검색 사용
-                MapTask = new MapTask (int type 으로 구분)
-             */
 
             MapTask mtask = new MapTask(naverMap, 2);
-            //String[] mtast_Store = new String[]{store_name[0], String.valueOf(lng), String.valueOf(lat)};
             mtask.execute(new String[]{store_name[0], String.valueOf(lng), String.valueOf(lat)});
-            // 매장명, 매장주소 출력
-            //MyToast.makeText(getApplicationContext(), store_name[0] + ", " + store_name[1]);
-
-            /*
-                전화번호 얻기위해 네이버 Serach 검색 사용
-                Naver Search API 20년 6월 종료 예정
-                종료 후 다시 사용할 메소드
-
-            Marker marker1 = new Marker();
-            marker1.setPosition(new LatLng(lat, lng));
-            marker1.setCaptionText(test[0]);             //주캡션 - 마커 밑 텍스트
-            marker1.setCaptionColor(Color.parseColor("#66cdaa"));
-            marker1.setSubCaptionText(test[1]);             //suboCaption 보조캡션 - 주캡션없으면 표시 안됨
-            Logger.d("지도", test[0]);
-            marker1.setSubCaptionColor(Color.GRAY);
-            marker1.setSubCaptionTextSize(8);
-
-            marker1.setMap(naverMap);
-            Logger.d("지도", "마커 생성");
-            naverMap.moveCamera(CameraUpdate.scrollTo(new LatLng(lat, lng)));
-
-             */
         }
     }
 
@@ -232,13 +202,6 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
         Logger.d("지도","startLocationService() 진입");
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    Activity#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for Activity#requestPermissions for more details.
             return;
         }
         Logger.d("지도","getLastKnowLocation 실행");
@@ -255,8 +218,6 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
     }
 
     class MapTask extends AsyncTask<String, Void, Boolean> {
-        //final String clientId = "y0189tgx11"; // 클라이언트 아이디값
-        //final String clientSecret = "NK87OTfxcF1JlVUt6acqMimoSKV5toNq5Y8v75IR"; // 시크릿값
         NaverMap taskMap;
         int type;
         public MapTask(NaverMap naverMap, int type){

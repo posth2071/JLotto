@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.dialog_groupname.view.*
 import kotlinx.android.synthetic.main.dialog_listitem.view.*
 import kotlinx.android.synthetic.main.dialog_qrcord.view.*
 
-class ExpandableListAdapter(
+class ExpandableDBAdapter(
         private val context: Context,
         private val items: List<List<DBinfo>>
 ) : BaseExpandableListAdapter() {

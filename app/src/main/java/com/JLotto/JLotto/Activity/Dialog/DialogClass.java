@@ -8,7 +8,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -21,8 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 import com.JLotto.JLotto.Activity.MainActivity;
-import com.JLotto.JLotto.Adapter.Expandable.ExpandableAdapter;
-import com.JLotto.JLotto.Adapter.Expandable.ExpandableListAdapter;
+import com.JLotto.JLotto.Adapter.Expandable.ExpandableDBAdapter;
 import com.JLotto.JLotto.DataBase.DBOpenHelper;
 import com.JLotto.JLotto.DataBase.DBinfo;
 import com.JLotto.JLotto.NetworkStatus;
@@ -30,12 +28,10 @@ import com.JLotto.JLotto.R;
 import com.JLotto.JLotto.Util.Logger;
 import com.JLotto.JLotto.Util.MyToast;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * Created by charlie on 2017. 8. 18..
@@ -64,8 +60,7 @@ public class DialogClass extends Dialog implements View.OnClickListener {
 
     // 타입2 - 설정 타입
     private ExpandableListView dltwo_exlist;
-//    public static ExpandableAdapter dltwo_adapter;
-    public static ExpandableListAdapter dltwo_adapter;
+    public static ExpandableDBAdapter dltwo_adapter;
     public static ArrayList<ArrayList<DBinfo>> dltwo_listitem = new ArrayList<>();
     private TextView dltwo_cancel, dltwo_check;
     private DBOpenHelper dbOpenHelper;
@@ -192,7 +187,7 @@ public class DialogClass extends Dialog implements View.OnClickListener {
                 Logger.d("다이얼로그", "dltwo_Listitem 데이터삽입 id/size - " + dltwo_listitem + ", " + dltwo_listitem.size());
                 if (dltwo_listitem.size() > 0) {
 //                    dltwo_adapter = new ExpandableAdapter(getContext(), dltwo_listitem, this);
-                    dltwo_adapter = new ExpandableListAdapter(getContext(), dltwo_listitem);
+                    dltwo_adapter = new ExpandableDBAdapter(getContext(), dltwo_listitem);
                     dltwo_exlist.setAdapter(dltwo_adapter);
                     Logger.d("다이얼로그", "dltwo_adapter 생성 - " + dltwo_adapter);
                 } else {
