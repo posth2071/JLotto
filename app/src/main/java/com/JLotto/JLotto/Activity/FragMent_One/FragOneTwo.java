@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,6 +21,8 @@ import com.JLotto.JLotto.DataBase.DBinfo;
 import com.JLotto.JLotto.Activity.MainActivity;
 import com.JLotto.JLotto.R;
 import com.JLotto.JLotto.AsyncTask.testset;
+import com.JLotto.JLotto.Util.Logger;
+import com.JLotto.JLotto.Util.MyToast;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -70,7 +73,7 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
         bt_DBStore.setOnClickListener(this);
 
         dBinfos = new ArrayList<>();
-        dbOpenHelper = new DBOpenHelper(view.getContext().getApplicationContext());
+        dbOpenHelper = new DBOpenHelper(view.getContext());
         ArrayList<DBinfo> logTest = dbOpenHelper.selectAllDB();
 
         return view;
@@ -105,8 +108,7 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
                     listindex=0;
                 } else {
                     // listindex가 7이 아닌 경우 (번호가 모두 채워지지 않은 경우)
-                    Log.d("FragOneTwo", String.format("번호 개수부족, '총 6개 - 현재 %d'", listindex));
-                    //Toast.makeText(view.getContext().getApplicationContext(), "번호를 고르세요", Toast.LENGTH_SHORT).show();
+                    Logger.d("FragOneTwo", String.format("번호 개수부족, '총 6개 - 현재 %d'", listindex));
                 }
                 break;
         }
@@ -211,17 +213,15 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
                                 top.setNumber(position + 1);
                                 listindex += 1;                             //골라진 숫자갯수 증가 (최대 6개 검사하기위해)
 
-                                Log.d("FragOneTwo", String.format("%d번 설정", (position+1)));
+                                Logger.d("FragOneTwo", String.format("%d번 설정", (position+1)));
                                 numAdapterTop.notifyDataSetChanged();       //Adapter에 연결된 List내용 수정 후 반영
                             } else {
                                 //listindex가 7인경우 - 숫자 모두골라진 상태
-                                //Toast.makeText(getContext().getApplicationContext(), "모두입력됨", Toast.LENGTH_SHORT).show();
-                                Log.d("FragOneTwo", "입력개수 초과");
+                                Logger.d("FragOneTwo", "입력개수 초과");
                             }
                         } else if (bottom.getTag() == 1) {
                             // 클릭한 숫자가 이미골랐던 번호인경우 (Tag==1)
-                            //Toast.makeText(getContext().getApplicationContext(), "이미눌림", Toast.LENGTH_SHORT).show();
-                            Log.d("FragOneTwo", String.format("이미눌린 번호 %d ", bottom.getNumber()));
+                            Logger.d("FragOneTwo", String.format("이미눌린 번호 %d ", bottom.getNumber()));
                         }
                     }
                 });
@@ -246,8 +246,7 @@ public class FragOneTwo  extends Fragment implements View.OnClickListener  {
                                 numAdapterBottom.notifyDataSetChanged();          //List반영하기
 
                                 listindex -= 1;                                   // listindex 하나 줄이기
-                                //Toast.makeText(getContext().getApplicationContext(),number+"번 해제",Toast.LENGTH_SHORT).show();
-                                Log.d("FragOneTwo", String.format("%d번 해제", number));
+                                Logger.d("FragOneTwo", String.format("%d번 해제", number));
                         }
                     }
                 });

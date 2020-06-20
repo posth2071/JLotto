@@ -20,6 +20,7 @@ import com.JLotto.JLotto.AsyncTask.LottoParsingInfo;
 import com.JLotto.JLotto.Activity.MainActivity;
 import com.JLotto.JLotto.PreferenceManager;
 import com.JLotto.JLotto.R;
+import com.JLotto.JLotto.Util.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,7 +52,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         try {
             // 파싱 시작, get() 함수로 파싱이 완료될때까지 대기
             lottoParsingInfo = alarm_taskClass.execute().get();
-            Log.d("알람", "파싱 결과 \n\t"
+            Logger.d("알람", "파싱 결과 \n\t"
                     + lottoParsingInfo.getTurn() + "회차, 추첨날짜 "
                     + lottoParsingInfo.getDate() + ", 당첨 번호 "
                     + Arrays.toString(lottoParsingInfo.getLottoInfo()));
@@ -94,7 +95,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         // 오레오 OREO API 26 이상부터는 채널 Chennel 필요
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            Log.d("알람", "SDK레벨 > 오레오(O) 이상");
+            Logger.d("알람", "SDK레벨 > 오레오(O) 이상");
             // 오레오 Oreo 이상버전에서 Mipmap 사용시, 시스템 UI 에러발생
             builder.setSmallIcon(R.drawable.pack1);
             // Notification Channel 생성

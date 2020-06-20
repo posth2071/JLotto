@@ -21,6 +21,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
 import com.JLotto.JLotto.R;
+import com.JLotto.JLotto.Util.Logger;
+import com.JLotto.JLotto.Util.MyToast;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.LocationTrackingMode;
@@ -87,7 +89,7 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.navermap);
-        Log.d("지도", "Map 액티비티 생성");             //맵 생명주기 (생성시)
+        Logger.d("지도", "Map 액티비티 생성");             //맵 생명주기 (생성시)
 
         it = getIntent();
         tag = it.getIntExtra("TAG", 0);
@@ -119,7 +121,7 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
     public void setMap(int tag, final NaverMap naverMap) {
         // 현재위치 주변 매장찾기 인경우
         if (tag == 1) {
-            Log.d("지도", "SetMap - tag1 걸림");
+            Logger.d("지도", "SetMap - tag1 걸림");
             // 디바이스 위치를 얻어올 LocationManager 호출
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -150,7 +152,7 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
                 public void onProviderDisabled(String s) {
                 }
             };
-            Log.d("지도","startLocationService() 실행");
+            Logger.d("지도","startLocationService() 실행");
             /*
              startLocationService(naverMap);
             naverMap.setLocationTrackingMode(LocationTrackingMode.Face);            //위치추적 설정
@@ -158,7 +160,7 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
                 @Override
                 public void onLocationChange(@NonNull Location location) {
                     naverMap.moveCamera(CameraUpdate.scrollTo(new LatLng(location.getLatitude(), location.getLongitude())));
-                    Log.d("지도", "위치추적변경이벤트 x - " + location.getLatitude() + ", y - " + location.getLongitude());
+                    Logger.d("지도", "위치추적변경이벤트 x - " + location.getLatitude() + ", y - " + location.getLongitude());
                 }
             });
             locationOverlay = naverMap.getLocationOverlay();
@@ -168,7 +170,7 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
              */
 
         } else if (tag == 2) {                  //1등 매장위치 보기인 경우
-            Log.d("지도", "SetMap - tag2 걸림");
+            Logger.d("지도", "SetMap - tag2 걸림");
 
             List<Address> list = null;
             try {
@@ -182,7 +184,7 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
             }
             if (list != null) {
                 if (list.size() == 0) {
-                    Toast.makeText(getApplicationContext(), "해당 주소없음", Toast.LENGTH_SHORT).show();
+                    MyToast.makeText(MapNaver.this, "해당 주소없음");
                     finish();
                 } else {
                     Address addr = list.get(0);
@@ -202,7 +204,7 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
             //String[] mtast_Store = new String[]{store_name[0], String.valueOf(lng), String.valueOf(lat)};
             mtask.execute(new String[]{store_name[0], String.valueOf(lng), String.valueOf(lat)});
             // 매장명, 매장주소 출력
-            //Toast.makeText(getApplicationContext(), store_name[0] + ", " + store_name[1], Toast.LENGTH_SHORT).show();
+            //MyToast.makeText(getApplicationContext(), store_name[0] + ", " + store_name[1]);
 
             /*
                 전화번호 얻기위해 네이버 Serach 검색 사용
@@ -214,12 +216,12 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
             marker1.setCaptionText(test[0]);             //주캡션 - 마커 밑 텍스트
             marker1.setCaptionColor(Color.parseColor("#66cdaa"));
             marker1.setSubCaptionText(test[1]);             //suboCaption 보조캡션 - 주캡션없으면 표시 안됨
-            Log.d("지도", test[0]);
+            Logger.d("지도", test[0]);
             marker1.setSubCaptionColor(Color.GRAY);
             marker1.setSubCaptionTextSize(8);
 
             marker1.setMap(naverMap);
-            Log.d("지도", "마커 생성");
+            Logger.d("지도", "마커 생성");
             naverMap.moveCamera(CameraUpdate.scrollTo(new LatLng(lat, lng)));
 
              */
@@ -227,7 +229,7 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
     }
 
     public void startLocationService(final NaverMap naverMap) {
-        Log.d("지도","startLocationService() 진입");
+        Logger.d("지도","startLocationService() 진입");
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -239,13 +241,13 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
             // for Activity#requestPermissions for more details.
             return;
         }
-        Log.d("지도","getLastKnowLocation 실행");
+        Logger.d("지도","getLastKnowLocation 실행");
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);     //마지막 위치(제일최근)얻어와 저장
         if(location == null)
             location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         lat = location.getLatitude();
         lng = location.getLongitude();
-        Log.d("지도", "디바이스 위치 - " + lat + ", " + lng);
+        Logger.d("지도", "디바이스 위치 - " + lat + ", " + lng);
 
         long minTime = 5000;                // 최소 시간(5초)
         float minDistance = 0;              // 최소 거리
@@ -264,28 +266,27 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
 
         @Override
         protected Boolean doInBackground(String... searchText) {
-            Log.d("지도","MapTask doinBackground 실행");
+            Logger.d("지도","MapTask doinBackground 실행");
             String text = null; // searchObject = 로또
             try {
                 text = URLEncoder.encode(searchText[0], "UTF-8");
-                Log.d("지도", searchText[0]);
-                if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    Activity#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for Activity#requestPermissions for more details.
-                }
+                Logger.d("지도", searchText[0]);
+                if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {}
 
                 String locationstr = "";
+
                 if(searchText[0].compareTo("로또") == 0){
                     Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                     if(location == null) {
                         location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                     }
-                    locationstr = location.getLongitude() + "," + location.getLatitude();
+                    if(location != null) {
+                        locationstr = location.getLongitude() + "," + location.getLatitude();
+                    } else {
+                        //37.576063, 126.976845
+                        locationstr = "126.976845, 37.576063";
+                        Logger.d("맵", "마지막 위치정보 없음");
+                    }
                 } else if(type == 2) {
                     locationstr = searchText[1] + "," + searchText[2];
                 }
@@ -316,7 +317,7 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
                 br.close();
                 con.disconnect();
 
-                Log.d("지도"," \n\tsearchResult - "+searchResult.toString());
+                Logger.d("지도"," \n\tsearchResult - "+searchResult.toString());
                 String data = searchResult.toString();
                 JSONObject jsonObject = new JSONObject(data);
                 JSONArray jsonArray = jsonObject.getJSONArray("places");
@@ -332,7 +333,7 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
                         longtitude[i] = lottoinfo.getDouble("x");                        // x - longtitude
                         distance[i] = lottoinfo.getString("distance");         //검색 중심 좌표와의 거리
                     }
-                    Log.d("지도", Arrays.toString(name));
+                    Logger.d("지도", Arrays.toString(name));
 
                 } else if(type == 2){
                     JSONObject lottoinfo = jsonArray.getJSONObject(0);
@@ -343,7 +344,7 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
                     first_latitude = lottoinfo.getDouble("y");                        // y - latitude
                     first_longtitude = lottoinfo.getDouble("x");                        // x - longtitude
                     first_distance = lottoinfo.getString("distance");         //검색 중심 좌표와의 거리
-                    Log.d("지도", first_name);
+                    Logger.d("지도", first_name);
                 }
 
             } catch (UnsupportedEncodingException e) {
@@ -359,10 +360,10 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
         @Override
         protected void onPostExecute(Boolean aVoid) {
             super.onPostExecute(aVoid);
-            Log.d("지도","AsyncTask - onPostExecute진입");
+            Logger.d("지도","AsyncTask - onPostExecute진입");
             if(type==1){
                 for(int i=0; i<name.length; i++) {
-                    Log.d("지도", name[i] + ", " + addr_road[i] + ", " + addr_jibun[i] + ", " + phone[i] + ", " + latitude[i] + ", " + longtitude[i] + ", " + distance[i]);
+                    Logger.d("지도", name[i] + ", " + addr_road[i] + ", " + addr_jibun[i] + ", " + phone[i] + ", " + latitude[i] + ", " + longtitude[i] + ", " + distance[i]);
                     markers[i] = new Marker();
                     markers[i].setPosition(new LatLng(latitude[i],longtitude[i]));
 
@@ -384,7 +385,7 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
                                 Intent it = new Intent(Intent.ACTION_DIAL, Uri.parse(tel));
                                 startActivity(it);
                             } else{
-                                Toast.makeText(MapNaver.this, "번호 미등록", Toast.LENGTH_SHORT).show();
+                                MyToast.makeText(getApplicationContext(), "번호 미등록 매장");
                             }
                             return false;
                         }
@@ -393,7 +394,7 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
 
                 }
                 for(int i=0; i<5; i++) {
-                    Log.d("지도", "Markers "+i+ " - " +markers[i].getCaptionText() + ", " + markers[i].getPosition());
+                    Logger.d("지도", "Markers "+i+ " - " +markers[i].getCaptionText() + ", " + markers[i].getPosition());
                 }
                 startLocationService(mMap);
                 mMap.setLocationTrackingMode(LocationTrackingMode.Face);            //위치추적 설정
@@ -401,7 +402,7 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
                     @Override
                     public void onLocationChange(@NonNull Location location) {
                         mMap.moveCamera(CameraUpdate.scrollTo(new LatLng(location.getLatitude(), location.getLongitude())));
-                        Log.d("지도", "위치추적변경이벤트 x - " + location.getLatitude() + ", y - " + location.getLongitude());
+                        Logger.d("지도", "위치추적변경이벤트 x - " + location.getLatitude() + ", y - " + location.getLongitude());
                     }
                 });
                 locationOverlay = mMap.getLocationOverlay();
@@ -413,7 +414,7 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
                 mMap.moveCamera(CameraUpdate.scrollTo(new LatLng(lat, lng)));
 
             } else if(type == 2){
-                Log.d("지도", String.format(new StringBuilder()
+                Logger.d("지도", String.format(new StringBuilder()
                             .append(" \n\t매장명 - %s")
                             .append(" \n\t도로명 주소 - %s")
                             .append(" \n\t지번 주소 - %s")
@@ -449,7 +450,7 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
                             Intent it = new Intent(Intent.ACTION_DIAL, Uri.parse(tel));
                             startActivity(it);
                         } else{
-                            Toast.makeText(MapNaver.this, "번호 미등록", Toast.LENGTH_SHORT).show();
+                            MyToast.makeText(MapNaver.this, "번호 미등록 매장");
                         }
                         return false;
                     }
@@ -459,10 +460,10 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
             }
             if(type == 1){
                 for(int i=0; i<5; i++) {
-                    Log.d("지도", "Markers "+i+ " - " +markers[i].getCaptionText() + ", " + markers[i].getPosition());
+                    Logger.d("지도", "Markers "+i+ " - " +markers[i].getCaptionText() + ", " + markers[i].getPosition());
                 }
             } else if(type == 2){
-                Log.d("지도", "Marker - " +marker.getCaptionText() + ", " + marker.getPosition());
+                Logger.d("지도", "Marker - " +marker.getCaptionText() + ", " + marker.getPosition());
             }
 
         }
@@ -473,7 +474,7 @@ public class MapNaver extends FragmentActivity implements OnMapReadyCallback {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d("지도", "Map 소멸");         // 맵 생명주기 (소멸시)
+        Logger.d("지도", "Map 소멸");         // 맵 생명주기 (소멸시)
 
         //request리스너 작동중이면 중지시킴
         if(mLocationListener!=null)

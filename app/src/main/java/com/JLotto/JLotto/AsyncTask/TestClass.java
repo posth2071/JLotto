@@ -3,6 +3,8 @@ package com.JLotto.JLotto.AsyncTask;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.JLotto.JLotto.Util.Logger;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -165,7 +167,7 @@ public class TestClass {
                         +resultParsingInfo.storeList.get(i)[1];
             }
             str += str2;
-            Log.d("LottoParsingInfo", "\n "+str);
+            Logger.d("LottoParsingInfo", "\n "+str);
         }
     }
 }

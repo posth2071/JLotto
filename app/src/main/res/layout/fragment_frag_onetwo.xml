@@ -3,67 +3,75 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.FragMent_One.FragOneTwo"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:weightSum="5"
+    android:paddingTop="50dp"
+    android:paddingBottom="50dp"
+    tools:context=".Activity.FragMent_One.FragOneTwo">
 
-
+<!--    android:layout_marginTop="50dp"-->
+    <!--    android:layout_height="50dp"-->
     <GridView
         android:id="@+id/gridTop"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:numColumns="6"
-        android:columnWidth="10dp"
-        android:stretchMode="columnWidth"
-        android:verticalSpacing="2dp"
+        android:layout_height="0dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
-        ></GridView>
+        android:layout_weight="1"
+        android:columnWidth="10dp"
+        android:numColumns="6"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="2dp"></GridView>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="5dp"
-        android:background="@color/Line"
-        ></View>
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="40dp"
+        android:background="@color/Line"></View>
+    <!--    android:layout_height="300dp"-->
     <GridView
         android:id="@+id/gridBottom"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:columnWidth="10dp"
-        android:numColumns="6"
+        android:layout_height="0dp"
         android:layout_gravity="top"
-        android:verticalSpacing="2dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
+        android:layout_weight="3"
+        android:columnWidth="10dp"
+        android:numColumns="6"
         android:stretchMode="columnWidth"
-        ></GridView>
+        android:verticalSpacing="2dp"></GridView>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="10dp"
-        android:background="@color/Line"
-        ></View>
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="40dp"
+        android:background="@color/Line"></View>
 
-    <ImageView
-        android:id="@+id/bt_DBsotre"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginRight="40dp"
-        android:layout_gravity="right"
-        android:background="@drawable/ic_add_circle_black_24dp"
-        android:adjustViewBounds="true"
-        ></ImageView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-    <TextView
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="40dp"
-        android:layout_gravity="right"
-        android:gravity="center_horizontal"
-        android:text="저  장"
-        />
+        <ImageView
+            android:id="@+id/bt_DBsotre"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="right"
+            android:layout_marginRight="40dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/ic_add_circle_black_24dp"></ImageView>
+
+        <TextView
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginRight="40dp"
+            android:gravity="center_horizontal"
+            android:text="저  장" />
+    </LinearLayout>
+
 </LinearLayout>

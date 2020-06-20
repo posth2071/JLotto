@@ -12,10 +12,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.JLotto.JLotto.DataBase.DBinfo;
 import com.JLotto.JLotto.Activity.Dialog.DialogClass;
+import com.JLotto.JLotto.DataBase.DBinfo;
 import com.JLotto.JLotto.Activity.MainActivity;
 import com.JLotto.JLotto.R;
+import com.JLotto.JLotto.Util.Logger;
 
 import java.util.ArrayList;
 
@@ -37,8 +38,8 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
     //frag2에 사용
     public ExpandableAdapter(Context context, ArrayList<String> groupList, Expand_Child childList){
         super();
-        Log.d("확장리스트뷰", "ExpandableAdapter(context, groupList, childList) 메소드");
-        inflater = LayoutInflater.from(context);
+        Logger.d("확장리스트뷰", "ExpandableAdapter(context, groupList, childList) 메소드");
+        this.inflater = LayoutInflater.from(context);
         this.groupList = groupList;
         this.childList = childList;
         this.context = context;
@@ -48,8 +49,8 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
     //DB설정 리스트에 사용
     public ExpandableAdapter(Context context, ArrayList<ArrayList<DBinfo>> dGroupList, DialogClass dialog){
         super();
-        Log.d("확장리스트뷰", "ExpandableAdapter(context, dGroupList, dialog) 메소드");
-        inflater = LayoutInflater.from(context);
+        Logger.d("확장리스트뷰", "ExpandableAdapter(context, dGroupList, dialog) 메소드");
+        this.inflater = LayoutInflater.from(context);
         this.dGroupList = dGroupList;
         this.context = context;
         this.dialog = dialog;
@@ -58,15 +59,18 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
 
     @Override    //그룹 포지션 반환
     public String getGroup(int groupPosition) {
-        String group = new String();
+//        String group = new String();
+        StringBuilder group = new StringBuilder();
 
         if(adapterType==1){
-            group = groupList.get(groupPosition);
+//            group = groupList.get(groupPosition);
+            group.append(groupList.get(groupPosition));
         } else if (adapterType == 2){
-            group = String.valueOf(dGroupList.get(groupPosition).get(0).getTurn());
+            group.append(dGroupList.get(groupPosition).get(0).getTurn());
         }
-        Log.d("확장리스트뷰", String.format("getGroup(gPos %d), return %s", groupPosition, group));
-        return group;
+        Logger.d("확장리스트뷰", String.format("getGroup(gPos %d), return %s", groupPosition, group));
+//        return group;
+        return group.toString();
     }
 
     @Override    //그룹 사이즈 반환
@@ -77,17 +81,18 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
         } else if (adapterType == 2) {
             groupCount = dGroupList.size();
         }
-        Log.d("확장리스트뷰", String.format("getGroupCount(), return %d", groupCount));
+        Logger.d("확장리스트뷰", String.format("getGroupCount(), return %d", groupCount));
         return  groupCount;
     }
 
-    @Override    //그룹 ID 반환
+    // 그룹 ID 반환
+    @Override
     public long getGroupId(int groupPosition) {
-        Log.d("확장리스트뷰", String.format("getGroupId(gPos %d), return %d",groupPosition,groupPosition));
+        Logger.d("확장리스트뷰", String.format("getGroupId(%d), return %d",groupPosition,groupPosition));
         return groupPosition;
     }
 
-    //그룹뷰 타입개수반환
+    // 그룹 View Type 개수 반환
     @Override
     public int getGroupTypeCount() {
         int groupTypeCount = 0;
@@ -97,31 +102,32 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
         } else if (adapterType == 2){
             groupTypeCount = dGroupList.size();
         }
-        Log.d("확장리스트뷰", String.format("getGroupTypeCount(), return %d", groupTypeCount));
+        Logger.d("확장리스트뷰", String.format("getGroupTypeCount(), return %d", groupTypeCount));
         return groupTypeCount;
+//        return (adapterType==1) ? groupList.size() : dGroupList.size();
     }
 
-    //해당 그룹 타입반환
+    // 해당 그룹 타입반환
     @Override
     public int getGroupType(int groupPosition) {
-        Log.d("확장리스트뷰", String.format("getGroupType(gPos %d), return %d", groupPosition, groupPosition));
+        Logger.d("확장리스트뷰", String.format("getGroupType(gPos %d), return %d", groupPosition, groupPosition));
         return groupPosition;
     }
 
-    @Override    //그룹뷰 각각의 행반환
+    // 그룹뷰 각각의 행반환
+    @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        Log.d("확장리스트뷰", String.format("getGroupView(gPos(%d), isExpand(%b), convertView, parent) 실행", groupPosition, isExpanded));
-
         View view = groupset(groupPosition, isExpanded, convertView, parent);
 
+        Logger.d("확장리스트뷰", String.format("getGroupView(gPos(%d), isExpand(%b), convertView(%b), parent(%b)) return "
+                , groupPosition, isExpanded, convertView==null, parent==null)+ view);
         return view;
     }
-
 
     // 자식뷰 반환
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        Log.d("확장리스트뷰", String.format("getChild(gPos(%d), cPos(%d)) 실행", groupPosition, childPosition));
+        Logger.d("확장리스트뷰", String.format("getChild(gPos(%d), cPos(%d)) 실행", groupPosition, childPosition));
         switch (adapterType){
             case 1:
                 switch (groupPosition){
@@ -147,25 +153,25 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
     //차일드뷰 사이즈 반환
     @Override
     public int getChildrenCount(int groupPosition) {
-        Log.d("확장리스트뷰", String.format("getChildrenCount(gPos(%d)) 실행", groupPosition));
+        Logger.d("확장리스트뷰", String.format("getChildrenCount(gPos(%d)) 실행", groupPosition));
         switch (adapterType){
             case 1:
                 switch (groupPosition){
                     case 0:
-                        Log.d("확장리스트뷰", String.format("getChildrenCount(gPos(%d)), return %d", groupPosition,childList.typeOne.size()));
+                        Logger.d("확장리스트뷰", String.format("getChildrenCount(gPos(%d)), return %d", groupPosition,childList.typeOne.size()));
                         return childList.typeOne.size();
                     case 1:
-                        Log.d("확장리스트뷰", String.format("getChildrenCount(gPos(%d)), return %d", groupPosition,childList.typeTwo.size()));
+                        Logger.d("확장리스트뷰", String.format("getChildrenCount(gPos(%d)), return %d", groupPosition,childList.typeTwo.size()));
                         return childList.typeTwo.size();
                     case 2:
-                        Log.d("확장리스트뷰", String.format("getChildrenCount(gPos(%d)), return %d", groupPosition,childList.typethree.size()));
+                        Logger.d("확장리스트뷰", String.format("getChildrenCount(gPos(%d)), return %d", groupPosition,childList.typethree.size()));
                         return childList.typethree.size();
                     default:
-                        Log.d("확장리스트뷰", String.format("getChildrenCount(gPos(%d)), return 0", groupPosition));
+                        Logger.d("확장리스트뷰", String.format("getChildrenCount(gPos(%d)), return 0", groupPosition));
                         return 0;
                 }
             case 2:
-                Log.d("확장리스트뷰", String.format("getChildrenCount(gPos(%d)), return %d", groupPosition,dGroupList.get(groupPosition).size()));
+                Logger.d("확장리스트뷰", String.format("getChildrenCount(gPos(%d)), return %d", groupPosition, dGroupList.get(groupPosition).size()));
                 return dGroupList.get(groupPosition).size();
             default:
                 return 0;
@@ -175,32 +181,32 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
     // 차일드뷰 ID반환
     @Override
     public long getChildId(int groupPosition, int childPosition) {
-        Log.d("확장리스트뷰", String.format("getChildId(gPos(%d), cPos(%d)), return %d", groupPosition, childPosition, 0));
-        return 0;
+        Logger.d("확장리스트뷰", String.format("getChildId(gPos(%d), cPos(%d)), return %d", groupPosition, childPosition, 0));
+        return childPosition;
+        // return 0;
     }
 
-    //차일드뷰 타입개수반환 -차일드뷰 타입이 몇개인지 이거 중요 (3개반환)
+    // Child View 타입개수반환 -차일드뷰 타입이 몇개인지 이거 중요 (3개반환)
     @Override
     public int getChildTypeCount() {
-        Log.d("확장리스트뷰", String.format("getChildIdTypeCount(), return %d", getGroupTypeCount()));
+        Logger.d("확장리스트뷰", String.format("getChildIdTypeCount(), return %d", getGroupTypeCount()));
         return getGroupTypeCount();
     }
 
-    //차일드뷰 타입반환
+    // Child View 타입반환
     @Override
     public int getChildType(int groupPosition, int childPosition) {
-        Log.d("확장리스트뷰", String.format("getChildType(gPos(%d), cPos(%d)), return %d", groupPosition,childPosition,groupPosition));
+        Logger.d("확장리스트뷰", String.format("getChildType(gPos(%d), cPos(%d)), return %d", groupPosition,childPosition,groupPosition));
         return groupPosition;
     }
 
-    // 차일드뷰 각각의 행 반환
+    // Child View 각각의 행 반환
     @Override
     public View getChildView(int groupPosition, int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
-        Log.d("확장리스트뷰", String.format("getChildView(gPos(%d), cPos(%d), isLastChild(%b))", groupPosition,childPosition,isLastChild));
-        View view = childset(groupPosition, childPosition, isLastChild, convertView, parent);
-
-        return view;
+        Logger.d("확장리스트뷰", String.format("getChildView(gPos(%d), cPos(%d), isLastChild(%b), convertView(%b), parent(%b)"
+                , groupPosition, childPosition, isLastChild, convertView==null, parent==null));
+        return childset(groupPosition, childPosition, isLastChild, convertView, parent);
     }
 
     @Override
@@ -208,17 +214,18 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
-        Log.d("확장리스트뷰", String.format("isChildSelectable(gPos(%d), cPos(%d)), return false", groupPosition,childPosition));
+        Logger.d("확장리스트뷰", String.format("isChildSelectable(gPos(%d), cPos(%d)), return false", groupPosition,childPosition));
         return false;
     }
 
     private View groupset(int groupPosition, boolean isExpanded, View convertV, ViewGroup parent){
-        Log.d("확장리스트뷰", String.format("groupset(gPos(%d), isExpanded(%b) convertV, parent)", groupPosition,isExpanded));
+        Logger.d("확장리스트뷰", String.format("groupset(gPos(%d), isExpanded(%b) convertV(%b), parent(%b))"
+                , groupPosition,isExpanded, convertV==null, parent==null));
         View view = convertV;
         switch (adapterType){
             case 1:
                 if(view == null){
-                    Log.d("확장리스트뷰", "view == null, group - "+groupPosition);
+                    Logger.d("확장리스트뷰", "view == null, group - "+groupPosition);
                     viewHolder = new ViewHolder();
                     view = inflater.inflate(R.layout.expand_list, parent, false);
 
@@ -227,7 +234,7 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
 
                     view.setTag(viewHolder);
                 } else {
-                    Log.d("확장리스트뷰", "view != null, group - "+groupPosition);
+                    Logger.d("확장리스트뷰", "view != null, group - "+groupPosition);
                     viewHolder = (ViewHolder) view.getTag();
                 }
 
@@ -241,14 +248,14 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
                 break;
             case 2:
                 if(view == null){
-                    Log.d("확장리스트뷰", "case 2, if(view == null) -> true");
+                    Logger.d("확장리스트뷰", "case 2, if(view == null) -> true");
                     dialogViewHolder = new DialogViewHolder();
                     view = inflater.inflate(R.layout.dialog_groupname, parent, false);
                     dialogViewHolder.dialog_GroupName = view.findViewById(R.id.dialog_GroupName);
                     dialogViewHolder.dialog_GroupImage = view.findViewById(R.id.dialog_GroupImage);
                     view.setTag(dialogViewHolder);
                 } else {
-                    Log.d("확장리스트뷰", "case 2, if(view == null) -> false");
+                    Logger.d("확장리스트뷰", "case 2, if(view == null) -> false");
                     dialogViewHolder = (DialogViewHolder) view.getTag();
                 }
 
@@ -265,18 +272,18 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
 
     private View childset(final int groupPosition, int childPosition,
                           boolean isLastChild, View convertView, ViewGroup parent){
-        Log.d("확장리스트뷰",String.format("childset(gPos(%d), cPos(%d), isLastChild(%b) convertV, parent)", groupPosition, childPosition, isLastChild));
+        Logger.d("확장리스트뷰",String.format("childset(gPos(%d), cPos(%d), isLastChild(%b) convertV, parent)", groupPosition, childPosition, isLastChild));
         View view = convertView;
         Resources res = context.getResources();
         switch (adapterType){
             case 1:
-                Log.d("확장리스트뷰", "adapterType case 1");
+                Logger.d("확장리스트뷰", "adapterType case 1");
                 switch (getGroupType(groupPosition)) {
                     //Adapter타입 1 - child타입 1 인경우
                     case 0:
-                        Log.d("확장리스트뷰", "getGroupType case 0");
+                        Logger.d("확장리스트뷰", "getGroupType case 0");
                         if (view == null) {
-                            Log.d("확장리스트뷰", "if(view == null) -> true");
+                            Logger.d("확장리스트뷰", "if(view == null) -> true");
                             view = inflater.inflate(R.layout.expand_typeone, null);
 
                             viewHolder = new ViewHolder();
@@ -288,7 +295,7 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
                             //해당뷰에 ViewHolder 세팅
                             view.setTag(viewHolder);
                         } else { //해당뷰 이미 존재시, 저장되있던 ViewHolder 얻기
-                            Log.d("확장리스트뷰", "if(view == null) -> false");
+                            Logger.d("확장리스트뷰", "if(view == null) -> false");
                             viewHolder = (ViewHolder) view.getTag();
                         }
 
@@ -301,9 +308,9 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
                         break;
                     //Adapter타입 1 - Child타입 2 일때
                     case 1:
-                        Log.d("확장리스트뷰", "getGroupType case 1");
+                        Logger.d("확장리스트뷰", "getGroupType case 1");
                         if (view == null) {
-                            Log.d("확장리스트뷰", "if(view == null) -> true");
+                            Logger.d("확장리스트뷰", "if(view == null) -> true");
                             view = inflater.inflate(R.layout.expand_typetwo, null);
                             viewHolder = new ViewHolder();
                             viewHolder.expand_TwoTurn = view.findViewById(R.id.expand_Two_Turn);
@@ -317,7 +324,7 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
                             //viewholder 저장
                             view.setTag(viewHolder);
                         } else {
-                            Log.d("확장리스트뷰", "if(view == null) -> false");
+                            Logger.d("확장리스트뷰", "if(view == null) -> false");
                             //View가 이미존재한다면 - viewholder 갖고오기
                             viewHolder = (ViewHolder) view.getTag();
                         }
@@ -343,16 +350,16 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
                         break;
                         //Adapter타입 1 - Child타입 3 일때
                     case 2:
-                        Log.d("확장리스트뷰", "getGroupType case 2");
+                        Logger.d("확장리스트뷰", "getGroupType case 2");
                         if(view == null){
-                            Log.d("확장리스트뷰", "if(view == null) -> true");
-                            Log.d("확장리스트뷰","view == null,  gPosition - "+groupPosition +", cPosition - "+childPosition);
+                            Logger.d("확장리스트뷰", "if(view == null) -> true");
+                            Logger.d("확장리스트뷰","view == null,  gPosition - "+groupPosition +", cPosition - "+childPosition);
                             view = inflater.inflate(R.layout.expand_typethree, null);
                             viewHolder = new ViewHolder();
                             viewHolder.expand_ThreeAttention = view.findViewById(R.id.expand_Three_Attention);
                             view.setTag(viewHolder);
                         } else {
-                            Log.d("확장리스트뷰", "if(view == null) -> false");
+                            Logger.d("확장리스트뷰", "if(view == null) -> false");
                             viewHolder = (ViewHolder) view.getTag();
                         }
                         String attention = (String) getChild(groupPosition,childPosition);
@@ -362,9 +369,9 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
                 break;
                 //Adapter타입 2 일때
             case 2:
-                Log.d("확장리스트뷰", "adapterType case 2");
+                Logger.d("확장리스트뷰", "adapterType case 2");
                 if(view == null){
-                    Log.d("확장리스트뷰", "if(view == null) -> true");
+                    Logger.d("확장리스트뷰", "if(view == null) -> true");
                     view = inflater.inflate(R.layout.dialog_listitem, null);
                     dialogViewHolder = new DialogViewHolder();
                     dialogViewHolder.dialog_Turn = view.findViewById(R.id.dialog_Turn);
@@ -377,7 +384,7 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
                     }
                     view.setTag(dialogViewHolder);
                 } else {
-                    Log.d("확장리스트뷰", "if(view == null) -> false");
+                    Logger.d("확장리스트뷰", "if(view == null) -> false");
                     dialogViewHolder = (DialogViewHolder) view.getTag();
                 }
 
@@ -386,13 +393,16 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
 
                 //만약 삭제되어서 View가 없어진 상태라면 null 리턴
                 if(dialogViewHolder.dialog_Turn == null){
-                    return null;
+                    Logger.d("에러테스트", "dialog_Turn - "+dialogViewHolder.dialog_Turn);
+                    return null;  // 에러 발생지점
+//                    return view;
+//                    break;
                 } else {
                     dialogViewHolder.dialog_Turn.setText(String.valueOf(setting.getTurn()));
                     dialogViewHolder.dialog_Hallpair.setText(MainActivity.checkHallPair(numset));
                     dialogViewHolder.numberset = numset;
 
-                    Log.d("확장리스트뷰", "numberset - " +numset);
+                    Logger.d("확장리스트뷰", "numberset - " +numset);
                     String[] numberset = numset.split(",");
 
                     for (int i=0; i<6; i++){
@@ -404,7 +414,7 @@ public class ExpandableAdapter extends BaseExpandableListAdapter {
                     dialogViewHolder.dialog_Delete.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(final View view1) {
-                            Log.d("확장리스트뷰", "클릭 numberset - "+ setting.getNumset());
+                            Logger.d("확장리스트뷰", "클릭 numberset - "+ setting.getNumset());
                             DialogClass dialogClass = new DialogClass(context, 5, setting);
                             dialogClass.show();
                         }

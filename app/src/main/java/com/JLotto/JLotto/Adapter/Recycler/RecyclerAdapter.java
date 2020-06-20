@@ -31,7 +31,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //Toast.makeText(view.getContext(), tv_storeLocation.getText(),Toast.LENGTH_SHORT).show();
                     String[] store_info = new String[]{tv_storeName.getText().toString(), tv_storeLocation.getText().toString()};
                     NetworkStatus.Check_NetworkStatus(view.getContext(), 4, store_info);
                 }
@@ -67,4 +66,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public int getItemCount() {
         return foodInfoArrayList.size();
     }
+
+
 }

@@ -1,3 +1,4 @@
+
 package com.JLotto.JLotto.DataBase;
 
 import android.content.ContentValues;
@@ -6,16 +7,17 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import com.JLotto.JLotto.Activity.FragMent_Two.FragTwo;
 import com.JLotto.JLotto.Activity.MainActivity;
+import com.JLotto.JLotto.Util.Logger;
+import com.JLotto.JLotto.Util.MyToast;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+
 
 public final class DBOpenHelper extends SQLiteOpenHelper {
     private Context context;
@@ -31,7 +33,7 @@ public final class DBOpenHelper extends SQLiteOpenHelper {
     public DBOpenHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DB_VERSION);
         this.context = context;
-        Log.d("데이터베이스", "DB생성 - "+ DATABASE_NAME);
+        Logger.d("데이터베이스", "DB생성 - "+ DATABASE_NAME);
     }
 
     //처음 DB생성
@@ -42,18 +44,18 @@ public final class DBOpenHelper extends SQLiteOpenHelper {
                 "turn INTEGER not null," +
                 "numset TEXT not null);";
         db.execSQL(query);
-        Log.d("데이터베이스", "DB테이블 Created" + TABLE_NAME);
+        Logger.d("데이터베이스", "DB테이블 Created" + TABLE_NAME);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         db.execSQL("drop table if exists " + TABLE_NAME);
         onCreate(db);
-        Log.d("데이터베이스", "DB Updated");
+        Logger.d("데이터베이스", "DB Updated");
     }
 
     public int insertDB(int turn, String numset) {
-        Log.d("데이터베이스", "DB InsertDB 진입");
+        Logger.d("데이터베이스", "DB InsertDB 진입");
 
         //입력 회차와 동일 db전부 검색
         ArrayList<DBinfo> dbCheck = selectDB(turn);
@@ -63,8 +65,8 @@ public final class DBOpenHelper extends SQLiteOpenHelper {
             String strset = MainActivity.numsetSort(it.next().getNumset());       //번호세트 가져와서 오름차순 정렬
             String checkset = MainActivity.numsetSort(numset);
             if(checkset.compareTo(strset)==0) {
-                Toast.makeText(context.getApplicationContext(), String.format("%d회차 중복", turn), Toast.LENGTH_SHORT).show();
-                Log.d("데이터베이스", String.format("DB Insert 실패 (중복)\n\t\t%d회차, %s", turn, numset));
+                MyToast.makeText(context, String.format("%d회차 중복", turn));
+                Logger.d("데이터베이스", String.format("DB Insert 실패 (중복)\n\t\t%d회차, %s", turn, numset));
                 return 0;
             }
         }
@@ -74,17 +76,17 @@ public final class DBOpenHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_NUMSET, numset);
         SQLiteDatabase insertdb = getWritableDatabase();        //읽기전용
         try {
-            Log.d("데이터베이스","DB Insert실행");
+            Logger.d("데이터베이스","DB Insert실행");
             long rowId = insertdb.insert(TABLE_NAME, null, cv);
             if (rowId < 0) {
-                Log.d("데이터베이스","DB Insert실패");
+                Logger.d("데이터베이스","DB Insert실패");
                 throw new SQLException("Fail To Insert");
             } else {
-                Log.d("데이터베이스", String.format("DB insert 성공\n\t\t%d회차 [%s]", turn, numset));
-                Toast.makeText(context.getApplicationContext(), String.format("%d회차 저장 [%s]", turn, numset), Toast.LENGTH_SHORT).show();
+                Logger.d("데이터베이스", String.format("DB insert 성공\n\t\t%d회차 [%s]", turn, numset));
+                MyToast.makeText(context, String.format("%d회차 저장", turn), numset);
             }
         } catch (Exception e) {
-            Log.d("데이터베이스", e.toString());
+            Logger.d("데이터베이스", e.toString());
         } finally {
             insertdb.close();
         }
@@ -94,7 +96,7 @@ public final class DBOpenHelper extends SQLiteOpenHelper {
     }
 
     public ArrayList<DBinfo> selectDB(int turn) {
-        Log.d("데이터베이스", "DB selectDB 진입, turn - "+turn);
+        Logger.d("데이터베이스", "DB selectDB 진입, turn - "+turn);
         SQLiteDatabase selectdb = getReadableDatabase();
         String sql = String.format("select * from %s where turn='%s'", TABLE_NAME, String.valueOf(turn));
         Cursor cursor = selectdb.rawQuery(sql, null);
@@ -115,7 +117,7 @@ public final class DBOpenHelper extends SQLiteOpenHelper {
 
     //DB전체 호출
     public ArrayList<DBinfo> selectAllDB(){
-        Log.d("데이터베이스", "DB selectAllDB 진입");
+        Logger.d("데이터베이스", "DB selectAllDB 진입");
         SQLiteDatabase selectdb = getReadableDatabase();
         String sql = String.format("select * from %s", TABLE_NAME);
         Cursor cursor = selectdb.rawQuery(sql, null);
@@ -135,7 +137,7 @@ public final class DBOpenHelper extends SQLiteOpenHelper {
 
     //DB리스트 설정 회차별 반환함수
     public ArrayList<ArrayList<DBinfo>> selectListAllDB(){
-        Log.d("데이터베이스", "DB selectListAllDB 진입");
+        Logger.d("데이터베이스", "DB selectListAllDB 진입");
         SQLiteDatabase selectdb = getReadableDatabase();
 
         //turn(회차리스트 얻기),  DISTINCT - 중복제거, ORDER BY turn DESC - turn내림차순 정렬
@@ -159,27 +161,27 @@ public final class DBOpenHelper extends SQLiteOpenHelper {
 
     //DB내용 삭제
     public ArrayList<ArrayList<DBinfo>> deleteDB(String numberset){
-        Log.d("데이터베이스", "DB delete - "+ numberset);
+        Logger.d("데이터베이스", "DB delete - "+ numberset);
 
         SQLiteDatabase db = getWritableDatabase();
         String sql = String.format("DELETE FROM %s WHERE %s = '%s'", TABLE_NAME, COLUMN_NUMSET, numberset);
         db.execSQL(sql);
         db.close();
 
-        FragTwo.dialog.dltwo_listitem.clear();
-        FragTwo.dialog.dltwo_listitem.addAll(selectListAllDB());
-        for (int i=0; i<FragTwo.dialog.dltwo_listitem.size(); i++){
-            StringBuilder log_text = new StringBuilder(" \n\tdltwo_listItem");
-            Iterator<DBinfo> it = FragTwo.dialog.dltwo_listitem.get(i).iterator();
-            while (it.hasNext()){
-                log_text.append(" \n\t");
-                log_text.append(it.next().getInfo());
-                }
-            Log.d("데이터베이스", log_text.toString());
-        }
-
-        FragTwo.dialog.dltwo_adapter.notifyDataSetChanged();
-        return FragTwo.dialog.dltwo_listitem;   //DB전체 반환
+//        FragTwo.dialog.dltwo_listitem.clear();
+//        FragTwo.dialog.dltwo_listitem.addAll(selectListAllDB());
+//        for (int i=0; i<FragTwo.dialog.dltwo_listitem.size(); i++){
+//            StringBuilder log_text = new StringBuilder(" \n\tdltwo_listItem");
+//            Iterator<DBinfo> it = FragTwo.dialog.dltwo_listitem.get(i).iterator();
+//            while (it.hasNext()){
+//                log_text.append(" \n\t");
+//                log_text.append(it.next().getInfo());
+//            }
+//            Logger.d("데이터베이스", log_text.toString());
+//        }
+//        FragTwo.dialog.dltwo_adapter.notifyDataSetChanged();
+        return selectListAllDB();   //DB전체 반환
+//        return FragTwo.dialog.dltwo_listitem;   //DB전체 반환
 }
 
     public void deletAllDB(){
@@ -198,10 +200,10 @@ public final class DBOpenHelper extends SQLiteOpenHelper {
         }else {
             logText= "\nDBList [ALL] Count => " + listCount + "개\n";
         }
-        
+
         for (int i = 0; i < listCount; i++) {
             logText += "\t\t" + type + "[" + i + "] => " + dbList.get(i).getInfo() + "\n";
         }
-        Log.d("데이터베이스", "\nDBinsert 성공\n"+ logText);
+        Logger.d("데이터베이스", "\nDBinsert 성공\n"+ logText);
     }
 }

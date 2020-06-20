@@ -29,7 +29,7 @@
         android:textColorHint="#55ffffff"
         android:textColor="@color/white"
         android:digits="0123456789"
-        android:inputType="number"
+        android:inputType="numberDecimal"
         ></EditText>
     <View
         android:layout_width="match_parent"

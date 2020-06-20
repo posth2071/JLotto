@@ -35,6 +35,7 @@ import com.JLotto.JLotto.Activity.FragMent_Two.FragTwo;
 import com.JLotto.JLotto.NetworkStatus;
 import com.JLotto.JLotto.PreferenceManager;
 import com.JLotto.JLotto.R;
+import com.JLotto.JLotto.Util.Logger;
 import com.facebook.stetho.Stetho;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -111,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         //로딩화면 띄우기
         Intent loading_it = new Intent(this, com.JLotto.JLotto.Activity.Loading_Activity.class);
         startActivity(loading_it);
-        Log.d("네트워크", "로딩화면 인텐트 시작 startActivity(loading_it)");
+        Logger.d("네트워크", "로딩화면 인텐트 시작 startActivity(loading_it)");
 
         permissionCheck(permissions_list);
 
@@ -136,8 +137,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);    //DrawerLayout 연결(최상단 레이아웃)
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);     //네비게이션 뷰 연결(안보임)
         mNavigationView.setNavigationItemSelectedListener(this);            //네비게이션 뷰 아이템 클릭 처리리스너등록
-
-        Log.d("네트워크", "최신 로또정보 파싱 실행");
+    
+        Logger.d("네트워크", "최신 로또정보 파싱 실행");
 
         fragOne = new FragOne();
         fragOneTwo = new FragOneTwo();
@@ -223,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 bonuscount +=1;
             }
         }
-        Log.d("확인", "\n" +
+        Logger.d("확인", "\n" +
                 "\t" + numset +" : "+searchnumset.toString() +
                 "result count - "+resultcount+", bonusCount - "+bonuscount);
 
@@ -264,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     //메뉴버튼 눌렀을때 콜백메서드 (여기서 메뉴편집)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d("메뉴", "onOptionsItemSelected 호출");
+        Logger.d("메뉴", "onOptionsItemSelected 호출");
         int fragindex = checkFragment();        //현재 프래그먼트 확인용 int
         mNavigationView.getMenu().clear();      //메뉴 비우기(안하면 inflate시 추가로 쌓임)
         switch (item.getItemId()) {
@@ -372,7 +373,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 mDrawerLayout.closeDrawer(mNavigationView);
                 exceptNums.clear();
                 fixedNums.clear();
-                Log.d("메뉴", "reset 적용 \n\t exceptNums size - " + exceptNums.size() + "\n\t fixedNums size - " + fixedNums.size());
+                Logger.d("메뉴", "reset 적용 \n\t exceptNums size - " + exceptNums.size() + "\n\t fixedNums size - " + fixedNums.size());
                 break;
 
             // 메뉴2 - 회차검색
@@ -409,7 +410,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         int fragindex = 0;
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
 
-        Log.d("테스트", String.format(
+        Logger.d("테스트", String.format(
                 new StringBuffer("현재 프래그먼트")
                         .append("\n\tFragOne instanceOf '%b'")
                         .append("\n\tFragOneTwo instanceOf '%b'")
@@ -456,13 +457,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
             NetworkStatus.Check_NetworkStatus(context, 5, new String[]{qr_result});
             /*
-            Log.d("바코드", qr_result);
+            Logger.d("바코드", qr_result);
             // 동행복권 QR코드인지 검사
             if(qr_result.contains("dhlottery.co.kr")){
                 CustomDialog customDialog = new CustomDialog(this, qr_result);
             } else {
                 // 동행복권 QR코드 아닌경우
-                Toast.makeText(this, "QR코드 오류", Toast.LENGTH_SHORT).show();
+                MyToast.makeText(this, "QR코드 오류");(this, "QR코드 오류", Toast.LENGTH_SHORT).show();
             }
 
              */
@@ -501,7 +502,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         alarm_Switch = view.findViewById(R.id.menu_swtich);
         boolean alarm_State = PreferenceManager.getBoolean(context);
         alarm_Switch.setChecked(alarm_State);
-
         alarm_Switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -509,4 +509,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             }
         });
     }
+
+
 }

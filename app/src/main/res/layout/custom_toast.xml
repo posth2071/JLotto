@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/toast_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_toast_design">
+
+    <TextView
+        android:id="@+id/toast_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="toast"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:id="@+id/toast_num_Layout"
+        android:layout_width="250dp"
+        android:gravity="center"
+        android:layout_height="60dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/toast_num1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/num_null"></ImageView>
+
+        <ImageView
+            android:id="@+id/toast_num2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/num_null"></ImageView>
+
+        <ImageView
+            android:id="@+id/toast_num3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/num_null"></ImageView>
+
+        <ImageView
+            android:id="@+id/toast_num4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/num_null"></ImageView>
+
+        <ImageView
+            android:id="@+id/toast_num5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/num_null"></ImageView>
+
+        <ImageView
+            android:id="@+id/toast_num6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/num_null"></ImageView>
+
+    </LinearLayout>
+</LinearLayout>

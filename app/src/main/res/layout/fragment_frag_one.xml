@@ -4,20 +4,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activity.FragMent_One.FragOne"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:weightSum="5">
 
+<!--    android:layout_width="225dp"-->
     <ImageView
         android:id="@+id/iv_pack"
         android:layout_width="225dp"
-        android:layout_height="225dp"
+        android:layout_height="0dp"
+        android:layout_weight="2.5"
         android:src="@drawable/pack1"
         android:layout_gravity="center"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="10dp"
         ></ImageView>
+
+    <!--    android:layout_height="120dp"-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="0dp"
+        android:layout_weight="1.5"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
         android:orientation="horizontal">
@@ -67,12 +73,14 @@
             ></ImageView>
     </LinearLayout>
 
-
+<!--    android:layout_height="wrap_content"-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:orientation="vertical"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
         android:paddingRight="30dp">
 
         <LinearLayout

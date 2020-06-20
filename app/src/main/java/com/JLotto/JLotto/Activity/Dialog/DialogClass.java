@@ -8,7 +8,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.method.DigitsKeyListener;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -17,22 +16,26 @@ import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
+import com.JLotto.JLotto.Activity.MainActivity;
 import com.JLotto.JLotto.Adapter.Expandable.ExpandableAdapter;
+import com.JLotto.JLotto.Adapter.Expandable.ExpandableListAdapter;
 import com.JLotto.JLotto.DataBase.DBOpenHelper;
 import com.JLotto.JLotto.DataBase.DBinfo;
-import com.JLotto.JLotto.Activity.MainActivity;
 import com.JLotto.JLotto.NetworkStatus;
 import com.JLotto.JLotto.R;
+import com.JLotto.JLotto.Util.Logger;
+import com.JLotto.JLotto.Util.MyToast;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * Created by charlie on 2017. 8. 18..
@@ -43,11 +46,11 @@ public class DialogClass extends Dialog implements View.OnClickListener {
 
     private Context mContext = null;
 
-    private static final int LAYOUT_SEARCH = R.layout.dialog_activity;      //회차검색 대화상자 LayoutID
-    private static final int LAYOUT_DBLIST = R.layout.dialog_dblist;        //DB리스트설정 대화상자 LayoutID
-    private static final int LAYOUT_NETWORK = R.layout.dialog_network;      //인터넷 연결에러 대화상자 LayoutID
-    private static final int LAYOUT_NUM_SETTING = R.layout.dialog_setting_numbers; //고정수 / 제외수 설정 대화상자 LayoutID
-    private static final int LAYOUT_DB_DELETE = R.layout.dialog_dbdelete;   //DB 기록삭제 대화상자 LayoutID
+    private static final int LAYOUT_SEARCH = R.layout.dialog_activity;              // 회차검색 대화상자 LayoutID
+    private static final int LAYOUT_DBLIST = R.layout.dialog_dblist;                // DB리스트설정 대화상자 LayoutID
+    private static final int LAYOUT_NETWORK = R.layout.dialog_network;              // 인터넷 연결에러 대화상자 LayoutID
+    private static final int LAYOUT_NUM_SETTING = R.layout.dialog_setting_numbers;  // 고정수 / 제외수 설정 대화상자 LayoutID
+    private static final int LAYOUT_DB_DELETE = R.layout.dialog_dbdelete;           // DB 기록삭제 대화상자 LayoutID
 
     private static final String[] ERROR_MESSAGE = new String[]{"", "%s 이미 존재", "%s 이미 존재", "입력 값 중복", "%s 최대개수 초과", "숫자범위 초과"};
 
@@ -61,7 +64,8 @@ public class DialogClass extends Dialog implements View.OnClickListener {
 
     // 타입2 - 설정 타입
     private ExpandableListView dltwo_exlist;
-    public static ExpandableAdapter dltwo_adapter;
+//    public static ExpandableAdapter dltwo_adapter;
+    public static ExpandableListAdapter dltwo_adapter;
     public static ArrayList<ArrayList<DBinfo>> dltwo_listitem = new ArrayList<>();
     private TextView dltwo_cancel, dltwo_check;
     private DBOpenHelper dbOpenHelper;
@@ -109,7 +113,7 @@ public class DialogClass extends Dialog implements View.OnClickListener {
 
     public DialogClass(Context context, int type, String num_type){
         super(context);
-        Log.d("확인", "dialogClass 생성자 " + type + ", " + num_type);
+        Logger.d("확인", "dialogClass 생성자 " + type + ", " + num_type);
         this.mContext = context;
         this.type = type;
 
@@ -139,7 +143,7 @@ public class DialogClass extends Dialog implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("다이얼로그", String.format("onCreate 진입 type %d, network_type %d ", type, network_type));
+        Logger.d("다이얼로그", String.format("onCreate 진입 type %d, network_type %d ", type, network_type));
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
@@ -147,11 +151,11 @@ public class DialogClass extends Dialog implements View.OnClickListener {
     }
 
     private void dialog_set(int type) {
-        Log.d("다이얼로그", "dialog_set실행, type -" + type);
+        Logger.d("다이얼로그", "dialog_set실행, type -" + type);
          switch (type) {
             // 타입1 설정 (회차검색 다이얼로그)
             case 1:
-                Log.d("다이얼로그", "case 1 진입, type -" + type);
+                Logger.d("다이얼로그", "case 1 진입, type -" + type);
                 setContentView(LAYOUT_SEARCH);
 
                 dlone_et = (EditText) findViewById(R.id.DLOne_et);
@@ -168,7 +172,7 @@ public class DialogClass extends Dialog implements View.OnClickListener {
                 break;
             // 타입2 설정 (기록설정 다이얼로그)
             case 2:
-                Log.d("다이얼로그", "case 2 진입, type - " + type);
+                Logger.d("다이얼로그", "case 2 진입, type - " + type);
                 setContentView(LAYOUT_DBLIST);
 
                 // Expandable ListView (확장 리스트뷰) 객체
@@ -183,20 +187,21 @@ public class DialogClass extends Dialog implements View.OnClickListener {
 
                 dbOpenHelper = new DBOpenHelper(getContext());
 
-                Log.d("다이얼로그", "dltwo_Listitem 생성 id/size - " + dltwo_listitem + ", " + dltwo_listitem.size());
+                Logger.d("다이얼로그", "dltwo_Listitem 생성 id/size - " + dltwo_listitem + ", " + dltwo_listitem.size());
                 dltwo_listitem = dbOpenHelper.selectListAllDB();
-                Log.d("다이얼로그", "dltwo_Listitem 데이터삽입 id/size - " + dltwo_listitem + ", " + dltwo_listitem.size());
+                Logger.d("다이얼로그", "dltwo_Listitem 데이터삽입 id/size - " + dltwo_listitem + ", " + dltwo_listitem.size());
                 if (dltwo_listitem.size() > 0) {
-                    dltwo_adapter = new ExpandableAdapter(getContext(), dltwo_listitem, this);
+//                    dltwo_adapter = new ExpandableAdapter(getContext(), dltwo_listitem, this);
+                    dltwo_adapter = new ExpandableListAdapter(getContext(), dltwo_listitem);
                     dltwo_exlist.setAdapter(dltwo_adapter);
-                    Log.d("다이얼로그", "dltwo_adapter 생성 - " + dltwo_adapter);
+                    Logger.d("다이얼로그", "dltwo_adapter 생성 - " + dltwo_adapter);
                 } else {
-                    //Toast.makeText(mContext, "기록 없음", Toast.LENGTH_SHORT).show();
+                    //MyToast.makeText(mContext, "기록 없음");(mContext, "기록 없음", Toast.LENGTH_SHORT).show();
                 }
                 break;
 
             case 3:
-                Log.d("다이얼로그", "case 3 진입, type - " + type);
+                Logger.d("다이얼로그", "case 3 진입, type - " + type);
                 setContentView(LAYOUT_NETWORK);
 
                 setCancelable(false);
@@ -209,7 +214,7 @@ public class DialogClass extends Dialog implements View.OnClickListener {
                 break;
 
             case 4:
-                Log.d("다이얼로그", "case 4 진입, type - " + type);
+                Logger.d("다이얼로그", "case 4 진입, type - " + type);
                 setContentView(LAYOUT_NUM_SETTING);
                 setCancelable(false);
 
@@ -234,7 +239,6 @@ public class DialogClass extends Dialog implements View.OnClickListener {
                 dl_numbers_ok.setOnClickListener(this);
 
                 dl_numbers_et = findViewById(R.id.DL_numbers_et);
-                dl_numbers_et.setKeyListener(DigitsKeyListener.getInstance("0123456789."));        //숫자와 Dot만 입력할수있도록 (Dot가 구분자)
                 dl_numbers_et.addTextChangedListener(new TextWatcher() {       // 키입력마다 검사하기위해 TextWatcher 등록)
                     @Override
                     public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
@@ -243,11 +247,12 @@ public class DialogClass extends Dialog implements View.OnClickListener {
                     @Override
                     public void afterTextChanged(Editable editable) {
                         String test = editable.toString();
+                        // 첫 입력이 '.' 일 경우
                         if(test.startsWith(".")){
                             dl_numbers_et.setText(test.substring(1));
                         }
 
-                        Log.d("확인", "afterTextChanged");
+                        Logger.d("확인", "afterTextChanged");
                         //마지막글자가 Dot인경우 숫자 저장
                         if (test.endsWith(".")) {
                             if(test.length() > 1){
@@ -256,7 +261,7 @@ public class DialogClass extends Dialog implements View.OnClickListener {
                                         test = test.replace("..", ".");
                                     }
                                     dl_numbers_et.setText(test);      //중복삭제
-                                    dl_numbers_et.setSelection(dl_numbers_et.length());
+                                    dl_numbers_et.setSelection(dl_numbers_et.length()); // 커서 위치 끝으로
                                 }
                             }
                             set_hash.clear();
@@ -266,11 +271,11 @@ public class DialogClass extends Dialog implements View.OnClickListener {
                             for (int i = 0; i < str.length; i++) {
 
                                 if (!str[i].isEmpty()) {
-                                    Log.d("확인", "if (!str[i].isEmpty()) 진입");
+                                    Logger.d("확인", "if (!str[i].isEmpty()) 진입");
                                     int number = Integer.parseInt(str[i]);
                                     //입력한 숫자가 0이 아니고, 46보다 작으면 저장
                                     if ((0 < number) && (number < 46)) {
-                                        Log.d("확인", "if ((0 < number) && (number < 46)) 진입");
+                                        Logger.d("확인", "if ((0 < number) && (number < 46)) 진입");
 
                                         // 이미설정된 리스트 | 다른종류 리스트 | 임시해쉬
                                         // 해당번호가 존재한지 검사, 둘중 하나라도 존재하면 if문 들어감
@@ -282,25 +287,25 @@ public class DialogClass extends Dialog implements View.OnClickListener {
                                             dl_numbers_et.setText(test);      //중복삭제
                                             dl_numbers_et.setSelection(dl_numbers_et.length());                       //포커스 마지막으로 이동
                                             if(num_list.contains(number)){
-                                                Log.d("확인", "num_list 존재 - result 1");
+                                                Logger.d("확인", "num_list 존재 - result 1");
                                                 error_type = 1;
                                                 //dl_numbers_error.setText(String.format("%s 이미 존재", num_type));
                                             } else if(num_list_child.contains(number)){
-                                                Log.d("확인", "num_list_child 존재 - result 2");
+                                                Logger.d("확인", "num_list_child 존재 - result 2");
                                                 //dl_numbers_error.setText(String.format("%s 이미 존재", num_type_child));
                                                 error_type = 2;
                                             } else if(set_hash.contains(number)){
-                                                Log.d("확인", "set_hash 존재 - result 3");
+                                                Logger.d("확인", "set_hash 존재 - result 3");
                                                 //dl_numbers_error.setText("입력 값 중복");
                                                 error_type = 3;
                                             }
-                                            Log.d("확인", "해쉬 add실패 (중복) - " + str[i]);
+                                            Logger.d("확인", "해쉬 add실패 (중복) - " + str[i]);
                                         } else {
                                             // 2개모두 존재안할경우
                                             if ((num_list.size() + set_hash.size() + 1) <= num_count) {
                                                 // 설정된 숫자 개수 + 입력한 숫자 개수가 제한개수보다 작거나 같으면 추가
                                                 set_hash.add(number);
-                                                Log.d("확인", "해쉬 add성공 - " + str[i]);
+                                                Logger.d("확인", "해쉬 add성공 - " + str[i]);
                                                 error_type = 0;
                                                 //dl_numbers_error.setText("");
                                             } else {
@@ -310,7 +315,7 @@ public class DialogClass extends Dialog implements View.OnClickListener {
                                                 dl_numbers_et.setText(test);      //중복삭제
                                                 dl_numbers_et.setSelection(dl_numbers_et.length());
 
-                                                Log.d("확인", "해쉬 add실패 (개수초과) - " + str[i]);
+                                                Logger.d("확인", "해쉬 add실패 (개수초과) - " + str[i]);
 
                                                 error_type = 4;
                                                 //dl_numbers_error.setText(String.format("%s 최대개수 초과", num_type));
@@ -323,12 +328,12 @@ public class DialogClass extends Dialog implements View.OnClickListener {
                                         dl_numbers_et.setText(test);      //중복삭제
                                         dl_numbers_et.setSelection(dl_numbers_et.length());
 
-                                        Log.d("확인", "해쉬 add실패 (숫자범위 초과) - " + str[i]);
+                                        Logger.d("확인", "해쉬 add실패 (숫자범위 초과) - " + str[i]);
                                         error_type = 5;
                                         //dl_numbers_error.setText("숫자범위 초과");
                                     }
-                                    Log.d("확인", "error_type - " + error_type);
-                                    Log.d("확인", "afterTextChanged \n\t editable - " + editable.toString()
+                                    Logger.d("확인", "error_type - " + error_type);
+                                    Logger.d("확인", "afterTextChanged \n\t editable - " + editable.toString()
                                             + "\n\t length - " + set_hash.size() + ", set_hash - " + set_hash);
                                     if((error_type == 1) || (error_type == 4)){
                                         dl_numbers_error.setText(String.format(ERROR_MESSAGE[error_type], num_type));
@@ -352,8 +357,8 @@ public class DialogClass extends Dialog implements View.OnClickListener {
                 break;
 
             case 5:
-                // DB 기록 삭제버튼시 다이얼로그 설정
-                Log.d("다이얼로그", "case 4 진입, type - " + type);
+                // DB 기록 삭제버튼 클릭 시 다이얼로그 설정
+                Logger.d("다이얼로그", "case 4 진입, type - " + type);
                 setContentView(LAYOUT_DB_DELETE);
                 setCancelable(false);
 
@@ -395,7 +400,7 @@ public class DialogClass extends Dialog implements View.OnClickListener {
                     break;
                 } else if (Integer.parseInt(num) > lastturn || Integer.parseInt(num) == 0) {
                     //마지막회차랑 입력한 회차 비교 (존재않는 회차일경우 검색x)
-                    Toast.makeText(getContext(), "미추첨 회차", Toast.LENGTH_SHORT).show();
+                    MyToast.makeText(mContext, "미추첨 회차");
                     dlone_et.setText("");
                 } else {
                     //존재회차일경우 onPositiveClicked 메소드 실행
@@ -426,7 +431,7 @@ public class DialogClass extends Dialog implements View.OnClickListener {
 
 
             case R.id.DL_numbers_ok:
-                Log.d("확인", "추가버튼 눌림");
+                Logger.d("확인", "추가버튼 눌림");
                 set_hash.clear();
                 String str = dl_numbers_et.getText().toString();
                 if(!str.isEmpty()){
@@ -436,7 +441,7 @@ public class DialogClass extends Dialog implements View.OnClickListener {
                 break;
 
             case R.id.DL_numbers_cancel:
-                Log.d("다이얼로그", "numbers_cancel 클릭");
+                Logger.d("다이얼로그", "numbers_cancel 클릭");
                 dismiss();
                 break;
 
@@ -445,8 +450,10 @@ public class DialogClass extends Dialog implements View.OnClickListener {
                 break;
             case R.id.dialog_dbdelete_ok:
                 DBOpenHelper dbOpenHelper = new DBOpenHelper(mContext);
-                dbOpenHelper.deleteDB(dBinfo.getNumset());
+                ArrayList<ArrayList<DBinfo>> items = dbOpenHelper.deleteDB(dBinfo.getNumset());
+                upDate_RecyclerView(items);
                 dismiss();
+
                 break;
         }
     }
@@ -468,17 +475,24 @@ public class DialogClass extends Dialog implements View.OnClickListener {
             }
 
         }
-        Log.d("확인", "set_hash - " + set_hash + ", " + set_hash.size());
+        Logger.d("확인", "set_hash - " + set_hash + ", " + set_hash.size());
 
         num_list.clear();             //기존 exceptNums 리스트 비우기
         num_list.addAll(hash);    //다시 덮어쓰기 (중복체크)
         Collections.sort(num_list);   //오름차순 정렬
-        Log.d("확인", "sort 후 list - " + num_list);
+        Logger.d("확인", "sort 후 list - " + num_list);
 
         if (num_type.equals("고정수")){
             MainActivity.fixedNums = num_list;
         } else if (num_type.equals("제외수")){
             MainActivity.exceptNums = num_list;
         }
+    }
+
+    public void upDate_RecyclerView(ArrayList<ArrayList<DBinfo>> lists) {
+        dltwo_listitem.clear();
+        dltwo_listitem.addAll(lists);
+//        dltwo_exlist.invalidate();
+        dltwo_adapter.notifyDataSetChanged();
     }
 }

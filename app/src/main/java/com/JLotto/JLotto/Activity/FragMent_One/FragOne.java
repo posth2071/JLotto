@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import com.JLotto.JLotto.DataBase.DBOpenHelper;
 import com.JLotto.JLotto.Activity.MainActivity;
 import com.JLotto.JLotto.R;
+import com.JLotto.JLotto.Util.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,7 +73,7 @@ public class FragOne extends Fragment implements View.OnClickListener {
         bt_random = view.findViewById(R.id.bt_random);
         bt_random.setOnClickListener(this);
 
-        dbOpenHelper = new DBOpenHelper(view.getContext().getApplicationContext());
+        dbOpenHelper = new DBOpenHelper(view.getContext());
         return view;
     }
 
@@ -80,7 +81,7 @@ public class FragOne extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.bt_random:
-                Log.d("FragOne", "추첨버튼 클릭");
+                Logger.d("FragOne", "추첨버튼 클릭");
                 btState(false);                //시작,저장 버튼 눌리지않게
                 random();                      //랜덤 번호뽑기
                 startTimer = new Timer();
@@ -95,7 +96,7 @@ public class FragOne extends Fragment implements View.OnClickListener {
                break;
             // 저장 누른경우 (내부SQLite DB)
             case R.id.bt_store:
-                Log.d("FragOne", "저장버튼 클릭");
+                Logger.d("FragOne", "저장버튼 클릭");
                 if(numberlist.size()==6){          //numberlist가 채워져있는지
                     String numset = numberlist.toString()
                             .replace("[","")
@@ -107,8 +108,7 @@ public class FragOne extends Fragment implements View.OnClickListener {
                     numberlist.clear();     //리스트 초기화
                     imgReset();             //이미지뷰 초기화
                 } else {        // list가 비어있는경우
-                    //Toast.makeText(getContext(), "번호 없음",Toast.LENGTH_SHORT).show();
-                    Log.d("FragOne", "저장 실패, 추첨 번호 미존재");
+                    Logger.d("FragOne", "저장 실패, 추첨 번호 미존재");
                 }
                 break;
         }
@@ -133,38 +133,38 @@ public class FragOne extends Fragment implements View.OnClickListener {
 
     //랜덤번호 추출 함수
     public void random() {
-        Log.d("FragOne", "random() 함수실행");
+        Logger.d("FragOne", "random() 함수실행");
         numberlist.clear();             //저장할 리스트비우기
         HashSet<Integer> exceptCheck = new HashSet<>();
         HashSet<Integer> lottonums = new HashSet<>();
         //고정수 설정된게 있다면 해쉬에 추가
         if(MainActivity.fixedNums.size()!=0){
             lottonums.addAll(MainActivity.fixedNums);
-            Log.d("FragOne", String.format("고정수 존재 '%s'",MainActivity.fixedNums.toString()));
+            Logger.d("FragOne", String.format("고정수 존재 '%s'",MainActivity.fixedNums.toString()));
         }
         //제외수 설정된게 있다면 해쉬에 추가
         if(MainActivity.exceptNums.size()!=0){
             exceptCheck.addAll(MainActivity.exceptNums);
-            Log.d("FragOne", String.format("제외수 존재 '%s'",MainActivity.exceptNums.toString()));
+            Logger.d("FragOne", String.format("제외수 존재 '%s'",MainActivity.exceptNums.toString()));
         }
         // 추첨번호 개수가 6개될때까지 반복해서 랜덤숫자 뽑기
         while(lottonums.size()<6) {
             int random = (int)(Math.random()*45)+1;
             if(exceptCheck.add(random)){ //랜덤값이 추가된다면 중복없음
-                Log.d("FragOne", String.format("제외수 통과, 번호 %d", random));
+                Logger.d("FragOne", String.format("제외수 통과, 번호 %d", random));
                 // Hash 사용으로 중복일 경우 추가x
                 lottonums.add(random);
                 }
         }
         numberlist.addAll(lottonums);   //numberlist에 옮기기
-        Log.d("FragOne", String.format("추첨 번호 '%s',", numberlist.toString()));
+        Logger.d("FragOne", String.format("추첨 번호 '%s',", numberlist.toString()));
     }
 
     //버튼(번호뽑기, 저장) 상태 조작 함수
     public void btState(boolean state){
         bt_random.setClickable(state);
         bt_store.setClickable(state);
-        Log.d("FragOne", String.format("번호 추첨 중, 버튼세팅 '%b'",state));
+        Logger.d("FragOne", String.format("번호 추첨 중, 버튼세팅 '%b'",state));
     }
 
 

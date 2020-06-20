@@ -32,18 +32,19 @@
         android:textColor="@color/white"
         android:textSize="16dp"
         />
+
     <EditText
         android:id="@+id/DL_numbers_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
-        android:hint="설정할 숫자 입력"
-        android:textColorHint="#55ffffff"
+        android:inputType="numberDecimal"
+        android:digits="0123456789."
         android:textColor="@color/white"
-        android:digits="0123456789"
-        android:inputType="number"
-        ></EditText>
+        android:hint="설정할 숫자 입력"
+        android:textColorHint="#55ffffff"></EditText>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="16dp" />

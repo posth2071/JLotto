@@ -23,6 +23,8 @@ import android.widget.Toast;
 import com.JLotto.JLotto.Activity.MainActivity;
 import com.JLotto.JLotto.DataBase.DBOpenHelper;
 import com.JLotto.JLotto.R;
+import com.JLotto.JLotto.Util.Logger;
+import com.JLotto.JLotto.Util.MyToast;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -115,9 +117,9 @@ public class CustomDialog implements View.OnClickListener {
                     }
                     // 데이터베이스에 중복없이 저장성공이 된 경우, builder크기가 1보다 큼
                     if(builder.length()>1){
-                        Toast.makeText(context,"저장",Toast.LENGTH_SHORT).show();
+                        MyToast.makeText(context, "저장");
                     } else {
-                        Toast.makeText(context,"저장 실패 (중복)",Toast.LENGTH_SHORT).show();
+                        MyToast.makeText(context,"저장 실패 (중복)");
                     }
                 }
                 dlg.dismiss();
@@ -223,13 +225,13 @@ public class CustomDialog implements View.OnClickListener {
                         "http://m.dhlottery.co.kr/?",
                         "https://m.dhlottery.co.kr/qr.do?method=winQr&"
                 );
-                Log.d("바코드", "Format된 주소 \n\t"+url);
+                Logger.d("바코드", "Format된 주소 \n\t"+url);
                 Document doc = Jsoup.connect(url).get();
                 return doc;
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Log.d("바코드", "try문 밖에서 return doc");
+            Logger.d("바코드", "try문 밖에서 return doc");
             return null;
         }
 
@@ -241,7 +243,7 @@ public class CustomDialog implements View.OnClickListener {
             String qr_ResultInfo = "";
 
             if(doc == null){
-                Toast.makeText(context, "Qr코드 오류", Toast.LENGTH_SHORT).show();
+                MyToast.makeText(context, "QR코드 오류");
             } else {
                 // 사용자가 선택한 번호들 정보 파싱
                 Element ele1 = doc.select("div.list_my_number tbody").first();
@@ -266,7 +268,7 @@ public class CustomDialog implements View.OnClickListener {
                 // 해당 회차 <span class="key_clr1">
                 qr_Turn = info_ele.selectFirst("span.key_clr1").text();
                 turn = Integer.parseInt(qr_Turn.replace("제","").replace("회",""));
-                Log.d("바코드","QR 회차" +turn);
+                Logger.d("바코드","QR 회차" +turn);
                 QR_Dialog_Turn.setText(qr_Turn);
 
                 // 추첨 날짜 <span class="date">

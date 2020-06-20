@@ -7,7 +7,6 @@ import android.location.Geocoder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 
@@ -15,6 +14,8 @@ import com.JLotto.JLotto.Activity.Dialog.DialogClass;
 import com.JLotto.JLotto.Activity.FragMent_Two.QRCord.CustomDialog;
 import com.JLotto.JLotto.Activity.Loading_Activity;
 import com.JLotto.JLotto.Activity.FragMent_Three.Map.MapNaver;
+import com.JLotto.JLotto.Util.Logger;
+import com.JLotto.JLotto.Util.MyToast;
 
 import java.io.IOException;
 import java.util.List;
@@ -54,9 +55,9 @@ public class NetworkStatus {
 
     public static void Check_NetworkStatus(final Context context, final int network_type, final String[] store){
          if (getConnectivity_Status(context) == 0) {
-            Log.d("다이얼로그", "DialogClass 생성자 함수 실행");
+            Logger.d("다이얼로그", "DialogClass 생성자 함수 실행");
             new DialogClass(context, 3, network_type, store).show();
-            Log.d("다이얼로그", "DialogClass.show()");
+            Logger.d("다이얼로그", "DialogClass.show()");
         } else {
             // 인터넷 상태가 연결되어 있는 경우
             switch (network_type){
@@ -86,7 +87,7 @@ public class NetworkStatus {
 
                     if (list != null) {
                         if (list.size() == 0) {
-                            Toast.makeText(context, "해당 주소없음", Toast.LENGTH_SHORT).show();
+                            MyToast.makeText(context, "해당 주소없음");
                         } else {
                             // 해당되는 주소로 인텐트 날리기
                             Address addr = list.get(0);
@@ -112,13 +113,13 @@ public class NetworkStatus {
 
                 case 5:
                     String qr_result = store[0];
-                    Log.d("바코드", qr_result);
+                    Logger.d("바코드", qr_result);
                     // 동행복권 QR코드인지 검사
                     if(qr_result.contains("dhlottery.co.kr")){
                         CustomDialog customDialog = new CustomDialog(context, qr_result);
                     } else {
                         // 동행복권 QR코드 아닌경우
-                        Toast.makeText(context, "QR코드 오류", Toast.LENGTH_SHORT).show();
+                        MyToast.makeText(context, "QR코드 오류");
                     }
                     break;
             }

@@ -26,8 +26,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
-import com.JLotto.JLotto.DataBase.DBOpenHelper;
 import com.JLotto.JLotto.Activity.Dialog.DialogClass;
+import com.JLotto.JLotto.DataBase.DBOpenHelper;
 import com.JLotto.JLotto.Adapter.Expandable.Expand_Child;
 import com.JLotto.JLotto.Adapter.Expandable.ExpandableAdapter;
 import com.JLotto.JLotto.AsyncTask.LottoParsingInfo;
@@ -36,6 +36,8 @@ import com.JLotto.JLotto.Activity.Dialog.MyDialogListener;
 import com.JLotto.JLotto.Activity.FragMent_Two.QRCord.QRCodeActivity;
 import com.JLotto.JLotto.R;
 import com.JLotto.JLotto.AsyncTask.TestClass;
+import com.JLotto.JLotto.Util.Logger;
+import com.JLotto.JLotto.Util.MyToast;
 import com.google.zxing.integration.android.IntentIntegrator;
 
 import java.io.File;
@@ -120,7 +122,7 @@ public class FragTwo extends Fragment {
 
         //1~45숫자 이미지ID 갖고오기
         parsingInfo = MainActivity.lastLottoinfo;   //제일마지막회차 정보 클래스 얻어오기
-        Log.d("확인", String.format(TURN_TEXT, parsingInfo.getTurn()));
+        Logger.d("확인", String.format(TURN_TEXT, parsingInfo.getTurn()));
 
         setting();
 
@@ -129,14 +131,14 @@ public class FragTwo extends Fragment {
         mGroupList.add("당첨정보");
         mGroupList.add("기록");
         mGroupList.add("당첨금 지급기한");
-        Log.d("테스트", "mGroupList.size = "+mGroupList.size());
+        Logger.d("테스트", "mGroupList.size = "+mGroupList.size());
 
         //자식뷰 담을 Expand_Child생성
         mChildList = new Expand_Child();
 
         //Child타입1 세팅
         mChildList.setTypeOne(MainActivity.lastLottoinfo.getSubInfo());
-        Log.d("테스트", "mChildList.typeOne size = "+mChildList.typeOne.size() +"\n"+mChildList.typeOne.get(0));
+        Logger.d("테스트", "mChildList.typeOne size = "+mChildList.typeOne.size() +"\n"+mChildList.typeOne.get(0));
 
         //Child타입2 세팅 (현재 검색된 회차에 해당하는 DB기록 불러오기)
         dbOpenHelper = new DBOpenHelper(context);
@@ -146,7 +148,7 @@ public class FragTwo extends Fragment {
         ArrayList<String> typeThree = new ArrayList<>();
         typeThree.add("지급개시일로부터 1년 (휴일인 경우 익영업일)");
         mChildList.setTypethree(typeThree);
-        Log.d("테스트", "mChildList.typethree size = "+mChildList.typethree.size() +"\n"+mChildList.typethree.get(0));
+        Logger.d("테스트", "mChildList.typethree size = "+mChildList.typethree.size() +"\n"+mChildList.typethree.get(0));
 
         //Adapter 생성 -> GroupList, ChildList
         frag2_exAdapter = new ExpandableAdapter(context, mGroupList, mChildList);
@@ -157,7 +159,7 @@ public class FragTwo extends Fragment {
     }
 
     public void dialogshow(int type){
-        dialog = new DialogClass(getActivity(), type);        // 대화상자 클래스 객체 생성 (getActivity로 프래그먼트가 올라와있는 액티비티 가져오기)
+        dialog = new DialogClass(getContext(), type);        // 대화상자 클래스 객체 생성 (getActivity로 프래그먼트가 올라와있는 액티비티 가져오기)
         dialog.setDialogListener(new MyDialogListener() {           // 리스너 인터페이스 등록
             @Override
             public void onPositiveClicked(String num) {             // 재정의
@@ -192,9 +194,9 @@ public class FragTwo extends Fragment {
         frag2_date.setText(parsingInfo.getDate());  //추첨날짜 세팅
         // 이미지뷰 7개 세팅
         for(int i=0; i<7; i++){
-            Log.d("테스트0615", numset[i]);
+            Logger.d("테스트0615", numset[i]);
             int num = Integer.parseInt(numset[i]);
-            Log.d("확인", "Lottoinfo index ["+i+"] - "+numset[i] + ", num - "+num);
+            Logger.d("확인", "Lottoinfo index ["+i+"] - "+numset[i] + ", num - "+num);
             frag2_numiv[i].setImageResource(MainActivity.num_ID[num-1]);
         }
     }
@@ -210,10 +212,10 @@ public class FragTwo extends Fragment {
 
     // 화면캡쳐 함수
     private void captureImage(){
-        Log.d("캡쳐", "captureImage 실행");
+        Logger.d("캡쳐", "captureImage 실행");
         // 권한 체크
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            Log.d("에러","권한체크 if문들어옴");
+            Logger.d("에러","권한체크 if문들어옴");
             // 사용자 권한 요청
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1000);
         }
@@ -224,7 +226,6 @@ public class FragTwo extends Fragment {
         File folder = new File(path);
         if(!folder.exists()){       // 저장소 내에 Dust폴더가 있는지
             folder.mkdirs();        // 없으면 생성
-            Toast.makeText(context, "폴더가 생성되었습니다.", Toast.LENGTH_SHORT).show();
         }
 
         // 캡쳐파일 이름 ( Dust-연도-월일-시분초.jpeg )
@@ -239,7 +240,7 @@ public class FragTwo extends Fragment {
             fos = new FileOutputStream(file);
             captureview.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + file)));
-            Toast.makeText(context, "갤러리 저장", Toast.LENGTH_SHORT).show();
+            MyToast.makeText(context, "갤러리 저장");
 
             fos.flush();
             fos.close();
@@ -250,9 +251,9 @@ public class FragTwo extends Fragment {
             sendSNS(imageUri);
 
         } catch (FileNotFoundException e) {
-            Log.d("에러","Frag2-Capture \n\tFileNotFoundException Error \n\t"+e.toString());
+            Logger.d("에러","Frag2-Capture \n\tFileNotFoundException Error \n\t"+e.toString());
         } catch (IOException e) {
-            Log.d("에러","Frag2-Capture \n\tIOException Error \n\t"+e.toString());
+            Logger.d("에러","Frag2-Capture \n\tIOException Error \n\t"+e.toString());
         }
     }
 

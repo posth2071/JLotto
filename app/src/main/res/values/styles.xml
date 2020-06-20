@@ -6,7 +6,7 @@
         <item name="colorPrimary">@color/maincolor</item>
         <item name="colorPrimaryDark">@color/maincolor</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:navigationBarColor"></item>
+<!--        <item name="android:navigationBarColor"></item>-->
         <!-- 타이틀바 없애기 -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

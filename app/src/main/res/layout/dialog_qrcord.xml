@@ -3,19 +3,8 @@
     android:layout_width="320dp"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:paddingTop="30dp"
     android:background="@drawable/bg_dialog_redius">
-
-    <TextView
-        android:id="@+id/QR_Dialog_Title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="start"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:paddingLeft="24dp"
-        android:text="커스텀 다이얼로그"
-        android:textSize="20dp"
-        android:textColor="@color/white"/>
 
     <LinearLayout
         android:layout_width="match_parent"
